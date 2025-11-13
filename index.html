@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Campaign Taxonomy Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .field-group {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    label {
+      min-width: 160px;
+      font-weight: 600;
+    }
+    select {
+      min-width: 220px;
+      padding: 0.25rem 0.5rem;
+    }
+    .code-output {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .code-output code {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Campaign Taxonomy Builder</h1>
+  <p>Select values below. The tool will generate the full taxonomy string.</p>
+
+  <div class="field-group">
+    <label for="region">Region</label>
+    <select id="region">
+      <option value="">-- Select Region --</option>
+      <option value="SOU">South</option>
+      <option value="WES">West</option>
+      <option value="EAS">East</option>
+      <option value="NAT">National</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="channel">Channel</label>
+    <select id="channel">
+      <option value="">-- Select Channel --</option>
+      <option value="DIS">Display</option>
+      <option value="SEM">Paid Search</option>
+      <option value="SOC">Social</option>
+      <option value="VID">Video</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="initiative">Initiative / Flight Type</label>
+    <select id="initiative">
+      <option value="">-- Select Initiative --</option>
+      <option value="EVE">Event</option>
+      <option value="EVE">Event – Local</option>
+      <option value="ALW">Always-on</option>
+      <option value="RET">Remarketing</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="audience">Audience / Tier</label>
+    <select id="audience">
+      <option value="">-- Select Audience --</option>
+      <option value="NA">Not Applicable</option>
+      <option value="T1">Tier 1 – National</option>
+      <option value="T2">Tier 2 – Regional</option>
+      <option value="T3">Tier 3 – Dealer</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="model">Model / Nameplate</label>
+    <select id="model">
+      <option value="">-- Select Model --</option>
+      <!-- description shown to user; value = code -->
+      <option value="MY25SFN">Santa Fe – MY25</option>
+      <option value="MY25TUC">Tucson – MY25</option>
+      <option value="MY25ELN">Elantra – MY25</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="offer">Offer ID</label>
+    <select id="offer">
+      <option value="">-- Select Offer --</option>
+      <option value="L239">Lease – $239/mo</option>
+      <option value="F0APR">0% APR</option>
+      <option value="CASH1">Cash Offer 1</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="enddate">Offer End Date</label>
+    <select id="enddate">
+      <option value="">-- Select End Date --</option>
+      <option value="63025">06-30-2025</option>
+      <option value="73125">07-31-2025</option>
+      <option value="83125">08-31-2025</option>
+    </select>
+    <div class="hint">Codes can follow your internal date format, e.g. MMDDYY.</div>
+  </div>
+
+  <div class="field-group">
+    <label for="market">Market / DMA</label>
+    <select id="market">
+      <option value="">-- Select Market --</option>
+      <option value="ATL">Atlanta</option>
+      <option value="LAX">Los Angeles</option>
+      <option value="NYC">New York</option>
+      <option value="NA">National</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="agency">Agency / Partner</label>
+    <select id="agency">
+      <option value="">-- Select Agency --</option>
+      <option value="GM">General Market Agency</option>
+      <option value="HM">Hyundai In-house</option>
+      <option value="PM">Performance Media Partner</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="reserved">Reserved / Suffix</label>
+    <select id="reserved">
+      <option value="">-- Select Suffix --</option>
+      <option value="NA">Not Applicable</option>
+      <option value="A">Version A</option>
+      <option value="B">Version B</option>
+    </select>
+  </div>
+
+  <div class="code-output">
+    <div><strong>Generated Taxonomy String:</strong></div>
+    <code id="taxonomyCode">(select values above)</code>
+    <div class="hint">This updates live as you change dropdowns. Copy + paste into your trafficking sheet.</div>
+  </div>
+
+  <script>
+    // Order matters: this is how the final string will be assembled.
+    const fieldOrder = [
+      "region",
+      "channel",
+      "initiative",
+      "audience",
+      "model",
+      "offer",
+      "enddate",
+      "market",
+      "agency",
+      "reserved"
+    ];
+
+    function updateTaxonomy() {
+      const parts = fieldOrder
+        .map(id => document.getElementById(id).value.trim())
+        .filter(Boolean); // remove empty selections
+
+      const code = parts.length > 0
+        ? parts.join("_")
+        : "(select values above)";
+
+      document.getElementById("taxonomyCode").textContent = code;
+    }
+
+    // Attach listeners
+    fieldOrder.forEach(id => {
+      document.getElementById(id).addEventListener("change", updateTaxonomy);
+    });
+
+    // Initial render
+    updateTaxonomy();
+  </script>
+</body>
+</html>
