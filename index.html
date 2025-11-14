@@ -71,7 +71,7 @@
     .inline-label {
       font-size: 0.8rem;
       color: #444;
-      min-width: 80px;
+      min-width: 110px;
     }
     .hidden {
       display: none;
@@ -375,7 +375,7 @@
         <option value="APR_OR_LEASE">APR or Lease</option>
         <option value="APR_PLUS_NOPAY">APR + No Payments</option>
 
-        <!-- Multi-offer APR / APR or EVBC -->
+        <!-- Multi-offer APR / APR or EV BC -->
         <option value="APR_MULTIPLE">APR Multiple</option>
         <option value="APR_OR_EVBC">APR or EV BC</option>
 
@@ -395,7 +395,7 @@
       <input id="offerValue2" type="text" placeholder="APR Percentage 2 (e.g. 1.99)" />
     </div>
 
-    <!-- Generic term months/days -->
+    <!-- Term months/days -->
     <div class="offer-row offer-row-term" id="offerTermRow">
       <div class="term1-wrapper" style="display:flex;gap:0.5rem;align-items:center;">
         <span class="inline-label" id="offerTerm1Label">First Term</span>
@@ -421,18 +421,10 @@
     <div class="offer-row">
       <span class="inline-label"><strong>Offer Code</strong></span>
       <input id="offerCodeDisplay" type="text"
-             placeholder="e.g. 2.5BC or 0APR60+0P90+UP2.5BC" readonly
+             placeholder="e.g. 2.5BC or 0APR60+0P90+UP2.5BC"
+             readonly
              style="min-width:260px;" />
       <input type="hidden" id="offerCode" />
-    </div>
-
-    <div class="hint" style="margin-top:0.5rem;">
-      The template decides how to use APR Percentage / Terms / Lease / Amount.  
-      Examples covered: 2.5BC, 2.5DC, 2.5SEC, 2.5TS+CI, 2.5TS, 3.99APR72, 0APR60+0PAY90,
-      2.99APR60+2.5BC, 2.99APR60|2.5BC, 0APR60+0P90+0.5BC, 0APR60+0P90+UP2.5BC,
-      0APR60+0P90|UP2.5BC, 3.99APR72+CI, 3.99APR72+0.5BC+CI, L239, L249+1.5BC, SD000,
-      L229+7.5EVBC, L229+7.5EVBC+CI, 1.99APR48+L239, 1.99APR48|L239, 3.99APR72+0P90,
-      2.99APR60|1.99APR48, 0.99APR60|7.5EVBC, HCM, ABW, CTB, URG.
     </div>
   </div>
 
@@ -480,63 +472,67 @@
   </div>
 
   <script>
-    // Order of fields in final taxonomy string
+    // Final taxonomy order: note model_combo is a synthetic field
     const fieldOrder = [
       "region",
       "media",
       "initiative",
       "title",
-      "model_year",
-      "model_name",
+      "model_combo",
       "offerCode",
       "market",
       "agency",
       "reserved"
     ];
 
-    // Template configuration: which inputs are needed
     const templateConfig = {
-      BONUS_CASH:           {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      DEALER_CASH:          {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      SALES_EVENT_CASH:     {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      TS_CI:                {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      TS_ONLY:              {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+      BONUS_CASH:       {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+      DEALER_CASH:      {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+      SALES_EVENT_CASH: {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+      TS_CI:            {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+      TS_ONLY:          {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
 
-      APR_ONLY:             {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
-      ZERO_ZERO:            {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:false},
+      APR_ONLY:         {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
+      ZERO_ZERO:        {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
 
-      APR_PLUS_BC:          {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
-      APR_OR_BC:            {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      APR_PLUS_BC:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      APR_OR_BC:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
 
-      ZERO_PLUS_BC:         {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_PLUS_UPBC:       {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_OR_UPBC:         {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_PLUS_BC:     {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_PLUS_UPBC:   {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_OR_UPBC:     {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
 
-      APR_PLUS_CI:          {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
-      APR_BC_CI:            {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      APR_PLUS_CI:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
+      APR_BC_CI:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
 
-      LEASE_ONLY:           {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:false},
-      LEASE_PLUS_BC:        {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
-      SIGN_DRIVE:           {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      LEASE_PLUS_EV:        {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
-      LEASE_PLUS_EV_CI:     {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
+      LEASE_ONLY:       {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:false},
+      LEASE_PLUS_BC:    {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
+      SIGN_DRIVE:       {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
+      LEASE_PLUS_EV:    {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
+      LEASE_PLUS_EV_CI: {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
 
-      APR_PLUS_LEASE:       {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
-      APR_OR_LEASE:         {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
-      APR_PLUS_NOPAY:       {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:false},
+      APR_PLUS_LEASE:   {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
+      APR_OR_LEASE:     {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
+      APR_PLUS_NOPAY:   {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
 
-      APR_MULTIPLE:         {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
-      APR_OR_EVBC:          {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      APR_MULTIPLE:     {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
+      APR_OR_EVBC:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
 
-      HCM_CODE:             {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      ABW_CODE:             {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      CTB_CODE:             {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      URG_CODE:             {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false}
+      HCM_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
+      ABW_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
+      CTB_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
+      URG_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false}
     };
 
     function updateTaxonomy() {
       const parts = fieldOrder
         .map(id => {
+          if (id === "model_combo") {
+            const my = (document.getElementById("model_year").value || "").trim();
+            const mn = (document.getElementById("model_name").value || "").trim();
+            const combo = (my || "") + (mn || "");
+            return combo;
+          }
           const el = document.getElementById(id);
           return el ? (el.value || "").trim() : "";
         })
@@ -568,72 +564,268 @@
       return rate + "APR" + months;
     }
 
+    function setLabelsAndPlaceholders(template, cfg) {
+      const aprLabel1 = document.getElementById("aprLabel1");
+      const aprLabel2 = document.getElementById("aprLabel2");
+      const aprInput1 = document.getElementById("offerValue1");
+      const aprInput2 = document.getElementById("offerValue2");
+      const term1Label = document.getElementById("offerTerm1Label");
+      const term2Label = document.getElementById("offerTerm2Label");
+      const term1Input = document.getElementById("offerTerm1");
+      const term2Input = document.getElementById("offerTerm2");
+      const leaseLabel = document.querySelector(".lease-label");
+      const leaseInput = document.getElementById("offerLeaseAmount");
+      const cashLabel  = document.querySelector(".cash-label");
+      const cashInput  = document.getElementById("offerCashAmount");
+
+      // Defaults
+      aprLabel1.textContent = "APR Percentage";
+      aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
+      aprLabel2.textContent = "APR Percentage 2";
+      aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
+
+      term1Label.textContent = "First Term";
+      term1Input.placeholder = "First Offer Term Months/Days (e.g. 60)";
+      term2Label.textContent = "Second Term";
+      term2Input.placeholder = "Second Offer Term Months/Days (e.g. 90)";
+
+      leaseLabel.textContent = "Lease Amount";
+      leaseInput.placeholder = "Lease Amount (e.g. 239)";
+      cashLabel.textContent  = "Amount";
+      cashInput.placeholder  = "Amount (e.g. 2500)";
+
+      switch (template) {
+        // Cash-only patterns
+        case "BONUS_CASH":
+        case "DEALER_CASH":
+        case "SALES_EVENT_CASH":
+        case "TS_CI":
+        case "TS_ONLY":
+          cashLabel.textContent = "Bonus Cash Amount";
+          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
+          if (template === "TS_ONLY" || template === "TS_CI") {
+            cashLabel.textContent = "Total Savings Amount";
+            cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
+          }
+          break;
+
+        case "APR_ONLY":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
+          term1Label.textContent = "Offer Term";
+          term1Input.placeholder = "Offer Term Months (e.g. 72)";
+          break;
+
+        case "ZERO_ZERO":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 0.99)";
+          aprLabel2.textContent = "APR Payments";
+          aprInput2.placeholder = "APR Payments (e.g. 0)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
+          term2Label.textContent = "APR Payment Days";
+          term2Input.placeholder = "APR Payment Days (e.g. 90)";
+          break;
+
+        case "APR_PLUS_BC":
+        case "APR_OR_BC":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
+          cashLabel.textContent = "Bonus Cash Amount";
+          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
+          break;
+
+        case "ZERO_PLUS_BC":
+        case "ZERO_PLUS_UPBC":
+        case "ZERO_OR_UPBC":
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
+          term2Label.textContent = "APR Payment Days";
+          term2Input.placeholder = "APR Payment Days (e.g. 90)";
+          cashLabel.textContent = "Bonus Cash Amount";
+          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
+          break;
+
+        case "APR_PLUS_CI":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
+          break;
+
+        case "APR_BC_CI":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
+          cashLabel.textContent = "Bonus Cash Amount";
+          cashInput.placeholder = "Bonus Cash Amount (e.g. 500)";
+          break;
+
+        case "LEASE_ONLY":
+          leaseLabel.textContent = "Lease Amount";
+          leaseInput.placeholder = "Lease Amount (e.g. 239)";
+          break;
+
+        case "LEASE_PLUS_BC":
+          leaseLabel.textContent = "Lease Amount";
+          leaseInput.placeholder = "Lease Amount (e.g. 249)";
+          cashLabel.textContent = "Bonus Cash Amount";
+          cashInput.placeholder = "Bonus Cash Amount (e.g. 1500)";
+          break;
+
+        case "LEASE_PLUS_EV":
+        case "LEASE_PLUS_EV_CI":
+          leaseLabel.textContent = "Lease Amount";
+          leaseInput.placeholder = "Lease Amount (e.g. 229)";
+          cashLabel.textContent = "EV Bonus Cash Amount";
+          cashInput.placeholder = "EV Bonus Cash Amount (e.g. 7500)";
+          break;
+
+        case "APR_PLUS_LEASE":
+        case "APR_OR_LEASE":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 1.99)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 48)";
+          leaseLabel.textContent = "Lease Amount";
+          leaseInput.placeholder = "Lease Amount (e.g. 239)";
+          break;
+
+        case "APR_PLUS_NOPAY":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
+          aprLabel2.textContent = "Payments";
+          aprInput2.placeholder = "Payments (e.g. 0)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
+          term2Label.textContent = "APR Payment Days";
+          term2Input.placeholder = "APR Payment Days (e.g. 90)";
+          break;
+
+        case "APR_MULTIPLE":
+          aprLabel1.textContent = "APR Percentage 1";
+          aprInput1.placeholder = "APR Percentage 1 (e.g. 2.99)";
+          aprLabel2.textContent = "APR Percentage 2";
+          aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
+          term1Label.textContent = "APR Offer Term Months 1";
+          term1Input.placeholder = "APR Offer Term Months 1 (e.g. 60)";
+          term2Label.textContent = "APR Offer Term Months 2";
+          term2Input.placeholder = "APR Offer Term Months 2 (e.g. 48)";
+          break;
+
+        case "APR_OR_EVBC":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 0.99)";
+          term1Label.textContent = "APR Offer Term Months";
+          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
+          cashLabel.textContent = "EV Bonus Cash Amount";
+          cashInput.placeholder = "EV Bonus Cash Amount (e.g. 7500)";
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    function configureOfferInputs() {
+      const template = document.getElementById("offerTemplate").value;
+      const cfg = templateConfig[template] || {
+        apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false
+      };
+
+      const aprRow = document.querySelector(".offer-row-apr");
+      const termRow = document.querySelector(".offer-row-term");
+      const leaseCashRow = document.querySelector(".offer-row-leasecash");
+
+      const apr2Wrapper = document.getElementById("offerValue2").parentElement;
+      const term1Wrapper = document.querySelector(".term1-wrapper");
+      const term2Wrapper = document.querySelector(".term2-wrapper");
+      const leaseLabel = document.querySelector(".lease-label");
+      const leaseInput = document.getElementById("offerLeaseAmount");
+      const cashLabel  = document.querySelector(".cash-label");
+      const cashInput  = document.getElementById("offerCashAmount");
+
+      const showAprRow = cfg.apr || cfg.apr2;
+      aprRow.classList.toggle("hidden", !showAprRow);
+      apr2Wrapper.classList.toggle("hidden", !cfg.apr2);
+
+      const showTermRow = cfg.term1 || cfg.term2;
+      termRow.classList.toggle("hidden", !showTermRow);
+      term1Wrapper.classList.toggle("hidden", !cfg.term1);
+      term2Wrapper.classList.toggle("hidden", !cfg.term2);
+
+      const showLeaseCash = cfg.lease || cfg.cash;
+      leaseCashRow.classList.toggle("hidden", !showLeaseCash);
+
+      leaseLabel.classList.toggle("hidden", !cfg.lease);
+      leaseInput.classList.toggle("hidden", !cfg.lease);
+      cashLabel.classList.toggle("hidden", !cfg.cash);
+      cashInput.classList.toggle("hidden", !cfg.cash);
+
+      setLabelsAndPlaceholders(template, cfg);
+    }
+
     function buildOfferCode() {
       const template = document.getElementById("offerTemplate").value;
 
-      const apr1Val = cleanNumeric(document.getElementById("offerValue1").value); // APR Percentage
-      const apr2Val = cleanNumeric(document.getElementById("offerValue2").value); // APR Percentage 2
+      const rate1 = cleanNumeric(document.getElementById("offerValue1").value); // APR1 or APR %
+      const rate2 = cleanNumeric(document.getElementById("offerValue2").value); // APR2 or Payments
 
-      const term1Val = cleanInt(document.getElementById("offerTerm1").value); // months/days
-      const term2Val = cleanInt(document.getElementById("offerTerm2").value); // months/days
+      const term1 = cleanInt(document.getElementById("offerTerm1").value); // months or term1
+      const term2 = cleanInt(document.getElementById("offerTerm2").value); // days or term2
 
-      const leaseAmtVal = cleanInt(document.getElementById("offerLeaseAmount").value);
+      const leaseAmt = cleanInt(document.getElementById("offerLeaseAmount").value);
       const cashAmtThousands = toThousands(document.getElementById("offerCashAmount").value);
 
       let code = "";
 
-      const leaseCode = leaseAmtVal ? ("L" + leaseAmtVal) : "";
+      const leaseCode = leaseAmt ? ("L" + leaseAmt) : "";
+      const bcCode    = cashAmtThousands ? (cashAmtThousands + "BC")   : "";
+      const evbcCode  = cashAmtThousands ? (cashAmtThousands + "EVBC") : "";
 
-      const bcCode   = cashAmtThousands ? (cashAmtThousands + "BC")   : "";
-      const evbcCode = cashAmtThousands ? (cashAmtThousands + "EVBC") : "";
-
-      const apr1 = apr(apr1Val, term1Val);
-      const apr2 = apr(apr2Val, term2Val);
-
-      // For 0-0 patterns, default APR to 0 if not provided
-      const zeroAprRate = apr1Val || "0";
-      const zeroAprCode = apr(zeroAprRate, term1Val);
+      const apr1 = apr(rate1, term1);
+      const apr2 = apr(rate2, term2);
 
       switch (template) {
         // Cash-only templates
         case "BONUS_CASH":
-          // $2,500 Bonus Cash = 2.5BC
           code = bcCode;
           break;
         case "DEALER_CASH":
-          // $2,500 Dealer Cash = 2.5DC
           code = cashAmtThousands ? (cashAmtThousands + "DC") : "";
           break;
         case "SALES_EVENT_CASH":
-          // $2,500 Sales Event Cash = 2.5SEC
           code = cashAmtThousands ? (cashAmtThousands + "SEC") : "";
           break;
         case "TS_ONLY":
-          // $2,500 Total Savings = 2.5TS
           code = cashAmtThousands ? (cashAmtThousands + "TS") : "";
           break;
         case "TS_CI":
-          // $2,500 Total Savings + CI = 2.5TS+CI
           code = cashAmtThousands ? (cashAmtThousands + "TS+CI") : "";
           break;
 
         // APR only
         case "APR_ONLY":
-          // 3.99% APR for 72 months = 3.99APR72
           code = apr1;
           break;
 
-        // 0-0 (0.00% APR + 0 Payments)
-        case "ZERO_ZERO":
-          // 0.00% APR for 60 months plus 0 Payments for 90 days = 0APR60+0PAY90
-          if (zeroAprCode && term2Val) {
-            code = zeroAprCode + "+0PAY" + term2Val;
+        // 0-0 (with PAY)
+        case "ZERO_ZERO": {
+          const rate   = rate1 || "0";
+          const months = term1;
+          const pays   = rate2 || "0";
+          const days   = term2;
+          if (months && days) {
+            code = rate + "APR" + months + "+" + pays + "PAY" + days;
           }
           break;
+        }
 
         // APR + BC
         case "APR_PLUS_BC":
-          // 2.99 % APR for 60 months + $2,500 Bonus Cash = 2.99APR60+2.5BC
           if (apr1 && bcCode) {
             code = apr1 + "+" + bcCode;
           }
@@ -641,42 +833,43 @@
 
         // APR or BC
         case "APR_OR_BC":
-          // 2.99 % APR for 60 months or $2,500 Bonus Cash = 2.99APR60|2.5BC
           if (apr1 && bcCode) {
             code = apr1 + "|" + bcCode;
           }
           break;
 
         // 0-0 + BC
-        case "ZERO_PLUS_BC":
-          // 0% APR for 60 months plus 0 Payments for 90 days + $500 Bonus Cash
-          // = 0APR60+0P90+0.5BC
-          if (zeroAprCode && term2Val && bcCode) {
-            code = zeroAprCode + "+0P" + term2Val + "+" + bcCode;
+        case "ZERO_PLUS_BC": {
+          const months = term1;
+          const days   = term2;
+          if (months && days && bcCode) {
+            code = "0APR" + months + "+0P" + days + "+" + bcCode;
           }
           break;
+        }
 
         // 0-0 plus up to BC
-        case "ZERO_PLUS_UPBC":
-          // 0% APR for 60 months plus 0 Payments for 90 days + up to $2,500 BC
-          // = 0APR60+0P90+UP2.5BC
-          if (zeroAprCode && term2Val && cashAmtThousands) {
-            code = zeroAprCode + "+0P" + term2Val + "+UP" + cashAmtThousands + "BC";
+        case "ZERO_PLUS_UPBC": {
+          const months = term1;
+          const days   = term2;
+          if (months && days && cashAmtThousands) {
+            code = "0APR" + months + "+0P" + days + "+UP" + cashAmtThousands + "BC";
           }
           break;
+        }
 
         // 0-0 or up to BC
-        case "ZERO_OR_UPBC":
-          // 0% APR for 60 months plus 0 Payments for 90 days or up to $2,500 BC
-          // = 0APR60+0P90|UP2.5BC
-          if (zeroAprCode && term2Val && cashAmtThousands) {
-            code = zeroAprCode + "+0P" + term2Val + "|UP" + cashAmtThousands + "BC";
+        case "ZERO_OR_UPBC": {
+          const months = term1;
+          const days   = term2;
+          if (months && days && cashAmtThousands) {
+            code = "0APR" + months + "+0P" + days + "|UP" + cashAmtThousands + "BC";
           }
           break;
+        }
 
-        // APR + Charger + Installation
+        // APR + CI
         case "APR_PLUS_CI":
-          // 3.99% APR for 72 months + CI = 3.99APR72+CI
           if (apr1) {
             code = apr1 + "+CI";
           }
@@ -684,7 +877,6 @@
 
         // APR + BC + CI
         case "APR_BC_CI":
-          // 3.99% APR for 72 months + $500 BC + CI = 3.99APR72+0.5BC+CI
           if (apr1 && bcCode) {
             code = apr1 + "+" + bcCode + "+CI";
           }
@@ -692,13 +884,11 @@
 
         // Lease only
         case "LEASE_ONLY":
-          // $239 Lease = L239
           code = leaseCode;
           break;
 
         // Lease + Bonus Cash
         case "LEASE_PLUS_BC":
-          // Lease for $249 a month plus $1,500 Bonus Cash = L249+1.5BC
           if (leaseCode && bcCode) {
             code = leaseCode + "+" + bcCode;
           }
@@ -706,13 +896,11 @@
 
         // Sign & Drive
         case "SIGN_DRIVE":
-          // $0 due ... = SD000
           code = "SD000";
           break;
 
         // Lease + EV Bonus
         case "LEASE_PLUS_EV":
-          // Lease for $229 a month plus $7,500 EV Bonus Cash = L229+7.5EVBC
           if (leaseCode && evbcCode) {
             code = leaseCode + "+" + evbcCode;
           }
@@ -720,8 +908,6 @@
 
         // Lease + EV Bonus + CI
         case "LEASE_PLUS_EV_CI":
-          // Lease for $229 a month plus $7,500 EV Bonus Cash + CI
-          // = L229+7.5EVBC+CI
           if (leaseCode && evbcCode) {
             code = leaseCode + "+" + evbcCode + "+CI";
           }
@@ -729,7 +915,6 @@
 
         // APR + Lease
         case "APR_PLUS_LEASE":
-          // 1.99% APR for 48 months plus Lease for $239 = 1.99APR48+L239
           if (apr1 && leaseCode) {
             code = apr1 + "+" + leaseCode;
           }
@@ -737,23 +922,25 @@
 
         // APR or Lease
         case "APR_OR_LEASE":
-          // 1.99% APR for 48 months or Lease for $239 = 1.99APR48|L239
           if (apr1 && leaseCode) {
             code = apr1 + "|" + leaseCode;
           }
           break;
 
         // APR + No Payments
-        case "APR_PLUS_NOPAY":
-          // 3.99 % APR for 72 months + 0 Payments 90 Days = 3.99APR72+0P90
-          if (apr1 && term2Val) {
-            code = apr1 + "+0P" + term2Val;
+        case "APR_PLUS_NOPAY": {
+          const rate   = rate1;
+          const months = term1;
+          const pays   = rate2 || "0";  // Payments
+          const days   = term2;
+          if (rate && months && days) {
+            code = rate + "APR" + months + "+" + pays + "P" + days;
           }
           break;
+        }
 
         // APR Multiple
         case "APR_MULTIPLE":
-          // 2.99% APR for 60 months or 1.99% APR for 48 months = 2.99APR60|1.99APR48
           if (apr1 && apr2) {
             code = apr1 + "|" + apr2;
           }
@@ -761,7 +948,6 @@
 
         // APR or EV BC
         case "APR_OR_EVBC":
-          // 0.99% APR for 60 months or $7,500 EV Bonus Cash = 0.99APR60|7.5EVBC
           if (apr1 && evbcCode) {
             code = apr1 + "|" + evbcCode;
           }
@@ -788,192 +974,22 @@
       document.getElementById("offerCode").value = code;
       document.getElementById("offerCodeDisplay").value = code;
       updateTaxonomy();
-      configureOfferInputs(); // keep visibility in sync
-    }
-
-    function setTermLabels(template) {
-      const term1Label = document.getElementById("offerTerm1Label");
-      const term2Label = document.getElementById("offerTerm2Label");
-      const term1Input = document.getElementById("offerTerm1");
-      const term2Input = document.getElementById("offerTerm2");
-
-      let t1Label = "First Term";
-      let t1PH    = "First Offer Term Months/Days (e.g. 60)";
-      let t2Label = "Second Term";
-      let t2PH    = "Second Offer Term Months/Days (e.g. 90)";
-
-      switch (template) {
-        case "APR_ONLY":
-        case "APR_PLUS_BC":
-        case "APR_OR_BC":
-        case "APR_PLUS_CI":
-        case "APR_BC_CI":
-        case "APR_PLUS_LEASE":
-        case "APR_OR_LEASE":
-        case "APR_OR_EVBC":
-          t1Label = "Offer Term";
-          t1PH    = "Offer Term Months (e.g. 60)";
-          break;
-
-        case "ZERO_ZERO":
-          t1Label = "Months";
-          t1PH    = "Months (e.g. 60)";
-          t2Label = "Days";
-          t2PH    = "Days (e.g. 90)";
-          break;
-
-        case "ZERO_PLUS_BC":
-        case "ZERO_PLUS_UPBC":
-        case "ZERO_OR_UPBC":
-          t1Label = "APR Offer Term";
-          t1PH    = "APR Offer Term Months (e.g. 60)";
-          t2Label = "APR Payment Days";
-          t2PH    = "APR Payment Days (e.g. 90)";
-          break;
-
-        case "APR_PLUS_NOPAY":
-          t1Label = "Offer Term";
-          t1PH    = "Offer Term Months (e.g. 72)";
-          t2Label = "APR Payment Days";
-          t2PH    = "APR Payment Days (e.g. 90)";
-          break;
-
-        case "APR_MULTIPLE":
-          t1Label = "Offer Term 1";
-          t1PH    = "Offer Term 1 Months (e.g. 60)";
-          t2Label = "Offer Term 2";
-          t2PH    = "Offer Term 2 Months (e.g. 48)";
-          break;
-
-        default:
-          break;
-      }
-
-      term1Label.textContent = t1Label;
-      term1Input.placeholder = t1PH;
-      term2Label.textContent = t2Label;
-      term2Input.placeholder = t2PH;
-    }
-
-    function setAprPlaceholders(template) {
-      const aprLabel1 = document.getElementById("aprLabel1");
-      const aprLabel2 = document.getElementById("aprLabel2");
-      const aprInput1 = document.getElementById("offerValue1");
-      const aprInput2 = document.getElementById("offerValue2");
-
-      aprLabel1.textContent = "APR Percentage";
-      aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
-      aprLabel2.textContent = "APR Percentage 2";
-      aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
-
-      if (template === "ZERO_ZERO" ||
-          template === "ZERO_PLUS_BC" ||
-          template === "ZERO_PLUS_UPBC" ||
-          template === "ZERO_OR_UPBC") {
-        aprInput1.placeholder = "APR Percentage (e.g. 0.00)";
-      }
-
-      if (template === "APR_MULTIPLE") {
-        aprInput1.placeholder = "APR Percentage 1 (e.g. 2.99)";
-        aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
-      }
-    }
-
-    function setCashLabel(template) {
-      const cashLabel = document.querySelector(".cash-label");
-      const cashInput = document.getElementById("offerCashAmount");
-
-      let label = "Amount";
-      let ph    = "Amount (e.g. 2500)";
-
-      if (
-        template === "BONUS_CASH" ||
-        template === "DEALER_CASH" ||
-        template === "SALES_EVENT_CASH" ||
-        template === "TS_CI" ||
-        template === "TS_ONLY" ||
-        template === "APR_PLUS_BC" ||
-        template === "APR_OR_BC" ||
-        template === "ZERO_PLUS_BC" ||
-        template === "ZERO_PLUS_UPBC" ||
-        template === "ZERO_OR_UPBC" ||
-        template === "APR_BC_CI" ||
-        template === "LEASE_PLUS_BC"
-      ) {
-        label = "Bonus Cash Amount";
-        ph    = "Bonus Cash Amount (e.g. 2500)";
-      }
-
-      if (
-        template === "LEASE_PLUS_EV" ||
-        template === "LEASE_PLUS_EV_CI" ||
-        template === "APR_OR_EVBC"
-      ) {
-        label = "EV Bonus Cash Amount";
-        ph    = "EV Bonus Cash Amount (e.g. 7500)";
-      }
-
-      cashLabel.textContent = label;
-      cashInput.placeholder = ph;
-    }
-
-    function configureOfferInputs() {
-      const template = document.getElementById("offerTemplate").value;
-      const cfg = templateConfig[template] || {
-        apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false
-      };
-
-      const aprRow = document.querySelector(".offer-row-apr");
-      const termRow = document.querySelector(".offer-row-term");
-      const leaseCashRow = document.querySelector(".offer-row-leasecash");
-
-      // APR row visibility
-      const showAprRow = cfg.apr || cfg.apr2;
-      aprRow.classList.toggle("hidden", !showAprRow);
-      document.getElementById("offerValue2").parentElement.classList.toggle(
-        "hidden",
-        !cfg.apr2
-      );
-
-      // Term row + individual term fields
-      const term1Wrapper = document.querySelector(".term1-wrapper");
-      const term2Wrapper = document.querySelector(".term2-wrapper");
-      const showTermRow = cfg.term1 || cfg.term2;
-      termRow.classList.toggle("hidden", !showTermRow);
-      term1Wrapper.classList.toggle("hidden", !cfg.term1);
-      term2Wrapper.classList.toggle("hidden", !cfg.term2);
-      setTermLabels(template);
-      setAprPlaceholders(template);
-
-      // Lease/Cash row visibility
-      const leaseLabel = document.querySelector(".lease-label");
-      const leaseInput = document.getElementById("offerLeaseAmount");
-      const cashLabel  = document.querySelector(".cash-label");
-      const cashInput  = document.getElementById("offerCashAmount");
-
-      const showLeaseCash = cfg.lease || cfg.cash;
-      leaseCashRow.classList.toggle("hidden", !showLeaseCash);
-
-      leaseLabel.classList.toggle("hidden", !cfg.lease);
-      leaseInput.classList.toggle("hidden", !cfg.lease);
-
-      cashLabel.classList.toggle("hidden", !cfg.cash);
-      cashInput.classList.toggle("hidden", !cfg.cash);
-
-      if (cfg.lease) {
-        leaseLabel.textContent = "Lease Amount";
-        leaseInput.placeholder = "Lease Amount (e.g. 239)";
-      }
-
-      if (cfg.cash) {
-        setCashLabel(template);
-      }
+      configureOfferInputs();
     }
 
     // Attach listeners for non-offer fields
     fieldOrder.forEach(id => {
+      if (id === "model_combo" || id === "offerCode") return;
       const el = document.getElementById(id);
-      if (el && id !== "offerCode") {
+      if (el) {
+        el.addEventListener("change", updateTaxonomy);
+      }
+    });
+
+    // Model year / name affect model_combo
+    ["model_year", "model_name"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
         el.addEventListener("change", updateTaxonomy);
       }
     });
