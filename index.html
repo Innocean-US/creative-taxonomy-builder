@@ -30,6 +30,9 @@
       min-width: 220px;
       padding: 0.25rem 0.5rem;
     }
+    input[type="text"] {
+      padding: 0.25rem 0.5rem;
+    }
     .code-output {
       margin-top: 2rem;
       padding: 1rem;
@@ -99,46 +102,258 @@
   </div>
 
   <div class="field-group">
-    <label for="audience">Audience / Tier</label>
-    <select id="audience">
-      <option value="">-- Select Audience --</option>
+    <label for="title">Title</label>
+    <select id="title">
+      <option value="">-- Select Title --</option>
       <option value="NA">Not Applicable</option>
-      <option value="T1">Tier 1 – National</option>
-      <option value="T2">Tier 2 – Regional</option>
-      <option value="T3">Tier 3 – Dealer</option>
+      <option value="LLW">Lay Low</option>
+      <option value="CNF">Confession</option>
+      <option value="CPT">Couple's Therapy</option>
+      <option value="LWF">Lawyer Friend</option>
+      <option value="DAD">Dad Santa</option>
+      <option value="COP">Mall Cop</option>
+      <option value="TOW">The Tow</option>
+      <option value="NLBR1">No Looking Back R1</option>
+      <option value="WFH">Work From Home</option>
+      <option value="DIN">Diner</option>
+      <option value="DGL">Dog Life R1</option>
+      <option value="WAP">Watch Party</option>
+      <option value="SHD">Shade</option>
+      <option value="HOM">Home</option>
+      <option value="COL">College</option>
+      <option value="BYA">Booya</option>
+      <option value="SLG">Short Long R2</option>
+      <option value="ROC">Rock Out</option>
+      <option value="RLF">Real Friends</option>
+      <option value="SOF">Stand Off</option>
+      <option value="ATM">All That &amp; More</option>
+      <option value="TRD">The Road</option>
+      <option value="VSCivic">Elantra VS Civic</option>
+      <option value="VSCorolla">Elantra VS Corolla</option>
+      <option value="VSSentra">Elantra VS Sentra</option>
+      <option value="VSCorollaHybrid">Elantra Hybrid VS Corolla Hybrid</option>
+      <option value="VSAccordHybrid">Elantra Hybrid VS Accord Hybrid</option>
+      <option value="VSID.4">Ioniq 5 VS ID.4</option>
+      <option value="VSMach-E">Ioniq 5 VS Mach-E</option>
+      <option value="VSAriya">Ioniq 5 VS Ariya</option>
+      <option value="VSbZ4X">Ioniq 5 VS bZ4X</option>
+      <option value="VSModelY">Ioniq 5 VS Model Y</option>
+      <option value="VSPrologue">Ioniq 5 VS Prologue</option>
+      <option value="VSID.4">Ioniq 6 VS ID.4</option>
+      <option value="VSPolestar2">Ioniq 6 VS Polestar 2</option>
+      <option value="VSModel3">Ioniq 6 VS Model 3</option>
+      <option value="VSC-HR">Kona VS C-HR</option>
+      <option value="VSHR-V">Kona VS HR-V</option>
+      <option value="VSRenegade">Kona VS Renegade</option>
+      <option value="VSCrosstrek">Kona VS Crosstrek</option>
+      <option value="VSCorollaCross">Kona VS Corolla Cross</option>
+      <option value="VSTrailblazer">Kona VS Trailblazer</option>
+      <option value="VSTrax">Kona VS Trax</option>
+      <option value="VSLeaf">Kona EV VS Leaf</option>
+      <option value="VSMini">Kona EV VS Mini</option>
+      <option value="VSBolt">Kona EV VS Bolt</option>
+      <option value="VSClarityFC">Nexo VS Clarity FC</option>
+      <option value="VSMirai">Nexo VS Mirai</option>
+      <option value="VSModelY">Nexo VS Model Y</option>
+      <option value="VSExplorer">Palisade VS Explorer</option>
+      <option value="VSHighlander">Palisade VS Highlander</option>
+      <option value="VSPilot">Palisade VS Pilot</option>
+      <option value="VSGrandCherokee">Palisade VS Grand Cherokee</option>
+      <option value="VSTraverse">Palisade VS Traverse</option>
+      <option value="VSPathfinder">Palisade VS Pathfinder</option>
+      <option value="VSMaverick">Santa Cruz VS Maverick</option>
+      <option value="VSOutback">Santa Cruz VS Outback</option>
+      <option value="VSRidgeline">Santa Cruz VS Ridgeline</option>
+      <option value="VSMurano">Santa Fe VS Murano</option>
+      <option value="VSOutback">Santa Fe VS Outback</option>
+      <option value="VSPassport">Santa Fe VS Passport</option>
+      <option value="VSHighlander">Santa Fe VS Highlander</option>
+      <option value="VSBlazer">Santa Fe VS Blazer</option>
+      <option value="VSRAV4Hybrid">Santa Fe Hybrid VS RAV4 Hybrid</option>
+      <option value="VSCR-VHybrid">Santa Fe Hybrid VS CR-V Hybrid</option>
+      <option value="VSEscapeHybrid">Santa Fe Hybrid VS Escape Hybrid</option>
+      <option value="VSEscapePHEV">Santa Fe PHEV VS Escape PHEV</option>
+      <option value="VSOutlanderPHEV">Santa Fe PHEV VS Outlander PHEV</option>
+      <option value="VSRAV4PHEV">Santa Fe PHEV VS RAV4 PHEV</option>
+      <option value="VSAccord">Sonata VS Accord</option>
+      <option value="VSAltima">Sonata VS Altima</option>
+      <option value="VSCamry">Sonata VS Camry</option>
+      <option value="VSAccordHybrid">Sonata Hybrid VS Accord Hybrid</option>
+      <option value="VSCamryHybrid">Sonata Hybrid VS Camry Hybrid</option>
+      <option value="VSCR-V">Tucson VS CR-V</option>
+      <option value="VSRAV4">Tucson VS RAV4</option>
+      <option value="VSRogue">Tucson VS Rogue</option>
+      <option value="VSForester">Tucson VS Forester</option>
+      <option value="VSEquinox">Tucson VS Equinox</option>
+      <option value="VSEscape">Tucson VS Escape</option>
+      <option value="VSCR-VHybrid">Tucson Hybrid VS CR-V Hybrid</option>
+      <option value="VSRAV4Hybrid">Tucson Hybrid VS RAV4 Hybrid</option>
+      <option value="VSEscapeHybrid">Tucson Hybrid VS Escape Hybrid</option>
+      <option value="VSRAV4PHEV">Tucson PHEV VS RAV4 PHEV</option>
+      <option value="VSEscapePHEV">Tucson PHEV VS Escape PHEV</option>
+      <option value="VSModelX">Ioniq 9 VS Model X</option>
+      <option value="VSR1S">Ioniq 9 VS R1S</option>
+      <option value="HYW">The Hyundai Way</option>
+      <option value="BTR">Brand The Road</option>
+      <option value="VIK">Vikings</option>
+      <option value="HWL">Howl</option>
+      <option value="CHU">Charged Up</option>
+      <option value="EXT">Exterior IO9</option>
+      <option value="INT">Interior IO9</option>
+      <option value="ELBR">Elbow Room</option>
+      <option value="CWBY">Cowboy</option>
+      <option value="BAP">Build And Price</option>
+      <option value="RAQ">Request A Quote</option>
+      <option value="STD">Schedule Test Drive</option>
+      <option value="SI">Search Inventory</option>
+      <option value="ABW">America's Best Warranty</option>
+      <option value="NAV">Navigation Screen</option>
+      <option value="SEW">Safe Exit Warning</option>
+      <option value="TRUNK">Hands Free Smart Trunk</option>
+      <option value="DISPLAY">Display Screen</option>
+      <option value="MPG">MPG</option>
+      <option value="RSPA">Remote Smart Parking Assist</option>
+      <option value="BSVM">Blind Spot View Monitor</option>
+      <option value="CARGO">Cargo Room</option>
+      <option value="RANGE">Range</option>
+      <option value="HEADUP">Head-Up Display</option>
+      <option value="CABIN">Cabin/Interior Space</option>
+      <option value="ADVSAF">Advanced Safety Features</option>
+      <option value="FINGER">Fingerprint Recognition</option>
+      <option value="LEGROOM">Spacious Legroom</option>
+      <option value="LIFTGATE">Hands-Free Smart Power Liftgate</option>
+      <option value="SFE">Safe Exit Assist</option>
+      <option value="AWD">HTRAC AWD</option>
+      <option value="TONNEAU">Tonneau Bed Cover</option>
+      <option value="CHARGE">Ultra-Fast Charging</option>
+      <option value="2YRCHARGE">2 Years Unlimited Charging</option>
+      <option value="V2L">Vehicle-to-Load</option>
+      <option value="TORQUE">Torque</option>
+      <option value="NGRIN">N Grin Boost</option>
+      <option value="EVB">Electric Battery Warranty</option>
+      <option value="DESIGN">Design</option>
+      <option value="CARPLAY">Apple CarPlay/Android Auto</option>
+      <option value="HPOWER">Horsepower</option>
+      <option value="VFS">Ventilated Front Seats</option>
+      <option value="DIGKEY">Digital Key 2</option>
+      <option value="SEATS">3rd Row Heated Seats/3rd Row</option>
+      <option value="BOSE">Bose Audio</option>
+      <option value="TOWING">Towing Capacity</option>
+      <option value="LIGHTING">Ambient Lighting</option>
+      <option value="STEER">Heated Steering Wheel</option>
+      <option value="IIHS">IIHS Top Safety Pick/+ Award</option>
+      <option value="WPCA">World Performance Car Award</option>
+      <option value="ETD">Experience the Difference (Mobile)</option>
+      <option value="EVMOB">EV Messaging (Mobile)</option>
+      <option value="HCM">Hyundai Complimentary Maintenance</option>
+      <option value="FEA">Multiple Features</option>
+      <option value="COM">Multiple Features (Competitive)</option>
+      <option value="WAR">Warranty</option>
+      <option value="INSP">Inspection</option>
+      <option value="RA">Roadside Assistance</option>
+      <option value="FIND">Find yours</option>
+      <option value="HURRY">Hurry in</option>
+      <option value="TIME">No time like today</option>
+      <option value="LTSI">Let That Sink In</option>
+      <option value="DOU">Donuts</option>
+      <option value="KTT">Kick the Tires</option>
     </select>
   </div>
 
   <div class="field-group">
-    <label for="model">Model / Nameplate</label>
-    <select id="model">
+    <label for="model_year">Model Year</label>
+    <select id="model_year">
+      <option value="">-- Select Model Year --</option>
+      <option value="MY2024">MY24</option>
+      <option value="MY2025">MY25</option>
+      <option value="MY2026">MY26</option>
+      <option value="MY2027">MY27</option>
+      <option value="MY2028">MY28</option>
+      <option value="MY2029">MY29</option>
+      <option value="MY2030">MY30</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="model_name">Model Name</label>
+    <select id="model_name">
       <option value="">-- Select Model --</option>
-      <!-- description shown to user; value = code -->
-      <option value="MY25SFN">Santa Fe – MY25</option>
-      <option value="MY25TUC">Tucson – MY25</option>
-      <option value="MY25ELN">Elantra – MY25</option>
+      <option value="AFL">Alternative Fuel</option>
+      <!-- Elantra -->
+      <option value="ELA">Elantra ICE</option>
+      <option value="EHV">Elantra HEV</option>
+      <option value="ELN">Elantra N</option>
+      <option value="EGT">Elantra GT</option>
+      <!-- Ioniq -->
+      <option value="IO5">Ioniq 5</option>
+      <option value="ION">Ioniq 5 N</option>
+      <option value="IO6">Ioniq 6</option>
+      <option value="IO9">Ioniq 9</option>
+      <!-- Kona -->
+      <option value="KON">Kona ICE</option>
+      <option value="KEV">Kona EV</option>
+      <!-- Nexo -->
+      <option value="NEX">Nexo</option>
+      <!-- Palisade -->
+      <option value="PAL">Palisade ICE</option>
+      <option value="PHE">Palisade HEV</option>
+      <!-- Santa Cruz -->
+      <option value="SCZ">Santa Cruz</option>
+      <!-- Santa Fe -->
+      <option value="SFN">Santa Fe ICE</option>
+      <option value="SHV">Santa Fe HEV</option>
+      <!-- Sonata -->
+      <option value="SON">Sonata</option>
+      <option value="HYB">Sonata HEV</option>
+      <!-- Tucson -->
+      <option value="TUC">Tucson ICE</option>
+      <option value="THV">Tucson HEV</option>
+      <option value="TPV">Tucson PHEV</option>
+      <!-- Venue -->
+      <option value="VEN">Venue</option>
+      <!-- Multiple Models -->
+      <option value="MLM">Multiple Models</option>
     </select>
   </div>
 
+  <!-- Dynamic cash offer builder -->
   <div class="field-group">
-    <label for="offer">Offer ID</label>
-    <select id="offer">
-      <option value="">-- Select Offer --</option>
-      <option value="L239">Lease – $239/mo</option>
-      <option value="F0APR">0% APR</option>
-      <option value="CASH1">Cash Offer 1</option>
-    </select>
-  </div>
+    <label for="offerAmount">Offer (Cash-Type)</label>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+      <input
+        id="offerAmount"
+        type="text"
+        placeholder="Amount (e.g. 2,500)"
+        style="min-width:140px;"
+      />
 
-  <div class="field-group">
-    <label for="enddate">Offer End Date</label>
-    <select id="enddate">
-      <option value="">-- Select End Date --</option>
-      <option value="63025">06-30-2025</option>
-      <option value="73125">07-31-2025</option>
-      <option value="83125">08-31-2025</option>
-    </select>
-    <div class="hint">Codes can follow your internal date format, e.g. MMDDYY.</div>
+      <select id="offerType" style="min-width:220px;">
+        <option value="">-- Select Offer Type --</option>
+        <option value="BC">Bonus Cash</option>
+        <option value="DC">Dealer Cash</option>
+        <option value="SEC">Sales Event Cash</option>
+        <option value="TS">Total Savings</option>
+        <option value="TS+CI">Total Savings + Charger + Installation</option>
+        <option value="EVBC">EV Bonus Cash</option>
+        <option value="EVBC+CI">EV Bonus Cash + Charger + Installation</option>
+      </select>
+
+      <input
+        id="offerCodeDisplay"
+        type="text"
+        placeholder="Offer Code (e.g. 2.5BC)"
+        style="min-width:140px;"
+        readonly
+      />
+    </div>
+
+    <!-- Hidden field actually used in the taxonomy builder -->
+    <input type="hidden" id="offerCode" />
+
+    <div class="hint">
+      Enter the dollar amount (e.g. <strong>2,500</strong>) and choose the offer type.
+      The tool converts to thousands and builds the code (e.g. <strong>2.5BC</strong>).
+    </div>
   </div>
 
   <div class="field-group">
@@ -175,7 +390,7 @@
   <div class="code-output">
     <div><strong>Generated Taxonomy String:</strong></div>
     <code id="taxonomyCode">(select values above)</code>
-    <div class="hint">This updates live as you change dropdowns. Copy + paste into your trafficking sheet.</div>
+    <div class="hint">This updates live as you change fields. Copy + paste into your trafficking sheet.</div>
   </div>
 
   <script>
@@ -184,10 +399,10 @@
       "region",
       "media",
       "initiative",
-      "audience",
-      "model",
-      "offer",
-      "enddate",
+      "title",
+      "model_year",
+      "model_name",
+      "offerCode",   // dynamic cash offer code
       "market",
       "agency",
       "reserved"
@@ -195,7 +410,10 @@
 
     function updateTaxonomy() {
       const parts = fieldOrder
-        .map(id => document.getElementById(id).value.trim())
+        .map(id => {
+          const el = document.getElementById(id);
+          return el ? (el.value || "").trim() : "";
+        })
         .filter(Boolean); // remove empty selections
 
       const code = parts.length > 0
@@ -205,10 +423,54 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
+    function buildOfferCode() {
+      const amountInput = document.getElementById("offerAmount");
+      const typeSelect = document.getElementById("offerType");
+      const codeHidden = document.getElementById("offerCode");
+      const codeDisplay = document.getElementById("offerCodeDisplay");
+
+      const rawAmount = amountInput.value || "";
+      const type = (typeSelect.value || "").trim();
+
+      // Reset if incomplete
+      if (!rawAmount || !type) {
+        codeHidden.value = "";
+        codeDisplay.value = "";
+        updateTaxonomy();
+        return;
+      }
+
+      // Strip everything except digits and decimal point
+      const numeric = parseFloat(rawAmount.replace(/[^0-9.]/g, ""));
+      if (isNaN(numeric) || numeric <= 0) {
+        codeHidden.value = "";
+        codeDisplay.value = "";
+        updateTaxonomy();
+        return;
+      }
+
+      // Convert to thousands (e.g. 2500 -> 2.5, 7500 -> 7.5, 500 -> 0.5)
+      const thousands = numeric / 1000;
+      const thousandsStr = thousands.toFixed(1); // always one decimal place
+
+      const finalCode = `${thousandsStr}${type}`;
+
+      codeHidden.value = finalCode;
+      codeDisplay.value = finalCode;
+
+      updateTaxonomy();
+    }
+
     // Attach listeners
     fieldOrder.forEach(id => {
-      document.getElementById(id).addEventListener("change", updateTaxonomy);
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", updateTaxonomy);
+      }
     });
+
+    document.getElementById("offerAmount").addEventListener("input", buildOfferCode);
+    document.getElementById("offerType").addEventListener("change", buildOfferCode);
 
     // Initial render
     updateTaxonomy();
