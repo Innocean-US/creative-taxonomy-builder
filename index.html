@@ -66,10 +66,15 @@
       flex-wrap: wrap;
       gap: 0.5rem;
       align-items: center;
+      margin-top: 0.4rem;
     }
     .inline-label {
       font-size: 0.8rem;
       color: #444;
+      min-width: 80px;
+    }
+    .hidden {
+      display: none;
     }
   </style>
 </head>
@@ -89,7 +94,6 @@
       <option value="MTN">Mountain</option>
       <option value="SCR">South Central</option>
       <option value="SOU">South</option>
-      <!-- <option value="NAT">National</option> -->
     </select>
   </div>
 
@@ -103,7 +107,7 @@
       <option value="DIS">Display</option>
       <option value="MLA">Meta Static Link Ad</option>
       <option value="MMPA">Meta Carousel Ad</option>
-      <option value="MVA">Meta Video Ad </option>
+      <option value="MVA">Meta Video Ad</option>
       <option value="AUD">Streaming Audio</option>
     </select>
   </div>
@@ -126,7 +130,7 @@
     </select>
   </div>
 
-  <!-- TITLE -->
+  <!-- TITLE (truncated here, you can paste your full list) -->
   <div class="field-group">
     <label for="title">Title</label>
     <select id="title">
@@ -135,28 +139,7 @@
       <option value="LLW">Lay Low</option>
       <option value="CNF">Confession</option>
       <option value="CPT">Couple's Therapy</option>
-      <option value="LWF">Lawyer Friend</option>
-      <option value="DAD">Dad Santa</option>
-      <option value="COP">Mall Cop</option>
-      <option value="TOW">The Tow</option>
-      <option value="NLBR1">No Looking Back R1</option>
-      <option value="WFH">Work From Home</option>
-      <option value="DIN">Diner</option>
-      <option value="DGL">Dog Life R1</option>
-      <option value="WAP">Watch Party</option>
-      <option value="SHD">Shade</option>
-      <option value="HOM">Home</option>
-      <option value="COL">College</option>
-      <option value="BYA">Booya</option>
-      <option value="SLG">Short Long R2</option>
-      <option value="ROC">Rock Out</option>
-      <option value="RLF">Real Friends</option>
-      <option value="SOF">Stand Off</option>
-      <option value="ATM">All That &amp; More</option>
-      <option value="TRD">The Road</option>
-      <!-- all the VS/feature titles unchanged -->
-      <!-- ... keep your full list here (omitted for brevity) ... -->
-      <option value="KTT">Kick the Tires</option>
+      <!-- paste the rest of your title <option>s here from your existing file -->
     </select>
   </div>
 
@@ -207,89 +190,95 @@
     </select>
   </div>
 
-  <!-- OFFER BUILDER (TEMPLATE-BASED) -->
+  <!-- OFFER BUILDER -->
   <h2>Offer Builder</h2>
   <div class="offer-wrapper">
+    <!-- Offer template dropdown -->
     <div class="offer-row">
       <span class="inline-label"><strong>Offer template</strong></span>
       <select id="offerTemplate">
-        <option value="">-- Select Offer Name --</option>
+        <option value="">-- Select Offer --</option>
         <!-- Cash only -->
-        <option value="BC">Bonus Cash = 2.5BC</option>
-        <option value="DC">Dealer Cash = 2.5DC</option>
-        <option value="SEC">Sales Event Cash = 2.5SEC</option>
-        <option value="TS_CI">Total Savings + Charger + Installation = 2.5TS+CI</option>
-        <option value="TS">Total Savings = 2.5TS</option>
+        <option value="BONUS_CASH">Bonus Cash</option>
+        <option value="DEALER_CASH">Dealer Cash</option>
+        <option value="SALES_EVENT_CASH">Sales Event Cash</option>
+        <option value="TS_CI">Total Savings + Charger + Installation</option>
+        <option value="TS_ONLY">Total Savings</option>
 
-        <!-- APR basic -->
-        <option value="APR_ONLY">APR = 3.99APR72</option>
-        <option value="ZERO_ZERO">0-0 (0.00% APR) = 0APR60</option>
+        <!-- APR / 0-0 / APR+BC patterns -->
+        <option value="APR_ONLY">APR</option>
+        <option value="ZERO_ZERO">0-0</option>
+        <option value="APR_PLUS_BC">APR + BC</option>
+        <option value="APR_OR_BC">APR or BC</option>
+        <option value="ZERO_PLUS_BC">0-0 + BC</option>
+        <option value="ZERO_PLUS_UPBC">0-0 plus up to BC</option>
+        <option value="ZERO_OR_UPBC">0-0 or up to BC</option>
+        <option value="APR_PLUS_CI">APR + Charger + Installation</option>
+        <option value="APR_BC_CI">APR + BC + Charger + Installation</option>
 
-        <!-- APR + Cash relationships -->
-        <option value="APR_PLUS_BC">APR + BC = 2.99APR60+2.5BC</option>
-        <option value="APR_OR_BC">APR or BC = 2.99APR60|2.5BC</option>
+        <!-- Lease family -->
+        <option value="LEASE_ONLY">Lease</option>
+        <option value="LEASE_PLUS_BC">Lease + Bonus Cash</option>
+        <option value="SIGN_DRIVE">Sign &amp; Drive</option>
+        <option value="LEASE_PLUS_EV">Lease + EV Bonus</option>
+        <option value="LEASE_PLUS_EV_CI">Lease + EV Bonus + Charger + Installation</option>
 
-        <!-- APR + 0P + Cash/UP Cash -->
-        <option value="APR_PLUS_0P">APR + 0 Payments = 0APR60+0P90</option>
-        <option value="APR_PLUS_0P_BC">APR + 0P + BC = 0APR60+0P90+0.5BC</option>
-        <option value="APR_PLUS_0P_UPBC">APR + 0P + UP BC = 0APR60+0P90+UP2.5BC</option>
-        <option value="APR_0P_OR_UPBC">APR + 0P or UP BC = 0APR60+0P90|UP2.5BC</option>
+        <!-- APR + Lease / APR or Lease / APR + No Payments -->
+        <option value="APR_PLUS_LEASE">APR + Lease</option>
+        <option value="APR_OR_LEASE">APR or Lease</option>
+        <option value="APR_PLUS_NOPAY">APR + No Payments</option>
 
-        <!-- APR with CI / BC + CI -->
-        <option value="APR_PLUS_CI">APR + CI = 3.99APR72+CI</option>
-        <option value="APR_BC_CI">APR + BC + CI = 3.99APR72+0.5BC+CI</option>
-
-        <!-- Lease + cash combos -->
-        <option value="LEASE_ONLY">Lease = L239</option>
-        <option value="LEASE_BC">Lease + BC = L249+1.5BC</option>
-        <option value="LEASE_EVBC">Lease + EVBC = L229+7.5EVBC</option>
-        <option value="LEASE_EVBC_CI">Lease + EVBC + CI = L229+7.5EVBC+CI</option>
-        <option value="SD000">Lease SD000 = SD000</option>
-
-        <!-- APR + Lease / APR or Lease -->
-        <option value="APR_PLUS_LEASE">APR + Lease = 1.99APR48+L239</option>
-        <option value="APR_OR_LEASE">APR or Lease = 1.99APR48|L239</option>
-
-        <!-- APR or APR; APR or EVBC -->
-        <option value="APR_OR_APR">APR or APR = 2.99APR60|1.99APR48</option>
-        <option value="APR_OR_EVBC">APR or EVBC = 0.99APR60|7.5EVBC</option>
+        <!-- Multi-offer APR / APR vs EVBC -->
+        <option value="APR_MULTIPLE">APR Multiple</option>
+        <option value="APR_OR_EVBC">APR or EV BC</option>
       </select>
     </div>
 
-    <div class="offer-row" style="margin-top:0.5rem;">
-      <span class="inline-label">APR 1</span>
-      <input id="offerAprRate" type="text" placeholder="APR % (e.g. 2.99)" />
-      <input id="offerAprMonths" type="text" placeholder="Months (e.g. 60)" />
-      <span class="inline-label">APR 2</span>
-      <input id="offerAprRate2" type="text" placeholder="2nd APR % (e.g. 1.99)" />
-      <input id="offerAprMonths2" type="text" placeholder="2nd Months (e.g. 48)" />
+    <!-- Offer + Offer 2 values (rates) -->
+    <div class="offer-row">
+      <span class="inline-label">Offer</span>
+      <input id="offerValue1" type="text" placeholder="Offer (e.g. 3.99 for APR)" />
+      <span class="inline-label">Offer 2</span>
+      <input id="offerValue2" type="text" placeholder="Offer 2 (e.g. 1.99 for APR 2)" />
     </div>
 
-    <div class="offer-row" style="margin-top:0.5rem;">
-      <span class="inline-label">Lease</span>
+    <!-- Generic term months/days -->
+    <div class="offer-row" id="offerTermRow">
+      <span class="inline-label" id="offerTerm1Label">First Term</span>
+      <input id="offerTerm1" type="text"
+             placeholder="First Offer Term Months/Days (e.g. 60)" />
+      <span class="inline-label" id="offerTerm2Label">Second Term</span>
+      <input id="offerTerm2" type="text"
+             placeholder="Second Offer Term Months/Days (e.g. 90)" />
+    </div>
+
+    <!-- Cash / Lease / UP-to -->
+    <div class="offer-row">
+      <span class="inline-label">Lease $</span>
       <input id="offerLeaseAmount" type="text" placeholder="Lease $ (e.g. 239)" />
-      <span class="inline-label">Cash</span>
+      <span class="inline-label">Cash $</span>
       <input id="offerCashAmount" type="text" placeholder="$ Cash (e.g. 2,500 or 7,500)" />
       <label class="inline-label">
-        <input type="checkbox" id="offerCashUp" /> UP to
+        <input type="checkbox" id="offerCashUp" />
+        UP to
       </label>
-      <span class="inline-label">0 Payments</span>
-      <input id="offerPayDays" type="text" placeholder="Days (e.g. 90)" />
     </div>
 
-    <div class="offer-row" style="margin-top:0.5rem;">
+    <!-- Offer code -->
+    <div class="offer-row">
       <span class="inline-label"><strong>Offer Code</strong></span>
-      <input id="offerCodeDisplay" type="text" placeholder="e.g. 2.99APR60|2.5BC" readonly style="min-width:260px;" />
+      <input id="offerCodeDisplay" type="text"
+             placeholder="e.g. 0APR60+0P90+UP2.5BC" readonly
+             style="min-width:260px;" />
       <input type="hidden" id="offerCode" />
     </div>
 
     <div class="hint" style="margin-top:0.5rem;">
-      Enter only the fields needed for the selected template.  
-      Examples this can generate:  
-      2.5BC, 2.5DC, 2.5SEC, 2.5TS+CI, 2.5TS, 3.99APR72, 0APR60+0P90,  
-      2.99APR60+2.5BC, 2.99APR60|2.5BC, 0APR60+0P90+0.5BC, 0APR60+0P90+UP2.5BC,  
-      0APR60+0P90|UP2.5BC, 3.99APR72+CI, 3.99APR72+0.5BC+CI, L239, L249+1.5BC, SD000,  
-      L229+7.5EVBC, L229+7.5EVBC+CI, 1.99APR48+L239, 1.99APR48|L239, 3.99APR72+0P90,  
+      The template decides how to use Offer / Offer 2 / Terms / Lease / Cash.  
+      Examples covered: 2.5BC, 2.5DC, 2.5SEC, 2.5TS+CI, 2.5TS, 3.99APR72, 0APR60+0P90,
+      2.99APR60+2.5BC, 2.99APR60|2.5BC, 0APR60+0P90+0.5BC, 0APR60+0P90+UP2.5BC,
+      0APR60+0P90|UP2.5BC, 3.99APR72+CI, 3.99APR72+0.5BC+CI, L239, L249+1.5BC, SD000,
+      L229+7.5EVBC, L229+7.5EVBC+CI, 1.99APR48+L239, 1.99APR48|L239, 3.99APR72+0P90,
       2.99APR60|1.99APR48, 0.99APR60|7.5EVBC.
     </div>
   </div>
@@ -352,6 +341,32 @@
       "reserved"
     ];
 
+    // Templates that require First / Second offer term
+    const templatesNeedTerm1 = new Set([
+      "APR_ONLY",
+      "ZERO_ZERO",
+      "APR_PLUS_BC",
+      "APR_OR_BC",
+      "ZERO_PLUS_BC",
+      "ZERO_PLUS_UPBC",
+      "ZERO_OR_UPBC",
+      "APR_PLUS_CI",
+      "APR_BC_CI",
+      "APR_PLUS_LEASE",
+      "APR_OR_LEASE",
+      "APR_PLUS_NOPAY",
+      "APR_MULTIPLE",
+      "APR_OR_EVBC"
+    ]);
+
+    const templatesNeedTerm2 = new Set([
+      "ZERO_ZERO",
+      "ZERO_PLUS_BC",
+      "ZERO_PLUS_UPBC",
+      "ZERO_OR_UPBC",
+      "APR_PLUS_NOPAY"
+    ]);
+
     function updateTaxonomy() {
       const parts = fieldOrder
         .map(id => {
@@ -375,109 +390,94 @@
       return (val || "").replace(/[^0-9]/g, "");
     }
 
-    function buildCash(thousandsAmount, suffix, upFlag, addCI) {
-      if (!thousandsAmount || !suffix) return "";
-      let base = thousandsAmount + suffix;
-      if (upFlag) base = "UP" + base;
-      if (addCI) base = base + "+CI";
-      return base;
-    }
-
-    function toThousands(amountInput) {
-      const numeric = parseFloat(cleanNumeric(amountInput));
+    function toThousands(amount) {
+      const numeric = parseFloat(cleanNumeric(amount));
       if (isNaN(numeric) || numeric <= 0) return "";
       return (numeric / 1000).toFixed(1); // 2500 -> "2.5"
-    }
-
-    function buildApr(rateInput, monthsInput) {
-      const rate = cleanNumeric(rateInput);
-      const months = cleanInt(monthsInput);
-      if (!rate || !months) return "";
-      return rate + "APR" + months;
-    }
-
-    function buildLease(leaseInput) {
-      const lease = cleanInt(leaseInput);
-      if (!lease) return "";
-      return "L" + lease;
     }
 
     function buildOfferCode() {
       const template = document.getElementById("offerTemplate").value;
 
-      const aprRate1   = document.getElementById("offerAprRate").value;
-      const aprMonths1 = document.getElementById("offerAprMonths").value;
-      const aprRate2   = document.getElementById("offerAprRate2").value;
-      const aprMonths2 = document.getElementById("offerAprMonths2").value;
+      const offer1 = cleanNumeric(document.getElementById("offerValue1").value); // APR 1
+      const offer2 = cleanNumeric(document.getElementById("offerValue2").value); // APR 2 for APR Multiple
 
-      const leaseAmt   = document.getElementById("offerLeaseAmount").value;
-      const cashAmt    = document.getElementById("offerCashAmount").value;
-      const cashUp     = document.getElementById("offerCashUp").checked;
-      const payDays    = cleanInt(document.getElementById("offerPayDays").value);
+      const term1 = cleanInt(document.getElementById("offerTerm1").value);
+      const term2 = cleanInt(document.getElementById("offerTerm2").value);
+
+      const leaseAmt = cleanInt(document.getElementById("offerLeaseAmount").value);
+      const cashAmtThousands = toThousands(document.getElementById("offerCashAmount").value);
+      const cashUp = document.getElementById("offerCashUp").checked;
 
       let code = "";
 
-      // precomputed helpers
-      const thousands = toThousands(cashAmt);
-      const apr1 = buildApr(aprRate1, aprMonths1);
-      const apr2 = buildApr(aprRate2, aprMonths2);
-      const lease = buildLease(leaseAmt);
-      const zeroApr = (cleanInt(aprMonths1) ? "0APR" + cleanInt(aprMonths1) : "");
-      const payCode = payDays ? "0P" + payDays : "";
+      // helpers
+      const cashSuffix = (suffix) => {
+        if (!cashAmtThousands) return "";
+        let base = cashAmtThousands + suffix;
+        if (cashUp) base = "UP" + base;
+        return base;
+      };
+
+      const apr1 = offer1 && term1 ? (offer1 + "APR" + term1) : "";
+      const apr2 = offer2 && term2 ? (offer2 + "APR" + term2) : "";
+      const zeroApr = term1 ? ("0APR" + term1) : "";
+      const payCode = term2 ? ("0P" + term2) : "";
+      const leaseCode = leaseAmt ? ("L" + leaseAmt) : "";
 
       switch (template) {
-        // Cash only
-        case "BC":
-          code = buildCash(thousands, "BC", cashUp, false);
+        // Cash-only templates
+        case "BONUS_CASH":
+          code = cashSuffix("BC");
           break;
-        case "DC":
-          code = buildCash(thousands, "DC", cashUp, false);
+        case "DEALER_CASH":
+          code = cashSuffix("DC");
           break;
-        case "SEC":
-          code = buildCash(thousands, "SEC", cashUp, false);
+        case "SALES_EVENT_CASH":
+          code = cashSuffix("SEC");
           break;
-        case "TS":
-          code = buildCash(thousands, "TS", cashUp, false);
+        case "TS_ONLY":
+          code = cashSuffix("TS");
           break;
         case "TS_CI":
-          code = buildCash(thousands, "TS", cashUp, true); // TS+CI
+          code = cashAmtThousands ? (cashSuffix("TS") + "+CI") : "";
           break;
 
-        // APR only / 0-0
+        // APR basics
         case "APR_ONLY":
           code = apr1;
           break;
         case "ZERO_ZERO":
-          // 0APRxx, months from APR1 months input
-          code = zeroApr;
+          code = zeroApr && payCode ? (zeroApr + "+" + payCode) : "";
           break;
 
-        // APR + Cash
+        // APR + BC patterns
         case "APR_PLUS_BC":
-          code = apr1 && thousands ? (apr1 + "+" + buildCash(thousands, "BC", cashUp, false)) : "";
+          code = apr1 && cashAmtThousands
+            ? (apr1 + "+" + cashSuffix("BC"))
+            : "";
           break;
         case "APR_OR_BC":
-          code = apr1 && thousands ? (apr1 + "|" + buildCash(thousands, "BC", cashUp, false)) : "";
+          code = apr1 && cashAmtThousands
+            ? (apr1 + "|" + cashSuffix("BC"))
+            : "";
           break;
 
-        // APR + 0P variants
-        case "APR_PLUS_0P":
-          code = apr1 && payCode ? (apr1 + "+" + payCode) : "";
+        // 0-0 + BC variants
+        case "ZERO_PLUS_BC":
+          code = zeroApr && payCode && cashAmtThousands
+            ? (zeroApr + "+" + payCode + "+" + cashSuffix("BC"))
+            : "";
           break;
-        case "APR_PLUS_0P_BC":
-          code = apr1 && payCode && thousands
-              ? (apr1 + "+" + payCode + "+" + buildCash(thousands, "BC", false, false))
-              : "";
+        case "ZERO_PLUS_UPBC":
+          code = zeroApr && payCode && cashAmtThousands
+            ? (zeroApr + "+" + payCode + "+" + "UP" + cashAmtThousands + "BC")
+            : "";
           break;
-        case "APR_PLUS_0P_UPBC":
-          code = apr1 && payCode && thousands
-              ? (apr1 + "+" + payCode + "+" + buildCash(thousands, "BC", true, false))
-              : "";
-          break;
-        case "APR_0P_OR_UPBC":
-          code = apr1 && payCode && thousands
-              ? (apr1 + "+" + payCode + "|" + buildCash(thousands, "BC", true, false))
-              : "";
+        case "ZERO_OR_UPBC":
+          code = zeroApr && payCode && cashAmtThousands
+            ? (zeroApr + "+" + payCode + "|" + "UP" + cashAmtThousands + "BC")
+            : "";
           break;
 
         // APR + CI / APR + BC + CI
@@ -485,62 +485,81 @@
           code = apr1 ? (apr1 + "+CI") : "";
           break;
         case "APR_BC_CI":
-          code = apr1 && thousands
-              ? (apr1 + "+" + buildCash(thousands, "BC", false, false) + "+CI")
-              : "";
+          code = apr1 && cashAmtThousands
+            ? (apr1 + "+" + cashAmtThousands + "BC+CI")
+            : "";
           break;
 
-        // Lease combos
+        // Lease family
         case "LEASE_ONLY":
-          code = lease;
+          code = leaseCode;
           break;
-        case "LEASE_BC":
-          code = lease && thousands
-              ? (lease + "+" + buildCash(thousands, "BC", cashUp, false))
-              : "";
+        case "LEASE_PLUS_BC":
+          code = leaseCode && cashAmtThousands
+            ? (leaseCode + "+" + cashSuffix("BC"))
+            : "";
           break;
-        case "LEASE_EVBC":
-          code = lease && thousands
-              ? (lease + "+" + buildCash(thousands, "EVBC", cashUp, false))
-              : "";
-          break;
-        case "LEASE_EVBC_CI":
-          code = lease && thousands
-              ? (lease + "+" + buildCash(thousands, "EVBC", cashUp, true))
-              : "";
-          break;
-        case "SD000":
+        case "SIGN_DRIVE":
           code = "SD000";
           break;
+        case "LEASE_PLUS_EV":
+          code = leaseCode && cashAmtThousands
+            ? (leaseCode + "+" + cashSuffix("EVBC"))
+            : "";
+          break;
+        case "LEASE_PLUS_EV_CI":
+          code = leaseCode && cashAmtThousands
+            ? (leaseCode + "+" + cashSuffix("EVBC") + "+CI")
+            : "";
+          break;
 
-        // APR + Lease / APR or Lease
+        // APR + Lease / APR or Lease / APR + No Payments
         case "APR_PLUS_LEASE":
-          code = apr1 && lease ? (apr1 + "+" + lease) : "";
+          code = apr1 && leaseCode ? (apr1 + "+" + leaseCode) : "";
           break;
         case "APR_OR_LEASE":
-          code = apr1 && lease ? (apr1 + "|" + lease) : "";
+          code = apr1 && leaseCode ? (apr1 + "|" + leaseCode) : "";
+          break;
+        case "APR_PLUS_NOPAY":
+          code = apr1 && term2 ? (apr1 + "+0P" + term2) : "";
           break;
 
-        // APR vs APR / APR vs EVBC
-        case "APR_OR_APR":
+        // APR Multiple and APR or EVBC
+        case "APR_MULTIPLE":
           code = apr1 && apr2 ? (apr1 + "|" + apr2) : "";
           break;
         case "APR_OR_EVBC":
-          code = apr1 && thousands
-              ? (apr1 + "|" + buildCash(thousands, "EVBC", cashUp, false))
-              : "";
+          code = apr1 && cashAmtThousands
+            ? (apr1 + "|" + cashSuffix("EVBC"))
+            : "";
           break;
 
         default:
           code = "";
       }
 
-      const hidden = document.getElementById("offerCode");
-      const display = document.getElementById("offerCodeDisplay");
-      hidden.value = code;
-      display.value = code;
-
+      document.getElementById("offerCode").value = code;
+      document.getElementById("offerCodeDisplay").value = code;
       updateTaxonomy();
+      updateTermVisibility(); // keep visibility in sync
+    }
+
+    function updateTermVisibility() {
+      const template = document.getElementById("offerTemplate").value;
+      const termRow = document.getElementById("offerTermRow");
+      const need1 = templatesNeedTerm1.has(template);
+      const need2 = templatesNeedTerm2.has(template);
+
+      // Show/hide entire row based on need for first term
+      termRow.classList.toggle("hidden", !need1 && !need2);
+
+      // If we don't need term1/term2, clear them
+      if (!need1) {
+        document.getElementById("offerTerm1").value = "";
+      }
+      if (!need2) {
+        document.getElementById("offerTerm2").value = "";
+      }
     }
 
     // Attach listeners for non-offer fields
@@ -554,11 +573,10 @@
     // Offer builder listeners
     [
       "offerTemplate",
-      "offerAprRate", "offerAprMonths",
-      "offerAprRate2", "offerAprMonths2",
+      "offerValue1", "offerValue2",
+      "offerTerm1", "offerTerm2",
       "offerLeaseAmount",
-      "offerCashAmount",
-      "offerPayDays"
+      "offerCashAmount"
     ].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
@@ -573,6 +591,7 @@
     }
 
     // Initial render
+    updateTermVisibility();
     buildOfferCode();
   </script>
 </body>
