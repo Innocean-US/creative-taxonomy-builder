@@ -15,6 +15,11 @@
       font-size: 1.6rem;
       margin-bottom: 0.5rem;
     }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
     .field-group {
       margin-bottom: 1rem;
       display: flex;
@@ -30,7 +35,8 @@
       min-width: 220px;
       padding: 0.25rem 0.5rem;
     }
-    input[type="text"] {
+    input[type="text"],
+    input[type="number"] {
       padding: 0.25rem 0.5rem;
     }
     .code-output {
@@ -43,11 +49,36 @@
     .code-output code {
       font-size: 1.1rem;
       font-weight: 600;
+      word-break: break-all;
     }
     .hint {
       font-size: 0.85rem;
       color: #666;
       margin-top: 0.25rem;
+    }
+    .offer-builder {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .segment-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      align-items: center;
+    }
+    .segment-label {
+      min-width: 80px;
+      font-weight: 600;
+    }
+    .operator-select {
+      min-width: 70px;
+    }
+    .inline-hint {
+      font-size: 0.8rem;
+      color: #777;
     }
   </style>
 </head>
@@ -55,6 +86,7 @@
   <h1>Campaign Taxonomy Builder</h1>
   <p>Select values below. The tool will generate the full taxonomy string.</p>
 
+  <!-- REGION -->
   <div class="field-group">
     <label for="region">Region</label>
     <select id="region">
@@ -70,6 +102,7 @@
     </select>
   </div>
 
+  <!-- MEDIA TYPE -->
   <div class="field-group">
     <label for="media">Media Type</label>
     <select id="media">
@@ -84,6 +117,7 @@
     </select>
   </div>
 
+  <!-- INITIATIVE / CAMPAIGN -->
   <div class="field-group">
     <label for="initiative">Initiative / Campaign</label>
     <select id="initiative">
@@ -101,6 +135,7 @@
     </select>
   </div>
 
+  <!-- TITLE -->
   <div class="field-group">
     <label for="title">Title</label>
     <select id="title">
@@ -260,20 +295,22 @@
     </select>
   </div>
 
+  <!-- MODEL YEAR -->
   <div class="field-group">
     <label for="model_year">Model Year</label>
     <select id="model_year">
       <option value="">-- Select Model Year --</option>
-      <option value="MY2024">MY24</option>
-      <option value="MY2025">MY25</option>
-      <option value="MY2026">MY26</option>
-      <option value="MY2027">MY27</option>
-      <option value="MY2028">MY28</option>
-      <option value="MY2029">MY29</option>
-      <option value="MY2030">MY30</option>
+      <option value="MY24">MY24</option>
+      <option value="MY25">MY25</option>
+      <option value="MY26">MY26</option>
+      <option value="MY27">MY27</option>
+      <option value="MY28">MY28</option>
+      <option value="MY29">MY29</option>
+      <option value="MY30">MY30</option>
     </select>
   </div>
 
+  <!-- MODEL NAME -->
   <div class="field-group">
     <label for="model_name">Model Name</label>
     <select id="model_name">
@@ -316,46 +353,159 @@
     </select>
   </div>
 
-  <!-- Dynamic cash offer builder -->
-  <div class="field-group">
-    <label for="offerAmount">Offer (Cash-Type)</label>
-    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
-      <input
-        id="offerAmount"
-        type="text"
-        placeholder="Amount (e.g. 2,500)"
-        style="min-width:140px;"
-      />
+  <!-- OFFER BUILDER -->
+  <h2>Offer Builder</h2>
+  <div class="offer-builder">
+    <div class="hint">
+      Build up to three offer segments and operators (<code>+</code> or <code>|</code>).  
+      Examples this can produce: <code>2.5BC</code>, <code>3.99APR72</code>, <code>0APR60+0P90+0.5BC</code>, <code>L229+7.5EVBC+CI</code>, <code>2.99APR60|1.99APR48</code>.
+    </div>
 
-      <select id="offerType" style="min-width:220px;">
-        <option value="">-- Select Offer Type --</option>
+    <!-- Segment 1 -->
+    <div class="segment-row">
+      <span class="segment-label">Segment 1</span>
+      <select id="seg1Type">
+        <option value="">-- Type --</option>
+        <option value="APR">APR</option>
+        <option value="LEASE">Lease (Lxxx)</option>
+        <option value="SD000">Lease: SD000</option>
+        <option value="CASH">Cash / Savings</option>
+        <option value="PAYHOL">0 Payments for X Days</option>
+        <option value="CI">Charger + Installation (CI)</option>
+      </select>
+
+      <input id="seg1AprRate" type="text" placeholder="APR % (e.g. 2.99)" />
+      <input id="seg1AprMonths" type="text" placeholder="Months (e.g. 60)" />
+
+      <input id="seg1LeaseAmount" type="text" placeholder="Lease $ (e.g. 239)" />
+
+      <input id="seg1CashAmount" type="text" placeholder="$ Cash (e.g. 2,500)" />
+      <select id="seg1CashType">
+        <option value="">Cash Type</option>
         <option value="BC">Bonus Cash</option>
         <option value="DC">Dealer Cash</option>
         <option value="SEC">Sales Event Cash</option>
         <option value="TS">Total Savings</option>
-        <option value="TS+CI">Total Savings + Charger + Installation</option>
         <option value="EVBC">EV Bonus Cash</option>
-        <option value="EVBC+CI">EV Bonus Cash + Charger + Installation</option>
       </select>
+      <label class="inline-hint">
+        <input type="checkbox" id="seg1CashUp" /> UP to
+      </label>
 
-      <input
-        id="offerCodeDisplay"
-        type="text"
-        placeholder="Offer Code (e.g. 2.5BC)"
-        style="min-width:140px;"
-        readonly
-      />
+      <input id="seg1PayDays" type="text" placeholder="Days (e.g. 90)" />
     </div>
 
-    <!-- Hidden field actually used in the taxonomy builder -->
-    <input type="hidden" id="offerCode" />
+    <!-- Operator between 1 & 2 -->
+    <div class="segment-row">
+      <span class="segment-label">Op 1–2</span>
+      <select id="op1" class="operator-select">
+        <option value="">(none)</option>
+        <option value="+">+</option>
+        <option value="|">|</option>
+      </select>
+      <span class="inline-hint">Join Segment 1 and 2</span>
+    </div>
+
+    <!-- Segment 2 -->
+    <div class="segment-row">
+      <span class="segment-label">Segment 2</span>
+      <select id="seg2Type">
+        <option value="">-- Type --</option>
+        <option value="APR">APR</option>
+        <option value="LEASE">Lease (Lxxx)</option>
+        <option value="SD000">Lease: SD000</option>
+        <option value="CASH">Cash / Savings</option>
+        <option value="PAYHOL">0 Payments for X Days</option>
+        <option value="CI">Charger + Installation (CI)</option>
+      </select>
+
+      <input id="seg2AprRate" type="text" placeholder="APR % (e.g. 1.99)" />
+      <input id="seg2AprMonths" type="text" placeholder="Months (e.g. 48)" />
+
+      <input id="seg2LeaseAmount" type="text" placeholder="Lease $ (e.g. 239)" />
+
+      <input id="seg2CashAmount" type="text" placeholder="$ Cash (e.g. 2,500)" />
+      <select id="seg2CashType">
+        <option value="">Cash Type</option>
+        <option value="BC">Bonus Cash</option>
+        <option value="DC">Dealer Cash</option>
+        <option value="SEC">Sales Event Cash</option>
+        <option value="TS">Total Savings</option>
+        <option value="EVBC">EV Bonus Cash</option>
+      </select>
+      <label class="inline-hint">
+        <input type="checkbox" id="seg2CashUp" /> UP to
+      </label>
+
+      <input id="seg2PayDays" type="text" placeholder="Days (e.g. 90)" />
+    </div>
+
+    <!-- Operator between 2 & 3 -->
+    <div class="segment-row">
+      <span class="segment-label">Op 2–3</span>
+      <select id="op2" class="operator-select">
+        <option value="">(none)</option>
+        <option value="+">+</option>
+        <option value="|">|</option>
+      </select>
+      <span class="inline-hint">Join Segment 2 and 3</span>
+    </div>
+
+    <!-- Segment 3 -->
+    <div class="segment-row">
+      <span class="segment-label">Segment 3</span>
+      <select id="seg3Type">
+        <option value="">-- Type --</option>
+        <option value="APR">APR</option>
+        <option value="LEASE">Lease (Lxxx)</option>
+        <option value="SD000">Lease: SD000</option>
+        <option value="CASH">Cash / Savings</option>
+        <option value="PAYHOL">0 Payments for X Days</option>
+        <option value="CI">Charger + Installation (CI)</option>
+      </select>
+
+      <input id="seg3AprRate" type="text" placeholder="APR % (e.g. 0.99)" />
+      <input id="seg3AprMonths" type="text" placeholder="Months (e.g. 60)" />
+
+      <input id="seg3LeaseAmount" type="text" placeholder="Lease $ (e.g. 229)" />
+
+      <input id="seg3CashAmount" type="text" placeholder="$ Cash (e.g. 7,500)" />
+      <select id="seg3CashType">
+        <option value="">Cash Type</option>
+        <option value="BC">Bonus Cash</option>
+        <option value="DC">Dealer Cash</option>
+        <option value="SEC">Sales Event Cash</option>
+        <option value="TS">Total Savings</option>
+        <option value="EVBC">EV Bonus Cash</option>
+      </select>
+      <label class="inline-hint">
+        <input type="checkbox" id="seg3CashUp" /> UP to
+      </label>
+
+      <input id="seg3PayDays" type="text" placeholder="Days (e.g. 90)" />
+    </div>
+
+    <!-- Offer code preview + hidden field used in taxonomy -->
+    <div class="segment-row">
+      <span class="segment-label">Offer Code</span>
+      <input id="offerCodeDisplay" type="text" placeholder="e.g. 2.99APR60|2.5BC" readonly style="min-width:260px;" />
+      <input type="hidden" id="offerCode" />
+    </div>
 
     <div class="hint">
-      Enter the dollar amount (e.g. <strong>2,500</strong>) and choose the offer type.
-      The tool converts to thousands and builds the code (e.g. <strong>2.5BC</strong>).
+      Examples you can build:
+      <ul>
+        <li><code>2.5BC</code>, <code>2.5DC</code>, <code>2.5SEC</code>, <code>2.5TS</code>, <code>2.5TS+CI</code>, <code>7.5EVBC</code></li>
+        <li><code>3.99APR72</code>, <code>0APR60+0P90</code>, <code>3.99APR72+CI</code>, <code>3.99APR72+0.5BC+CI</code></li>
+        <li><code>L239</code>, <code>L249+1.5BC</code>, <code>SD000</code>, <code>L229+7.5EVBC+CI</code></li>
+        <li><code>2.99APR60+2.5BC</code>, <code>2.99APR60|2.5BC</code>, <code>0APR60+0P90+0.5BC</code></li>
+        <li><code>0APR60+0P90+UP2.5BC</code>, <code>0APR60+0P90|UP2.5BC</code></li>
+        <li><code>1.99APR48+L239</code>, <code>1.99APR48|L239</code>, <code>2.99APR60|1.99APR48</code>, <code>0.99APR60|7.5EVBC</code></li>
+      </ul>
     </div>
   </div>
 
+  <!-- MARKET -->
   <div class="field-group">
     <label for="market">Market / DMA</label>
     <select id="market">
@@ -367,6 +517,7 @@
     </select>
   </div>
 
+  <!-- AGENCY -->
   <div class="field-group">
     <label for="agency">Agency / Partner</label>
     <select id="agency">
@@ -377,6 +528,7 @@
     </select>
   </div>
 
+  <!-- RESERVED / SUFFIX -->
   <div class="field-group">
     <label for="reserved">Reserved / Suffix</label>
     <select id="reserved">
@@ -387,14 +539,18 @@
     </select>
   </div>
 
+  <!-- OUTPUT -->
   <div class="code-output">
     <div><strong>Generated Taxonomy String:</strong></div>
     <code id="taxonomyCode">(select values above)</code>
-    <div class="hint">This updates live as you change fields. Copy + paste into your trafficking sheet.</div>
+    <div class="hint">
+      This updates live as you change fields. Copy + paste into your trafficking sheet.
+    </div>
   </div>
 
   <script>
     // Order matters: this is how the final string will be assembled.
+    // Adjust this to match your final taxonomy spec (e.g., add offer end date, demo market, length later).
     const fieldOrder = [
       "region",
       "media",
@@ -402,7 +558,7 @@
       "title",
       "model_year",
       "model_name",
-      "offerCode",   // dynamic cash offer code
+      "offerCode",   // dynamic offer code built from segments above
       "market",
       "agency",
       "reserved"
@@ -423,57 +579,158 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
+    function buildSegmentCode(prefix) {
+      const typeEl = document.getElementById(prefix + "Type");
+      const type = typeEl ? typeEl.value : "";
+
+      if (!type) return "";
+
+      // Common helpers
+      const cleanNumeric = (val) => val.replace(/[^0-9.]/g, "");
+      const cleanInt = (val) => val.replace(/[^0-9]/g, "");
+
+      if (type === "APR") {
+        const rateInput = document.getElementById(prefix + "AprRate");
+        const monthsInput = document.getElementById(prefix + "AprMonths");
+        const rawRate = rateInput ? rateInput.value : "";
+        const rawMonths = monthsInput ? monthsInput.value : "";
+        const rateStr = cleanNumeric(rawRate);
+        const monthsStr = cleanInt(rawMonths);
+        if (!rateStr || !monthsStr) return "";
+        return rateStr + "APR" + monthsStr;
+      }
+
+      if (type === "LEASE") {
+        const leaseInput = document.getElementById(prefix + "LeaseAmount");
+        const rawLease = leaseInput ? leaseInput.value : "";
+        const leaseStr = cleanInt(rawLease);
+        if (!leaseStr) return "";
+        return "L" + leaseStr;
+      }
+
+      if (type === "SD000") {
+        return "SD000";
+      }
+
+      if (type === "CASH") {
+        const amtInput = document.getElementById(prefix + "CashAmount");
+        const typeSelect = document.getElementById(prefix + "CashType");
+        const upCheckbox = document.getElementById(prefix + "CashUp");
+
+        const rawAmt = amtInput ? amtInput.value : "";
+        const rawType = typeSelect ? typeSelect.value : "";
+        if (!rawAmt || !rawType) return "";
+
+        const numeric = parseFloat(cleanNumeric(rawAmt));
+        if (isNaN(numeric) || numeric <= 0) return "";
+
+        const thousands = numeric / 1000;
+        const thousandsStr = thousands.toFixed(1); // e.g., 2500 -> 2.5
+
+        const prefixUp = upCheckbox && upCheckbox.checked ? "UP" : "";
+        return prefixUp + thousandsStr + rawType;
+      }
+
+      if (type === "PAYHOL") {
+        const daysInput = document.getElementById(prefix + "PayDays");
+        const rawDays = daysInput ? daysInput.value : "";
+        const daysStr = cleanInt(rawDays);
+        if (!daysStr) return "";
+        // Encoded as 0P90 (0 payments for 90 days)
+        return "0P" + daysStr;
+      }
+
+      if (type === "CI") {
+        return "CI";
+      }
+
+      return "";
+    }
+
     function buildOfferCode() {
-      const amountInput = document.getElementById("offerAmount");
-      const typeSelect = document.getElementById("offerType");
-      const codeHidden = document.getElementById("offerCode");
-      const codeDisplay = document.getElementById("offerCodeDisplay");
+      const s1 = buildSegmentCode("seg1");
+      const s2 = buildSegmentCode("seg2");
+      const s3 = buildSegmentCode("seg3");
 
-      const rawAmount = amountInput.value || "";
-      const type = (typeSelect.value || "").trim();
+      const op1El = document.getElementById("op1");
+      const op2El = document.getElementById("op2");
+      const op1 = op1El ? op1El.value : "";
+      const op2 = op2El ? op2El.value : "";
 
-      // Reset if incomplete
-      if (!rawAmount || !type) {
-        codeHidden.value = "";
-        codeDisplay.value = "";
-        updateTaxonomy();
-        return;
+      const parts = [];
+
+      if (s1) {
+        parts.push(s1);
       }
 
-      // Strip everything except digits and decimal point
-      const numeric = parseFloat(rawAmount.replace(/[^0-9.]/g, ""));
-      if (isNaN(numeric) || numeric <= 0) {
-        codeHidden.value = "";
-        codeDisplay.value = "";
-        updateTaxonomy();
-        return;
+      if (s2) {
+        const op = (op1 && parts.length > 0) ? op1 : "";
+        parts.push(op + s2);
       }
 
-      // Convert to thousands (e.g. 2500 -> 2.5, 7500 -> 7.5, 500 -> 0.5)
-      const thousands = numeric / 1000;
-      const thousandsStr = thousands.toFixed(1); // always one decimal place
+      if (s3) {
+        const op = (op2 && parts.length > 0) ? op2 : "";
+        parts.push(op + s3);
+      }
 
-      const finalCode = `${thousandsStr}${type}`;
+      const finalOffer = parts.join("");
 
-      codeHidden.value = finalCode;
-      codeDisplay.value = finalCode;
+      const hidden = document.getElementById("offerCode");
+      const display = document.getElementById("offerCodeDisplay");
+
+      if (hidden) hidden.value = finalOffer;
+      if (display) display.value = finalOffer;
 
       updateTaxonomy();
     }
 
-    // Attach listeners
+    // Attach listeners for non-offer fields
     fieldOrder.forEach(id => {
       const el = document.getElementById(id);
-      if (el) {
+      if (el && id !== "offerCode") {
         el.addEventListener("change", updateTaxonomy);
       }
     });
 
-    document.getElementById("offerAmount").addEventListener("input", buildOfferCode);
-    document.getElementById("offerType").addEventListener("change", buildOfferCode);
+    // Attach listeners for offer builder inputs
+    const offerTextIds = [
+      "seg1AprRate", "seg1AprMonths", "seg1LeaseAmount", "seg1CashAmount", "seg1PayDays",
+      "seg2AprRate", "seg2AprMonths", "seg2LeaseAmount", "seg2CashAmount", "seg2PayDays",
+      "seg3AprRate", "seg3AprMonths", "seg3LeaseAmount", "seg3CashAmount", "seg3PayDays"
+    ];
+    const offerSelectIds = [
+      "seg1Type", "seg1CashType",
+      "seg2Type", "seg2CashType",
+      "seg3Type", "seg3CashType",
+      "op1", "op2"
+    ];
+    const offerCheckboxIds = [
+      "seg1CashUp", "seg2CashUp", "seg3CashUp"
+    ];
+
+    offerTextIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("input", buildOfferCode);
+      }
+    });
+
+    offerSelectIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", buildOfferCode);
+      }
+    });
+
+    offerCheckboxIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", buildOfferCode);
+      }
+    });
 
     // Initial render
-    updateTaxonomy();
+    buildOfferCode();
   </script>
 </body>
 </html>
