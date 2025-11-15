@@ -35,8 +35,7 @@
       min-width: 220px;
       padding: 0.25rem 0.5rem;
     }
-    input[type="text"],
-    input[type="number"] {
+    input[type="text"] {
       padding: 0.25rem 0.5rem;
     }
     .code-output {
@@ -66,12 +65,17 @@
       flex-wrap: wrap;
       gap: 0.5rem;
       align-items: center;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
     }
-    .inline-label {
+    .offer-field {
+      display: flex;
+      flex-direction: column;
+      margin-right: 0.75rem;
+    }
+    .offer-label {
       font-size: 0.8rem;
-      color: #444;
-      min-width: 110px;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
     }
     .hidden {
       display: none;
@@ -340,11 +344,11 @@
   <!-- OFFER BUILDER -->
   <h2>Offer Builder</h2>
   <div class="offer-wrapper">
-    <!-- Offer template dropdown -->
     <div class="offer-row">
-      <span class="inline-label"><strong>Offer template</strong></span>
+      <label class="offer-label" style="margin-right:0.5rem;"><strong>Offer template</strong></label>
       <select id="offerTemplate">
         <option value="">-- Select Offer --</option>
+
         <!-- Cash only -->
         <option value="BONUS_CASH">Bonus Cash</option>
         <option value="DEALER_CASH">Dealer Cash</option>
@@ -387,44 +391,36 @@
       </select>
     </div>
 
-    <!-- APR values row -->
-    <div class="offer-row offer-row-apr">
-      <span class="inline-label" id="aprLabel1">APR Percentage</span>
-      <input id="offerValue1" type="text" placeholder="APR Percentage (e.g. 2.99)" />
-      <span class="inline-label" id="aprLabel2">APR Percentage 2</span>
-      <input id="offerValue2" type="text" placeholder="APR Percentage 2 (e.g. 1.99)" />
-    </div>
-
-    <!-- Term months/days -->
-    <div class="offer-row offer-row-term" id="offerTermRow">
-      <div class="term1-wrapper" style="display:flex;gap:0.5rem;align-items:center;">
-        <span class="inline-label" id="offerTerm1Label">First Term</span>
-        <input id="offerTerm1" type="text"
-               placeholder="First Offer Term Months/Days (e.g. 60)" />
+    <!-- Four generic fields -->
+    <div class="offer-row" id="offerFieldsRow">
+      <div class="offer-field" id="field1">
+        <span class="offer-label" id="field1Label">Field 1</span>
+        <input id="field1Input" type="text" placeholder="" />
       </div>
-      <div class="term2-wrapper" style="display:flex;gap:0.5rem;align-items:center;">
-        <span class="inline-label" id="offerTerm2Label">Second Term</span>
-        <input id="offerTerm2" type="text"
-               placeholder="Second Offer Term Months/Days (e.g. 90)" />
+      <div class="offer-field" id="field2">
+        <span class="offer-label" id="field2Label">Field 2</span>
+        <input id="field2Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field3">
+        <span class="offer-label" id="field3Label">Field 3</span>
+        <input id="field3Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field4">
+        <span class="offer-label" id="field4Label">Field 4</span>
+        <input id="field4Input" type="text" placeholder="" />
       </div>
     </div>
 
-    <!-- Lease / Cash -->
-    <div class="offer-row offer-row-leasecash">
-      <span class="inline-label lease-label">Lease Amount</span>
-      <input id="offerLeaseAmount" type="text" placeholder="Lease Amount (e.g. 239)" />
-      <span class="inline-label cash-label">Amount</span>
-      <input id="offerCashAmount" type="text" placeholder="Amount (e.g. 2500)" />
-    </div>
-
-    <!-- Offer code -->
+    <!-- Offer Code -->
     <div class="offer-row">
-      <span class="inline-label"><strong>Offer Code</strong></span>
-      <input id="offerCodeDisplay" type="text"
-             placeholder="e.g. 2.5BC or 0APR60+0P90+UP2.5BC"
-             readonly
-             style="min-width:260px;" />
-      <input type="hidden" id="offerCode" />
+      <div class="offer-field">
+        <span class="offer-label"><strong>Offer Code</strong></span>
+        <input id="offerCodeDisplay" type="text"
+               placeholder="e.g. 2.5BC or 0APR60+0P90+UP2.5BC"
+               readonly
+               style="min-width:260px;" />
+        <input type="hidden" id="offerCode" />
+      </div>
     </div>
   </div>
 
@@ -472,7 +468,6 @@
   </div>
 
   <script>
-    // Final taxonomy order: note model_combo is synthetic
     const fieldOrder = [
       "region",
       "media",
@@ -485,497 +480,406 @@
       "reserved"
     ];
 
-    // Any template with APR/0-0 shows an APR input
-    const templateConfig = {
-      BONUS_CASH:       {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      DEALER_CASH:      {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      SALES_EVENT_CASH: {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      TS_CI:            {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
-      TS_ONLY:          {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
+    // UI config: what each template's four fields are called
+    const templateUi = {
+      // Cash only
+      BONUS_CASH: {
+        fields: [
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"},
+        ]
+      },
+      DEALER_CASH: {
+        fields: [
+          {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"},
+        ]
+      },
+      SALES_EVENT_CASH: {
+        fields: [
+          {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"},
+        ]
+      },
+      TS_CI: {
+        fields: [
+          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"},
+        ]
+      },
+      TS_ONLY: {
+        fields: [
+          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"},
+        ]
+      },
 
-      APR_ONLY:         {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
-      ZERO_ZERO:        {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
+      // APR
+      APR_ONLY: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"}
+        ]
+      },
 
-      APR_PLUS_BC:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
-      APR_OR_BC:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      // 0-0
+      ZERO_ZERO: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Payments", placeholder: "Payments (e.g. 0)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"}
+        ]
+      },
 
-      ZERO_PLUS_BC:     {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_PLUS_UPBC:   {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_OR_UPBC:     {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      // APR + BC
+      APR_PLUS_BC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+        ]
+      },
+      // APR or BC
+      APR_OR_BC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+        ]
+      },
 
-      APR_PLUS_CI:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
-      APR_BC_CI:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      // 0-0 + BC
+      ZERO_PLUS_BC: {
+        fields: [
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 500)"}
+        ]
+      },
+      // 0-0 plus up to BC
+      ZERO_PLUS_UPBC: {
+        fields: [
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+        ]
+      },
+      // 0-0 or up to BC
+      ZERO_OR_UPBC: {
+        fields: [
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+        ]
+      },
 
-      LEASE_ONLY:       {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:false},
-      LEASE_PLUS_BC:    {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
-      SIGN_DRIVE:       {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      LEASE_PLUS_EV:    {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
-      LEASE_PLUS_EV_CI: {apr:false, apr2:false, term1:false, term2:false, lease:true,  cash:true},
+      // APR + CI
+      APR_PLUS_CI: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"}
+        ]
+      },
+      // APR + BC + CI
+      APR_BC_CI: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 500)"}
+        ]
+      },
 
-      APR_PLUS_LEASE:   {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
-      APR_OR_LEASE:     {apr:true,  apr2:false, term1:true,  term2:false, lease:true,  cash:false},
-      APR_PLUS_NOPAY:   {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
+      // Lease family
+      LEASE_ONLY: {
+        fields: [
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+        ]
+      },
+      LEASE_PLUS_BC: {
+        fields: [
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 249)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 1500)"}
+        ]
+      },
+      SIGN_DRIVE: {
+        fields: []  // SD000 constant
+      },
+      LEASE_PLUS_EV: {
+        fields: [
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 229)"},
+          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+        ]
+      },
+      LEASE_PLUS_EV_CI: {
+        fields: [
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 229)"},
+          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+        ]
+      },
 
-      APR_MULTIPLE:     {apr:true,  apr2:true,  term1:true,  term2:true,  lease:false, cash:false},
-      APR_OR_EVBC:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
+      // APR + Lease
+      APR_PLUS_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 48)"},
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+        ]
+      },
+      APR_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 48)"},
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+        ]
+      },
 
-      HCM_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      ABW_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      CTB_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false},
-      URG_CODE:         {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false}
+      // APR + No Payments
+      APR_PLUS_NOPAY: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"},
+          {label: "Payments", placeholder: "Payments (e.g. 0)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"}
+        ]
+      },
+
+      // APR Multiple
+      APR_MULTIPLE: {
+        fields: [
+          {label: "APR Percentage 1", placeholder: "APR Percentage 1 (e.g. 2.99)"},
+          {label: "APR Offer Term Months 1", placeholder: "Offer Term Months 1 (e.g. 60)"},
+          {label: "APR Percentage 2", placeholder: "APR Percentage 2 (e.g. 1.99)"},
+          {label: "APR Offer Term Months 2", placeholder: "Offer Term Months 2 (e.g. 48)"}
+        ]
+      },
+
+      // APR or EV BC
+      APR_OR_EVBC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.99)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+        ]
+      },
+
+      // Static codes
+      HCM_CODE: { fields: [] },
+      ABW_CODE: { fields: [] },
+      CTB_CODE: { fields: [] },
+      URG_CODE: { fields: [] }
     };
-
-    function updateTaxonomy() {
-      const parts = fieldOrder
-        .map(id => {
-          if (id === "model_combo") {
-            const my = (document.getElementById("model_year").value || "").trim();
-            const mn = (document.getElementById("model_name").value || "").trim();
-            return (my || "") + (mn || "");
-          }
-          const el = document.getElementById(id);
-          return el ? (el.value || "").trim() : "";
-        })
-        .filter(Boolean);
-
-      const code = parts.length > 0
-        ? parts.join("_")
-        : "(select values above)";
-
-      document.getElementById("taxonomyCode").textContent = code;
-    }
 
     function cleanNumeric(val) {
       return (val || "").replace(/[^0-9.]/g, "");
     }
-
     function cleanInt(val) {
       return (val || "").replace(/[^0-9]/g, "");
     }
-
     function toThousands(amount) {
       const numeric = parseFloat(cleanNumeric(amount));
       if (isNaN(numeric) || numeric <= 0) return "";
       return (numeric / 1000).toFixed(1); // 2500 -> "2.5"
     }
 
-    function apr(rate, months) {
-      if (!rate || !months) return "";
-      return rate + "APR" + months;
-    }
-
-    function resetOfferInputs() {
-      document.getElementById("offerValue1").value = "";
-      document.getElementById("offerValue2").value = "";
-      document.getElementById("offerTerm1").value = "";
-      document.getElementById("offerTerm2").value = "";
-      document.getElementById("offerLeaseAmount").value = "";
-      document.getElementById("offerCashAmount").value = "";
-      document.getElementById("offerCode").value = "";
-      document.getElementById("offerCodeDisplay").value = "";
-    }
-
-    function setLabelsAndPlaceholders(template, cfg) {
-      const aprLabel1 = document.getElementById("aprLabel1");
-      const aprLabel2 = document.getElementById("aprLabel2");
-      const aprInput1 = document.getElementById("offerValue1");
-      const aprInput2 = document.getElementById("offerValue2");
-      const term1Label = document.getElementById("offerTerm1Label");
-      const term2Label = document.getElementById("offerTerm2Label");
-      const term1Input = document.getElementById("offerTerm1");
-      const term2Input = document.getElementById("offerTerm2");
-      const leaseLabel = document.querySelector(".lease-label");
-      const leaseInput = document.getElementById("offerLeaseAmount");
-      const cashLabel  = document.querySelector(".cash-label");
-      const cashInput  = document.getElementById("offerCashAmount");
-
-      // Defaults
-      aprLabel1.textContent = "APR Percentage";
-      aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
-      aprLabel2.textContent = "APR Percentage 2";
-      aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
-
-      term1Label.textContent = "First Term";
-      term1Input.placeholder = "First Offer Term Months/Days (e.g. 60)";
-      term2Label.textContent = "Second Term";
-      term2Input.placeholder = "Second Offer Term Months/Days (e.g. 90)";
-
-      leaseLabel.textContent = "Lease Amount";
-      leaseInput.placeholder = "Lease Amount (e.g. 239)";
-      cashLabel.textContent  = "Amount";
-      cashInput.placeholder  = "Amount (e.g. 2500)";
-
-      switch (template) {
-        // Cash-only patterns
-        case "BONUS_CASH":
-          cashLabel.textContent = "Bonus Cash Amount";
-          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
-          break;
-        case "DEALER_CASH":
-          cashLabel.textContent = "Dealer Cash Amount";
-          cashInput.placeholder = "Dealer Cash Amount (e.g. 2500)";
-          break;
-        case "SALES_EVENT_CASH":
-          cashLabel.textContent = "Sales Event Cash Amount";
-          cashInput.placeholder = "Sales Event Cash Amount (e.g. 2500)";
-          break;
-        case "TS_ONLY":
-          cashLabel.textContent = "Total Savings Amount";
-          cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
-          break;
-        case "TS_CI":
-          cashLabel.textContent = "Total Savings Amount";
-          cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
-          break;
-
-        case "APR_ONLY":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
-          term1Label.textContent = "Offer Term";
-          term1Input.placeholder = "Offer Term Months (e.g. 72)";
-          break;
-
-        case "ZERO_ZERO":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 0.00)";
-          aprLabel2.textContent = "Payments";
-          aprInput2.placeholder = "Payments (e.g. 0)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
-          term2Label.textContent = "APR Payment Days";
-          term2Input.placeholder = "APR Payment Days (e.g. 90)";
-          break;
-
-        case "APR_PLUS_BC":
-        case "APR_OR_BC":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 2.99)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
-          cashLabel.textContent = "Bonus Cash Amount";
-          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
-          break;
-
-        case "ZERO_PLUS_BC":
-        case "ZERO_PLUS_UPBC":
-        case "ZERO_OR_UPBC":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 0.00)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
-          term2Label.textContent = "APR Payment Days";
-          term2Input.placeholder = "APR Payment Days (e.g. 90)";
-          cashLabel.textContent = "Bonus Cash Amount";
-          cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
-          break;
-
-        case "APR_PLUS_CI":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
-          break;
-
-        case "APR_BC_CI":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
-          cashLabel.textContent = "Bonus Cash Amount";
-          cashInput.placeholder = "Bonus Cash Amount (e.g. 500)";
-          break;
-
-        case "LEASE_ONLY":
-          leaseLabel.textContent = "Lease Amount";
-          leaseInput.placeholder = "Lease Amount (e.g. 239)";
-          break;
-
-        case "LEASE_PLUS_BC":
-          leaseLabel.textContent = "Lease Amount";
-          leaseInput.placeholder = "Lease Amount (e.g. 249)";
-          cashLabel.textContent = "Bonus Cash Amount";
-          cashInput.placeholder = "Bonus Cash Amount (e.g. 1500)";
-          break;
-
-        case "LEASE_PLUS_EV":
-        case "LEASE_PLUS_EV_CI":
-          leaseLabel.textContent = "Lease Amount";
-          leaseInput.placeholder = "Lease Amount (e.g. 229)";
-          cashLabel.textContent = "EV Bonus Cash Amount";
-          cashInput.placeholder = "EV Bonus Cash Amount (e.g. 7500)";
-          break;
-
-        case "APR_PLUS_LEASE":
-        case "APR_OR_LEASE":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 1.99)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 48)";
-          leaseLabel.textContent = "Lease Amount";
-          leaseInput.placeholder = "Lease Amount (e.g. 239)";
-          break;
-
-        case "APR_PLUS_NOPAY":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 3.99)";
-          aprLabel2.textContent = "Payments";
-          aprInput2.placeholder = "Payments (e.g. 0)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 72)";
-          term2Label.textContent = "APR Payment Days";
-          term2Input.placeholder = "APR Payment Days (e.g. 90)";
-          break;
-
-        case "APR_MULTIPLE":
-          aprLabel1.textContent = "APR Percentage 1";
-          aprInput1.placeholder = "APR Percentage 1 (e.g. 2.99)";
-          aprLabel2.textContent = "APR Percentage 2";
-          aprInput2.placeholder = "APR Percentage 2 (e.g. 1.99)";
-          term1Label.textContent = "APR Offer Term Months 1";
-          term1Input.placeholder = "APR Offer Term Months 1 (e.g. 60)";
-          term2Label.textContent = "APR Offer Term Months 2";
-          term2Input.placeholder = "APR Offer Term Months 2 (e.g. 48)";
-          break;
-
-        case "APR_OR_EVBC":
-          aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 0.99)";
-          term1Label.textContent = "APR Offer Term Months";
-          term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
-          cashLabel.textContent = "EV Bonus Cash Amount";
-          cashInput.placeholder = "EV Bonus Cash Amount (e.g. 7500)";
-          break;
-
-        default:
-          break;
-      }
-    }
-
-    function configureOfferInputs() {
+    function updateFieldUi() {
       const template = document.getElementById("offerTemplate").value;
-      const cfg = templateConfig[template] || {
-        apr:false, apr2:false, term1:false, term2:false, lease:false, cash:false
-      };
+      const cfg = templateUi[template] || {fields: []};
 
-      const aprRow = document.querySelector(".offer-row-apr");
-      const termRow = document.querySelector(".offer-row-term");
-      const leaseCashRow = document.querySelector(".offer-row-leasecash");
+      const fieldElems = [
+        {wrapper: document.getElementById("field1"), label: document.getElementById("field1Label"), input: document.getElementById("field1Input")},
+        {wrapper: document.getElementById("field2"), label: document.getElementById("field2Label"), input: document.getElementById("field2Input")},
+        {wrapper: document.getElementById("field3"), label: document.getElementById("field3Label"), input: document.getElementById("field3Input")},
+        {wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input")}
+      ];
 
-      const apr2Wrapper = document.getElementById("offerValue2").parentElement;
-      const term1Wrapper = document.querySelector(".term1-wrapper");
-      const term2Wrapper = document.querySelector(".term2-wrapper");
-      const leaseLabel = document.querySelector(".lease-label");
-      const leaseInput = document.getElementById("offerLeaseAmount");
-      const cashLabel  = document.querySelector(".cash-label");
-      const cashInput  = document.getElementById("offerCashAmount");
+      // Reset values & hide all
+      fieldElems.forEach((f, idx) => {
+        f.input.value = "";
+        f.wrapper.classList.add("hidden");
+      });
 
-      const showAprRow = cfg.apr || cfg.apr2;
-      aprRow.classList.toggle("hidden", !showAprRow);
-      apr2Wrapper.classList.toggle("hidden", !cfg.apr2);
+      // Apply config
+      cfg.fields.forEach((fCfg, idx) => {
+        if (idx > 3) return;
+        const f = fieldElems[idx];
+        f.wrapper.classList.remove("hidden");
+        f.label.textContent = fCfg.label;
+        f.input.placeholder = fCfg.placeholder || "";
+      });
 
-      const showTermRow = cfg.term1 || cfg.term2;
-      termRow.classList.toggle("hidden", !showTermRow);
-      term1Wrapper.classList.toggle("hidden", !cfg.term1);
-      term2Wrapper.classList.toggle("hidden", !cfg.term2);
-
-      const showLeaseCash = cfg.lease || cfg.cash;
-      leaseCashRow.classList.toggle("hidden", !showLeaseCash);
-
-      leaseLabel.classList.toggle("hidden", !cfg.lease);
-      leaseInput.classList.toggle("hidden", !cfg.lease);
-      cashLabel.classList.toggle("hidden", !cfg.cash);
-      cashInput.classList.toggle("hidden", !cfg.cash);
-
-      setLabelsAndPlaceholders(template, cfg);
+      // If no fields (static offers), hide the whole row
+      document.getElementById("offerFieldsRow")
+        .classList.toggle("hidden", cfg.fields.length === 0);
     }
 
     function buildOfferCode() {
       const template = document.getElementById("offerTemplate").value;
 
-      const rate1 = cleanNumeric(document.getElementById("offerValue1").value); // APR1 or APR %
-      const rate2 = cleanNumeric(document.getElementById("offerValue2").value); // APR2 or Payments
+      const f1 = document.getElementById("field1Input").value;
+      const f2 = document.getElementById("field2Input").value;
+      const f3 = document.getElementById("field3Input").value;
+      const f4 = document.getElementById("field4Input").value;
 
-      const term1 = cleanInt(document.getElementById("offerTerm1").value); // months or term1
-      const term2 = cleanInt(document.getElementById("offerTerm2").value); // days or term2
+      const f1Num = cleanNumeric(f1);
+      const f2Num = cleanNumeric(f2);
+      const f3Num = cleanNumeric(f3);
+      const f4Num = cleanNumeric(f4);
 
-      const leaseAmt = cleanInt(document.getElementById("offerLeaseAmount").value);
-      const cashAmtThousands = toThousands(document.getElementById("offerCashAmount").value);
+      const f1Int = cleanInt(f1);
+      const f2Int = cleanInt(f2);
+      const f3Int = cleanInt(f3);
+      const f4Int = cleanInt(f4);
+
+      const cashThousands1 = toThousands(f1);
+      const cashThousands2 = toThousands(f2);
+      const cashThousands3 = toThousands(f3);
 
       let code = "";
 
-      const leaseCode = leaseAmt ? ("L" + leaseAmt) : "";
-      const bcCode    = cashAmtThousands ? (cashAmtThousands + "BC")   : "";
-      const evbcCode  = cashAmtThousands ? (cashAmtThousands + "EVBC") : "";
-
-      const apr1 = apr(rate1, term1);
-      const apr2 = apr(rate2, term2);
-
       switch (template) {
-        // Cash-only templates
+        // Cash only
         case "BONUS_CASH":
-          code = bcCode;
+          if (cashThousands1) code = cashThousands1 + "BC";
           break;
         case "DEALER_CASH":
-          code = cashAmtThousands ? (cashAmtThousands + "DC") : "";
+          if (cashThousands1) code = cashThousands1 + "DC";
           break;
         case "SALES_EVENT_CASH":
-          code = cashAmtThousands ? (cashAmtThousands + "SEC") : "";
-          break;
-        case "TS_ONLY":
-          code = cashAmtThousands ? (cashAmtThousands + "TS") : "";
+          if (cashThousands1) code = cashThousands1 + "SEC";
           break;
         case "TS_CI":
-          code = cashAmtThousands ? (cashAmtThousands + "TS+CI") : "";
+          if (cashThousands1) code = cashThousands1 + "TS+CI";
+          break;
+        case "TS_ONLY":
+          if (cashThousands1) code = cashThousands1 + "TS";
           break;
 
-        // APR only
+        // APR
         case "APR_ONLY":
-          code = apr1;
+          if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
           break;
 
-        // 0-0 (with PAY)
+        // 0-0
         case "ZERO_ZERO": {
-          // APR Percentage (rate1) + Offer Term Months (term1) + Payments (rate2) + Payment Days (term2)
-          const months = term1;
-          const days   = term2;
-          const pays   = rate2 || "0";
-          // For a true 0-0 the user will usually type 0.00 -> we compress to "0"
-          const r = rate1 || "0";
-          const rNum = parseFloat(r);
-          const rateStr = (!isNaN(rNum) && rNum === 0) ? "0" : r;
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
           if (months && days) {
-            code = rateStr + "APR" + months + "+" + pays + "PAY" + days;
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "PAY" + days;
           }
           break;
         }
 
         // APR + BC
         case "APR_PLUS_BC":
-          if (apr1 && bcCode) {
-            code = apr1 + "+" + bcCode;
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC";
           }
           break;
 
         // APR or BC
         case "APR_OR_BC":
-          if (apr1 && bcCode) {
-            code = apr1 + "|" + bcCode;
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC";
           }
           break;
 
         // 0-0 + BC
-        case "ZERO_PLUS_BC": {
-          const months = term1;
-          const days   = term2;
-          if (months && days && bcCode) {
-            // APR Percentage is still user-input, but for 0-0 pattern we output 0APR
-            code = "0APR" + months + "+0P" + days + "+" + bcCode;
+        case "ZERO_PLUS_BC":
+          if (f1Int && f2Int && cashThousands3) {
+            code = "0APR" + f1Int + "+0P" + f2Int + "+" + cashThousands3 + "BC";
           }
           break;
-        }
 
         // 0-0 plus up to BC
-        case "ZERO_PLUS_UPBC": {
-          const months = term1;
-          const days   = term2;
-          if (months && days && cashAmtThousands) {
-            code = "0APR" + months + "+0P" + days + "+UP" + cashAmtThousands + "BC";
+        case "ZERO_PLUS_UPBC":
+          if (f1Int && f2Int && cashThousands3) {
+            code = "0APR" + f1Int + "+0P" + f2Int + "+UP" + cashThousands3 + "BC";
           }
           break;
-        }
 
         // 0-0 or up to BC
-        case "ZERO_OR_UPBC": {
-          const months = term1;
-          const days   = term2;
-          if (months && days && cashAmtThousands) {
-            code = "0APR" + months + "+0P" + days + "|UP" + cashAmtThousands + "BC";
+        case "ZERO_OR_UPBC":
+          if (f1Int && f2Int && cashThousands3) {
+            code = "0APR" + f1Int + "+0P" + f2Int + "|UP" + cashThousands3 + "BC";
           }
           break;
-        }
 
         // APR + CI
         case "APR_PLUS_CI":
-          if (apr1) {
-            code = apr1 + "+CI";
+          if (f1Num && f2Int) {
+            code = f1Num + "APR" + f2Int + "+CI";
           }
           break;
 
         // APR + BC + CI
         case "APR_BC_CI":
-          if (apr1 && bcCode) {
-            code = apr1 + "+" + bcCode + "+CI";
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC+CI";
           }
           break;
 
-        // Lease only
+        // Lease
         case "LEASE_ONLY":
-          code = leaseCode;
+          if (f1Int) code = "L" + f1Int;
           break;
 
-        // Lease + Bonus Cash
         case "LEASE_PLUS_BC":
-          if (leaseCode && bcCode) {
-            code = leaseCode + "+" + bcCode;
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "BC";
           }
           break;
 
-        // Sign & Drive
         case "SIGN_DRIVE":
           code = "SD000";
           break;
 
-        // Lease + EV Bonus
         case "LEASE_PLUS_EV":
-          if (leaseCode && evbcCode) {
-            code = leaseCode + "+" + evbcCode;
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "EVBC";
           }
           break;
 
-        // Lease + EV Bonus + CI
         case "LEASE_PLUS_EV_CI":
-          if (leaseCode && evbcCode) {
-            code = leaseCode + "+" + evbcCode + "+CI";
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "EVBC+CI";
           }
           break;
 
         // APR + Lease
         case "APR_PLUS_LEASE":
-          if (apr1 && leaseCode) {
-            code = apr1 + "+" + leaseCode;
+          if (f1Num && f2Int && f3Int) {
+            code = f1Num + "APR" + f2Int + "+L" + f3Int;
           }
           break;
 
         // APR or Lease
         case "APR_OR_LEASE":
-          if (apr1 && leaseCode) {
-            code = apr1 + "|" + leaseCode;
+          if (f1Num && f2Int && f3Int) {
+            code = f1Num + "APR" + f2Int + "|L" + f3Int;
           }
           break;
 
         // APR + No Payments
-        case "APR_PLUS_NOPAY": {
-          const rate   = rate1;
-          const months = term1;
-          const pays   = rate2 || "0";  // Payments
-          const days   = term2;
-          if (rate && months && days) {
-            code = rate + "APR" + months + "+" + pays + "P" + days;
+        case "APR_PLUS_NOPAY":
+          if (f1Num && f2Int && f4Int) {
+            const pays = f3Int || 0;
+            code = f1Num + "APR" + f2Int + "+" + pays + "P" + f4Int;
           }
           break;
-        }
 
         // APR Multiple
         case "APR_MULTIPLE":
-          if (apr1 && apr2) {
-            code = apr1 + "|" + apr2;
+          if (f1Num && f2Int && f3Num && f4Int) {
+            const c1 = f1Num + "APR" + f2Int;
+            const c2 = f3Num + "APR" + f4Int;
+            code = c1 + "|" + c2;
           }
           break;
 
         // APR or EV BC
         case "APR_OR_EVBC":
-          if (apr1 && evbcCode) {
-            code = apr1 + "|" + evbcCode;
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
           }
           break;
 
@@ -1002,47 +906,53 @@
       updateTaxonomy();
     }
 
-    // Attach listeners for non-offer fields
+    function updateTaxonomy() {
+      const parts = fieldOrder
+        .map(id => {
+          if (id === "model_combo") {
+            const my = (document.getElementById("model_year").value || "").trim();
+            const mn = (document.getElementById("model_name").value || "").trim();
+            return (my || "") + (mn || "");
+          }
+          const el = document.getElementById(id);
+          return el ? (el.value || "").trim() : "";
+        })
+        .filter(Boolean);
+
+      const code = parts.length ? parts.join("_") : "(select values above)";
+      document.getElementById("taxonomyCode").textContent = code;
+    }
+
+    // Event wiring
     fieldOrder.forEach(id => {
       if (id === "model_combo" || id === "offerCode") return;
       const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("change", updateTaxonomy);
-      }
+      if (el) el.addEventListener("change", updateTaxonomy);
     });
 
-    // Model year / name affect model_combo
     ["model_year", "model_name"].forEach(id => {
       const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("change", updateTaxonomy);
-      }
+      if (el) el.addEventListener("change", updateTaxonomy);
     });
 
-    // Offer builder listeners
-    const offerTemplateEl = document.getElementById("offerTemplate");
-    if (offerTemplateEl) {
-      offerTemplateEl.addEventListener("change", () => {
-        resetOfferInputs();       // clear all offer inputs when changing template
-        configureOfferInputs();   // show/hide fields and set labels
-        buildOfferCode();         // build static codes like HCM/ABW/CTB/URG
+    // Offer template change: reset + configure fields + build static code
+    document.getElementById("offerTemplate").addEventListener("change", () => {
+      // Clear all field inputs
+      ["field1Input","field2Input","field3Input","field4Input"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
       });
-    }
-
-    [
-      "offerValue1", "offerValue2",
-      "offerTerm1", "offerTerm2",
-      "offerLeaseAmount",
-      "offerCashAmount"
-    ].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("input", buildOfferCode);
-      }
+      updateFieldUi();
+      buildOfferCode();
     });
 
-    // Initial render
-    configureOfferInputs();
+    ["field1Input","field2Input","field3Input","field4Input"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", buildOfferCode);
+    });
+
+    // Initial
+    updateFieldUi();
     buildOfferCode();
   </script>
 </body>
