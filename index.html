@@ -391,7 +391,7 @@
       </select>
     </div>
 
-    <!-- Five generic fields -->
+    <!-- Generic offer fields -->
     <div class="offer-row" id="offerFieldsRow">
       <div class="offer-field" id="field1">
         <span class="offer-label" id="field1Label">Field 1</span>
@@ -428,37 +428,148 @@
     </div>
   </div>
 
-  <!-- MARKET -->
+  <!-- OFFER END DATE -->
+  <h2>Offer End Date</h2>
   <div class="field-group">
-    <label for="market">Market / DMA</label>
+    <label>Offer End Date</label>
+    <select id="offer_month">
+      <option value="">Month</option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+
+    <select id="offer_day">
+      <option value="">Day</option>
+    </select>
+
+    <select id="offer_year">
+      <option value="">Year</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+      <option value="2027">2027</option>
+      <option value="2028">2028</option>
+      <option value="2029">2029</option>
+      <option value="2030">2030</option>
+    </select>
+
+    <input type="hidden" id="offer_end_code" />
+  </div>
+
+  <!-- MARKET -->
+  <h2>Market & Demographic</h2>
+  <div class="field-group">
+    <label for="market">Market</label>
     <select id="market">
       <option value="">-- Select Market --</option>
-      <option value="ATL">Atlanta</option>
-      <option value="LAX">Los Angeles</option>
-      <option value="NYC">New York</option>
-      <option value="NA">National</option>
+      <option value="ALB">ALB – Albuquerque-Santa Fe, NM</option>
+      <option value="ABQ">ABQ – Albuquerque-Santa Fe, NM</option>
+      <option value="ATL">ATL – Atlanta, GA</option>
+      <option value="AUS">AUS – Austin, TX</option>
+      <option value="BAL">BAL – Baltimore, MD</option>
+      <option value="PTB">PTB – Bangor, ME</option>
+      <option value="BIR">BIR – Birmingham (Anniston and Tuscaloosa), AL</option>
+      <option value="BOC">BOC – Boca Raton, FL</option>
+      <option value="BOI">BOI – Boise, ID</option>
+      <option value="BOS">BOS – Boston (Manchester), MA</option>
+      <option value="BUF">BUF – Buffalo, NY</option>
+      <option value="CHA">CHA – Charlotte, NC</option>
+      <option value="CHI">CHI – Chicago, IL</option>
+      <option value="CIN">CIN – Cincinnati, OH</option>
+      <option value="CLE">CLE – Cleveland-Akron (Canton), OH</option>
+      <option value="CSP">CSP – Colorado Springs-Pueblo, CO</option>
+      <option value="COL">COL – Columbus, OH</option>
+      <option value="DAL">DAL – Dallas-Fort Worth, TX</option>
+      <option value="DEN">DEN – Denver, CO</option>
+      <option value="DET">DET – Detroit, MI</option>
+      <option value="ELP">ELP – El Paso (Las Cruces), TX</option>
+      <option value="FTM">FTM – Fort Myers-Naples, FL</option>
+      <option value="FSM">FSM – Fort Smith-Fayetteville-Springdale-Rogers, AR</option>
+      <option value="FRS">FRS – Fresno-Visalia, CA</option>
+      <option value="GHW">GHW – Greensboro-High Point-Winston-Salem, NC</option>
+      <option value="GNV">GNV – Greenville-Spartanburg-Asheville-Anderson, SC</option>
+      <option value="MCA">MCA – Harlingen-Weslaco-Brownsville-McAllen, TX</option>
+      <option value="HRB">HRB – Harrisburg-Lancaster-Lebanon-York, PA</option>
+      <option value="HAR">HAR – Hartford & New Haven, CT</option>
+      <option value="HON">HON – Honolulu, HI</option>
+      <option value="HOU">HOU – Houston, TX</option>
+      <option value="IND">IND – Indianapolis, IN</option>
+      <option value="JAC">JAC – Jacksonville, FL</option>
+      <option value="KAN">KAN – Kansas City, MO</option>
+      <option value="LVG">LVG – Las Vegas, NV</option>
+      <option value="LRA">LRA – Little Rock-Pine Bluff, AR</option>
+      <option value="LOS">LOS – Los Angeles, CA</option>
+      <option value="MEM">MEM – Memphis, TN</option>
+      <option value="MIA">MIA – Miami-Fort Lauderdale, FL</option>
+      <option value="MIL">MIL – Milwaukee, WI</option>
+      <option value="MIN">MIN – Minneapolis-St. Paul, MN</option>
+      <option value="MOB">MOB – Mobile-Pensacola (Fort Walton Beach), AL</option>
+      <option value="MUL">MUL – Multiple</option>
+      <option value="NAS">NAS – Nashville, TN</option>
+      <option value="NAT">NAT – National</option>
+      <option value="NOL">NOL – New Orleans, LA</option>
+      <option value="NYC">NYC – New York, NY</option>
+      <option value="NOR">NOR – Norfolk-Portsmouth-Newport News, VA</option>
+      <option value="OKC">OKC – Oklahoma City, OK</option>
+      <option value="OMH">OMH – Omaha, NE</option>
+      <option value="ORL">ORL – Orlando-Daytona Beach-Melbourne, FL</option>
+      <option value="PHI">PHI – Philadelphia, PA</option>
+      <option value="PHO">PHO – Phoenix (Prescott), AZ</option>
+      <option value="PIT">PIT – Pittsburgh, PA</option>
+      <option value="POR">POR – Portland, OR</option>
+      <option value="PTA">PTA – Portland-Auburn, ME</option>
+      <option value="PRV">PRV – Providence-New Bedford, RI</option>
+      <option value="RAL">RAL – Raleigh-Durham (Fayetteville), NC</option>
+      <option value="RCH">RCH – Richmond-Petersburg, VA</option>
+      <option value="ROH">ROH – Rochester, NY</option>
+      <option value="SAC">SAC – Sacramento-Stockton-Modesto, CA</option>
+      <option value="SLC">SLC – Salt Lake City, UT</option>
+      <option value="SAN">SAN – San Antonio, TX</option>
+      <option value="SDO">SDO – San Diego, CA</option>
+      <option value="SFO">SFO – San Francisco-Oakland-San Jose, CA</option>
+      <option value="SAV">SAV – Savannah, GA</option>
+      <option value="SEA">SEA – Seattle-Tacoma, WA</option>
+      <option value="SCH">SCH – Springfield-Holyoke, MA</option>
+      <option value="STL">STL – St. Louis, MO</option>
+      <option value="TAM">TAM – Tampa-St. Petersburg (Sarasota), FL</option>
+      <option value="TUC">TUC – Tucson (Sierra Vista), AZ</option>
+      <option value="TUL">TUL – Tulsa, OK</option>
+      <option value="WDC">WDC – Washington, D.C. (Hagerstown)</option>
+      <option value="WPB">WPB – West Palm Beach-Fort Pierce, FL</option>
+      <option value="WIL">WIL – Wilkes Barre-Scranton-Hazleton, PA</option>
     </select>
   </div>
 
-  <!-- AGENCY -->
   <div class="field-group">
-    <label for="agency">Agency / Partner</label>
-    <select id="agency">
-      <option value="">-- Select Agency --</option>
-      <option value="GM">General Market Agency</option>
-      <option value="HM">Hyundai In-house</option>
-      <option value="PM">Performance Media Partner</option>
+    <label for="demo_market">Demographic Market</label>
+    <select id="demo_market">
+      <option value="">-- Select Demographic --</option>
+      <option value="GM">GM – General Market</option>
+      <option value="HM">HM – Hispanic Market</option>
     </select>
   </div>
 
-  <!-- RESERVED / SUFFIX -->
+  <!-- LENGTH / SIZE -->
   <div class="field-group">
-    <label for="reserved">Reserved / Suffix</label>
-    <select id="reserved">
-      <option value="">-- Select Suffix --</option>
-      <option value="NA">Not Applicable</option>
-      <option value="A">Version A</option>
-      <option value="B">Version B</option>
+    <label for="length">Length / Size</label>
+    <select id="length">
+      <option value="">-- Select Length/Size --</option>
+      <option value="15">15</option>
+      <option value="30">30</option>
+      <option value="1x1">1x1</option>
+      <option value="9x16">9x16</option>
+      <option value="16x9">16x9</option>
+      <option value="NA">NA</option>
     </select>
   </div>
 
@@ -472,6 +583,17 @@
   </div>
 
   <script>
+    // populate day dropdown after DOM loads
+    document.addEventListener("DOMContentLoaded", () => {
+      const daySel = document.getElementById("offer_day");
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement("option");
+        opt.value = String(d);
+        opt.textContent = String(d);
+        daySel.appendChild(opt);
+      }
+    });
+
     const fieldOrder = [
       "region",
       "media",
@@ -479,40 +601,19 @@
       "title",
       "model_combo",
       "offerCode",
+      "offer_end_code",
       "market",
-      "agency",
-      "reserved"
+      "demo_market",
+      "length"
     ];
 
     const templateUi = {
-      // Cash only
-      BONUS_CASH: {
-        fields: [
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
-        ]
-      },
-      DEALER_CASH: {
-        fields: [
-          {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"}
-        ]
-      },
-      SALES_EVENT_CASH: {
-        fields: [
-          {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"}
-        ]
-      },
-      TS_CI: {
-        fields: [
-          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"}
-        ]
-      },
-      TS_ONLY: {
-        fields: [
-          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"}
-        ]
-      },
+      BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
+      DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
+      SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
+      TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"} ] },
+      TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"} ] },
 
-      // APR
       APR_ONLY: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
@@ -520,7 +621,6 @@
         ]
       },
 
-      // 0-0
       ZERO_ZERO: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
@@ -530,7 +630,6 @@
         ]
       },
 
-      // APR + BC
       APR_PLUS_BC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
@@ -539,7 +638,6 @@
         ]
       },
 
-      // APR or BC
       APR_OR_BC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
@@ -548,7 +646,6 @@
         ]
       },
 
-      // 0-0 + BC
       ZERO_PLUS_BC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
@@ -559,7 +656,6 @@
         ]
       },
 
-      // 0-0 plus up to BC
       ZERO_PLUS_UPBC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
@@ -570,7 +666,6 @@
         ]
       },
 
-      // 0-0 or up to BC
       ZERO_OR_UPBC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
@@ -581,7 +676,6 @@
         ]
       },
 
-      // APR + CI
       APR_PLUS_CI: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
@@ -589,7 +683,6 @@
         ]
       },
 
-      // APR + BC + CI
       APR_BC_CI: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
@@ -598,7 +691,6 @@
         ]
       },
 
-      // Lease family
       LEASE_ONLY: {
         fields: [
           {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
@@ -610,9 +702,7 @@
           {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 1500)"}
         ]
       },
-      SIGN_DRIVE: {
-        fields: []
-      },
+      SIGN_DRIVE: { fields: [] },
       LEASE_PLUS_EV: {
         fields: [
           {label: "Lease Amount", placeholder: "Lease Amount (e.g. 229)"},
@@ -626,7 +716,6 @@
         ]
       },
 
-      // APR + Lease / or Lease / + No Payments
       APR_PLUS_LEASE: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
@@ -650,7 +739,6 @@
         ]
       },
 
-      // APR Multiple
       APR_MULTIPLE: {
         fields: [
           {label: "APR Percentage 1", placeholder: "APR Percentage 1 (e.g. 2.99)"},
@@ -660,7 +748,6 @@
         ]
       },
 
-      // APR or EV BC
       APR_OR_EVBC: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.99)"},
@@ -669,7 +756,6 @@
         ]
       },
 
-      // Static codes
       HCM_CODE: { fields: [] },
       ABW_CODE: { fields: [] },
       CTB_CODE: { fields: [] },
@@ -700,7 +786,7 @@
         {wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input")}
       ];
 
-      // Reset and hide all
+      // reset & hide all
       fieldElems.forEach(f => {
         f.input.value = "";
         f.wrapper.classList.add("hidden");
@@ -748,7 +834,6 @@
       let code = "";
 
       switch (template) {
-        // Cash only
         case "BONUS_CASH":
           if (cashThousands1) code = cashThousands1 + "BC";
           break;
@@ -765,12 +850,10 @@
           if (cashThousands1) code = cashThousands1 + "TS";
           break;
 
-        // APR only
         case "APR_ONLY":
           if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
           break;
 
-        // 0-0 base
         case "ZERO_ZERO": {
           const rate = f1Num || "0";
           const months = f2Int;
@@ -784,21 +867,18 @@
           break;
         }
 
-        // APR + BC
         case "APR_PLUS_BC":
           if (f1Num && f2Int && cashThousands3) {
             code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC";
           }
           break;
 
-        // APR or BC
         case "APR_OR_BC":
           if (f1Num && f2Int && cashThousands3) {
             code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC";
           }
           break;
 
-        // 0-0 + BC  -> 0APR60+0P90+0.5BC
         case "ZERO_PLUS_BC": {
           const rate = f1Num || "0";
           const months = f2Int;
@@ -813,7 +893,6 @@
           break;
         }
 
-        // 0-0 plus up to BC -> 0APR60+0P90+UP2.5BC
         case "ZERO_PLUS_UPBC": {
           const rate = f1Num || "0";
           const months = f2Int;
@@ -828,7 +907,6 @@
           break;
         }
 
-        // 0-0 or up to BC -> 0APR60+0P90|UP2.5BC
         case "ZERO_OR_UPBC": {
           const rate = f1Num || "0";
           const months = f2Int;
@@ -843,21 +921,18 @@
           break;
         }
 
-        // APR + CI
         case "APR_PLUS_CI":
           if (f1Num && f2Int) {
             code = f1Num + "APR" + f2Int + "+CI";
           }
           break;
 
-        // APR + BC + CI
         case "APR_BC_CI":
           if (f1Num && f2Int && cashThousands3) {
             code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC+CI";
           }
           break;
 
-        // Lease
         case "LEASE_ONLY":
           if (f1Int) code = "L" + f1Int;
           break;
@@ -884,21 +959,18 @@
           }
           break;
 
-        // APR + Lease
         case "APR_PLUS_LEASE":
           if (f1Num && f2Int && f3Int) {
             code = f1Num + "APR" + f2Int + "+L" + f3Int;
           }
           break;
 
-        // APR or Lease
         case "APR_OR_LEASE":
           if (f1Num && f2Int && f3Int) {
             code = f1Num + "APR" + f2Int + "|L" + f3Int;
           }
           break;
 
-        // APR + No Payments -> 3.99APR72+0P90
         case "APR_PLUS_NOPAY":
           if (f1Num && f2Int && f4Int) {
             const pays = f3Int || 0;
@@ -906,7 +978,6 @@
           }
           break;
 
-        // APR Multiple -> 2.99APR60|1.99APR48
         case "APR_MULTIPLE":
           if (f1Num && f2Int && f3Num && f4Int) {
             const c1 = f1Num + "APR" + f2Int;
@@ -915,26 +986,20 @@
           }
           break;
 
-        // APR or EV BC -> 0.99APR60|7.5EVBC
         case "APR_OR_EVBC":
           if (f1Num && f2Int && cashThousands3) {
             code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
           }
           break;
 
-        // Static codes
         case "HCM_CODE":
-          code = "HCM";
-          break;
+          code = "HCM"; break;
         case "ABW_CODE":
-          code = "ABW";
-          break;
+          code = "ABW"; break;
         case "CTB_CODE":
-          code = "CTB";
-          break;
+          code = "CTB"; break;
         case "URG_CODE":
-          code = "URG";
-          break;
+          code = "URG"; break;
 
         default:
           code = "";
@@ -942,6 +1007,27 @@
 
       document.getElementById("offerCode").value = code;
       document.getElementById("offerCodeDisplay").value = code;
+      updateTaxonomy();
+    }
+
+    function computeOfferEndCode() {
+      const mVal = document.getElementById("offer_month").value;
+      const dVal = document.getElementById("offer_day").value;
+      const yVal = document.getElementById("offer_year").value;
+      let code = "";
+
+      if (mVal && dVal && yVal) {
+        const m = parseInt(mVal, 10);
+        const d = parseInt(dVal, 10);
+        const y = parseInt(yVal, 10) % 100;
+        if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
+          const mStr = String(m);               // no leading zero
+          const dStr = String(d).padStart(2,"0");
+          const yStr = String(y).padStart(2,"0");
+          code = mStr + dStr + yStr;           // e.g. 12/31/24 -> 123124
+        }
+      }
+      document.getElementById("offer_end_code").value = code;
       updateTaxonomy();
     }
 
@@ -962,19 +1048,23 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
-    // Wire non-offer fields
+    // wire non-offer dropdowns
     fieldOrder.forEach(id => {
-      if (id === "model_combo" || id === "offerCode") return;
+      if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
       const el = document.getElementById(id);
       if (el) el.addEventListener("change", updateTaxonomy);
     });
 
-    ["model_year", "model_name"].forEach(id => {
+    ["model_year","model_name"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener("change", updateTaxonomy);
     });
 
-    // Offer template change: clear inputs and set UI
+    ["offer_month","offer_day","offer_year"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", computeOfferEndCode);
+    });
+
     document.getElementById("offerTemplate").addEventListener("change", () => {
       ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
         const el = document.getElementById(id);
@@ -989,9 +1079,11 @@
       if (el) el.addEventListener("input", buildOfferCode);
     });
 
-    // Initial
-    updateFieldUi();
-    buildOfferCode();
+    document.addEventListener("DOMContentLoaded", () => {
+      updateFieldUi();
+      buildOfferCode();
+      computeOfferEndCode();
+    });
   </script>
 </body>
 </html>
