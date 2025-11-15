@@ -422,7 +422,7 @@
       <div class="offer-field">
         <span class="offer-label"><strong>Offer Code</strong></span>
         <input id="offerCodeDisplay" type="text"
-               placeholder="e.g. 2.5BC or 0APR60+0P90+UP2.5BC"
+               placeholder="0APR60+0P90+UP2.5BC"
                readonly
                style="min-width:260px;" />
         <input type="hidden" id="offerCode" />
@@ -578,7 +578,7 @@
     <div><strong>Generated Taxonomy String:</strong></div>
     <code id="taxonomyCode">(select values above)</code>
     <div class="hint">
-      This updates live as you change fields. Copy + paste into your trafficking sheet.
+      This updates live as you change fields. Copy + paste as needed.
     </div>
   </div>
 
@@ -607,86 +607,86 @@
     ];
 
     const templateUi = {
-      BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
-      DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
-      SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"} ] },
-      TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"} ] },
-      TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"} ] },
+      BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "e.g. 2500"} ] },
+      DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "e.g. 2500"} ] },
+      SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "e.g. 2500"} ] },
+      TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
+      TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
 
       APR_ONLY: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"}
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
         ]
       },
 
       ZERO_ZERO: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Payments", placeholder: "Payments (e.g. 0)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"}
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"}
         ]
       },
 
       APR_PLUS_BC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
         ]
       },
 
       APR_OR_BC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 2.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
         ]
       },
 
       ZERO_PLUS_BC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Payments", placeholder: "Payments (e.g. 0)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
         ]
       },
 
       ZERO_PLUS_UPBC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Payments", placeholder: "Payments (e.g. 0)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
         ]
       },
 
       ZERO_OR_UPBC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "Payments", placeholder: "Payments (e.g. 0)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+          {label: "APR Percentage", placeholder: "e.g. 0.00"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. "},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
         ]
       },
 
       APR_PLUS_CI: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"}
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
         ]
       },
 
       APR_BC_CI: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 500)"}
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 500"}
         ]
       },
 
@@ -697,61 +697,61 @@
       },
       LEASE_PLUS_BC: {
         fields: [
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 249)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 1500)"}
+          {label: "Lease Amount", placeholder: ".g. 239"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 1500"}
         ]
       },
       SIGN_DRIVE: { fields: [] },
       LEASE_PLUS_EV: {
         fields: [
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 229)"},
-          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+          {label: "Lease Amount", placeholder: "e.g. 239"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
         ]
       },
       LEASE_PLUS_EV_CI: {
         fields: [
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 229)"},
-          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+          {label: "Lease Amount", placeholder: "e.g. 239"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
         ]
       },
 
       APR_PLUS_LEASE: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 48)"},
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
+          {label: "Lease Amount", placeholder: "e.g. 239"}
         ]
       },
       APR_OR_LEASE: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 48)"},
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
+          {label: "Lease Amount", placeholder: "e.g. 239"}
         ]
       },
       APR_PLUS_NOPAY: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"},
-          {label: "Payments", placeholder: "Payments (e.g. 0)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"}
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"}
         ]
       },
 
       APR_MULTIPLE: {
         fields: [
-          {label: "APR Percentage 1", placeholder: "APR Percentage 1 (e.g. 2.99)"},
-          {label: "APR Offer Term Months 1", placeholder: "Offer Term Months 1 (e.g. 60)"},
-          {label: "APR Percentage 2", placeholder: "APR Percentage 2 (e.g. 1.99)"},
-          {label: "APR Offer Term Months 2", placeholder: "Offer Term Months 2 (e.g. 48)"}
+          {label: "APR Percentage 1", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months 1", placeholder: "e.g. 60"},
+          {label: "APR Percentage 2", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months 2", placeholder: "e.g. 48"}
         ]
       },
 
       APR_OR_EVBC: {
         fields: [
-          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.99)"},
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "EV Bonus Cash Amount", placeholder: "Amount (e.g. 7500)"}
+          {label: "APR Percentage", placeholder: "e.g. 0.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
         ]
       },
 
