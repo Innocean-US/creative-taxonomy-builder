@@ -391,7 +391,7 @@
       </select>
     </div>
 
-    <!-- Four generic fields -->
+    <!-- Five generic fields -->
     <div class="offer-row" id="offerFieldsRow">
       <div class="offer-field" id="field1">
         <span class="offer-label" id="field1Label">Field 1</span>
@@ -408,6 +408,10 @@
       <div class="offer-field" id="field4">
         <span class="offer-label" id="field4Label">Field 4</span>
         <input id="field4Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field5">
+        <span class="offer-label" id="field5Label">Field 5</span>
+        <input id="field5Input" type="text" placeholder="" />
       </div>
     </div>
 
@@ -480,32 +484,31 @@
       "reserved"
     ];
 
-    // UI config: what each template's four fields are called
     const templateUi = {
       // Cash only
       BONUS_CASH: {
         fields: [
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
       DEALER_CASH: {
         fields: [
-          {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"},
+          {label: "Dealer Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
       SALES_EVENT_CASH: {
         fields: [
-          {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"},
+          {label: "Sales Event Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
       TS_CI: {
         fields: [
-          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"},
+          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
       TS_ONLY: {
         fields: [
-          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"},
+          {label: "Total Savings Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
 
@@ -535,6 +538,7 @@
           {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
+
       // APR or BC
       APR_OR_BC: {
         fields: [
@@ -547,23 +551,31 @@
       // 0-0 + BC
       ZERO_PLUS_BC: {
         fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
           {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
-          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
-          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 500)"}
-        ]
-      },
-      // 0-0 plus up to BC
-      ZERO_PLUS_UPBC: {
-        fields: [
-          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Payments", placeholder: "Payments (e.g. 0)"},
           {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
           {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
       },
+
+      // 0-0 plus up to BC
+      ZERO_PLUS_UPBC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
+          {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Payments", placeholder: "Payments (e.g. 0)"},
+          {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
+          {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
+        ]
+      },
+
       // 0-0 or up to BC
       ZERO_OR_UPBC: {
         fields: [
+          {label: "APR Percentage", placeholder: "APR Percentage (e.g. 0.00)"},
           {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 60)"},
+          {label: "Payments", placeholder: "Payments (e.g. 0)"},
           {label: "APR Payment Days", placeholder: "Days (e.g. 90)"},
           {label: "Bonus Cash Amount", placeholder: "Amount (e.g. 2500)"}
         ]
@@ -576,6 +588,7 @@
           {label: "APR Offer Term Months", placeholder: "Offer Term Months (e.g. 72)"}
         ]
       },
+
       // APR + BC + CI
       APR_BC_CI: {
         fields: [
@@ -598,7 +611,7 @@
         ]
       },
       SIGN_DRIVE: {
-        fields: []  // SD000 constant
+        fields: []
       },
       LEASE_PLUS_EV: {
         fields: [
@@ -613,7 +626,7 @@
         ]
       },
 
-      // APR + Lease
+      // APR + Lease / or Lease / + No Payments
       APR_PLUS_LEASE: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 1.99)"},
@@ -628,8 +641,6 @@
           {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
         ]
       },
-
-      // APR + No Payments
       APR_PLUS_NOPAY: {
         fields: [
           {label: "APR Percentage", placeholder: "APR Percentage (e.g. 3.99)"},
@@ -674,7 +685,7 @@
     function toThousands(amount) {
       const numeric = parseFloat(cleanNumeric(amount));
       if (isNaN(numeric) || numeric <= 0) return "";
-      return (numeric / 1000).toFixed(1); // 2500 -> "2.5"
+      return (numeric / 1000).toFixed(1);
     }
 
     function updateFieldUi() {
@@ -685,25 +696,24 @@
         {wrapper: document.getElementById("field1"), label: document.getElementById("field1Label"), input: document.getElementById("field1Input")},
         {wrapper: document.getElementById("field2"), label: document.getElementById("field2Label"), input: document.getElementById("field2Input")},
         {wrapper: document.getElementById("field3"), label: document.getElementById("field3Label"), input: document.getElementById("field3Input")},
-        {wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input")}
+        {wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input")},
+        {wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input")}
       ];
 
-      // Reset values & hide all
-      fieldElems.forEach((f, idx) => {
+      // Reset and hide all
+      fieldElems.forEach(f => {
         f.input.value = "";
         f.wrapper.classList.add("hidden");
       });
 
-      // Apply config
-      cfg.fields.forEach((fCfg, idx) => {
-        if (idx > 3) return;
+      cfg.fields.forEach((fcfg, idx) => {
+        if (idx > 4) return;
         const f = fieldElems[idx];
         f.wrapper.classList.remove("hidden");
-        f.label.textContent = fCfg.label;
-        f.input.placeholder = fCfg.placeholder || "";
+        f.label.textContent = fcfg.label;
+        f.input.placeholder = fcfg.placeholder || "";
       });
 
-      // If no fields (static offers), hide the whole row
       document.getElementById("offerFieldsRow")
         .classList.toggle("hidden", cfg.fields.length === 0);
     }
@@ -715,20 +725,25 @@
       const f2 = document.getElementById("field2Input").value;
       const f3 = document.getElementById("field3Input").value;
       const f4 = document.getElementById("field4Input").value;
+      const f5 = document.getElementById("field5Input").value;
 
       const f1Num = cleanNumeric(f1);
       const f2Num = cleanNumeric(f2);
       const f3Num = cleanNumeric(f3);
       const f4Num = cleanNumeric(f4);
+      const f5Num = cleanNumeric(f5);
 
       const f1Int = cleanInt(f1);
       const f2Int = cleanInt(f2);
       const f3Int = cleanInt(f3);
       const f4Int = cleanInt(f4);
+      const f5Int = cleanInt(f5);
 
       const cashThousands1 = toThousands(f1);
       const cashThousands2 = toThousands(f2);
       const cashThousands3 = toThousands(f3);
+      const cashThousands4 = toThousands(f4);
+      const cashThousands5 = toThousands(f5);
 
       let code = "";
 
@@ -750,12 +765,12 @@
           if (cashThousands1) code = cashThousands1 + "TS";
           break;
 
-        // APR
+        // APR only
         case "APR_ONLY":
           if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
           break;
 
-        // 0-0
+        // 0-0 base
         case "ZERO_ZERO": {
           const rate = f1Num || "0";
           const months = f2Int;
@@ -783,26 +798,50 @@
           }
           break;
 
-        // 0-0 + BC
-        case "ZERO_PLUS_BC":
-          if (f1Int && f2Int && cashThousands3) {
-            code = "0APR" + f1Int + "+0P" + f2Int + "+" + cashThousands3 + "BC";
+        // 0-0 + BC  -> 0APR60+0P90+0.5BC
+        case "ZERO_PLUS_BC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "+" + bc + "BC";
           }
           break;
+        }
 
-        // 0-0 plus up to BC
-        case "ZERO_PLUS_UPBC":
-          if (f1Int && f2Int && cashThousands3) {
-            code = "0APR" + f1Int + "+0P" + f2Int + "+UP" + cashThousands3 + "BC";
+        // 0-0 plus up to BC -> 0APR60+0P90+UP2.5BC
+        case "ZERO_PLUS_UPBC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "+UP" + bc + "BC";
           }
           break;
+        }
 
-        // 0-0 or up to BC
-        case "ZERO_OR_UPBC":
-          if (f1Int && f2Int && cashThousands3) {
-            code = "0APR" + f1Int + "+0P" + f2Int + "|UP" + cashThousands3 + "BC";
+        // 0-0 or up to BC -> 0APR60+0P90|UP2.5BC
+        case "ZERO_OR_UPBC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "|UP" + bc + "BC";
           }
           break;
+        }
 
         // APR + CI
         case "APR_PLUS_CI":
@@ -859,7 +898,7 @@
           }
           break;
 
-        // APR + No Payments
+        // APR + No Payments -> 3.99APR72+0P90
         case "APR_PLUS_NOPAY":
           if (f1Num && f2Int && f4Int) {
             const pays = f3Int || 0;
@@ -867,7 +906,7 @@
           }
           break;
 
-        // APR Multiple
+        // APR Multiple -> 2.99APR60|1.99APR48
         case "APR_MULTIPLE":
           if (f1Num && f2Int && f3Num && f4Int) {
             const c1 = f1Num + "APR" + f2Int;
@@ -876,7 +915,7 @@
           }
           break;
 
-        // APR or EV BC
+        // APR or EV BC -> 0.99APR60|7.5EVBC
         case "APR_OR_EVBC":
           if (f1Num && f2Int && cashThousands3) {
             code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
@@ -923,7 +962,7 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
-    // Event wiring
+    // Wire non-offer fields
     fieldOrder.forEach(id => {
       if (id === "model_combo" || id === "offerCode") return;
       const el = document.getElementById(id);
@@ -935,10 +974,9 @@
       if (el) el.addEventListener("change", updateTaxonomy);
     });
 
-    // Offer template change: reset + configure fields + build static code
+    // Offer template change: clear inputs and set UI
     document.getElementById("offerTemplate").addEventListener("change", () => {
-      // Clear all field inputs
-      ["field1Input","field2Input","field3Input","field4Input"].forEach(id => {
+      ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
       });
@@ -946,7 +984,7 @@
       buildOfferCode();
     });
 
-    ["field1Input","field2Input","field3Input","field4Input"].forEach(id => {
+    ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener("input", buildOfferCode);
     });
