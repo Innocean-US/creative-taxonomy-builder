@@ -472,7 +472,7 @@
   </div>
 
   <script>
-    // Final taxonomy order: note model_combo is a synthetic field
+    // Final taxonomy order: note model_combo is synthetic
     const fieldOrder = [
       "region",
       "media",
@@ -485,6 +485,7 @@
       "reserved"
     ];
 
+    // Any template with APR/0-0 shows an APR input
     const templateConfig = {
       BONUS_CASH:       {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
       DEALER_CASH:      {apr:false, apr2:false, term1:false, term2:false, lease:false, cash:true},
@@ -498,9 +499,9 @@
       APR_PLUS_BC:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
       APR_OR_BC:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
 
-      ZERO_PLUS_BC:     {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_PLUS_UPBC:   {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
-      ZERO_OR_UPBC:     {apr:false, apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_PLUS_BC:     {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_PLUS_UPBC:   {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
+      ZERO_OR_UPBC:     {apr:true,  apr2:false, term1:true,  term2:true,  lease:false, cash:true},
 
       APR_PLUS_CI:      {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:false},
       APR_BC_CI:        {apr:true,  apr2:false, term1:true,  term2:false, lease:false, cash:true},
@@ -530,8 +531,7 @@
           if (id === "model_combo") {
             const my = (document.getElementById("model_year").value || "").trim();
             const mn = (document.getElementById("model_name").value || "").trim();
-            const combo = (my || "") + (mn || "");
-            return combo;
+            return (my || "") + (mn || "");
           }
           const el = document.getElementById(id);
           return el ? (el.value || "").trim() : "";
@@ -562,6 +562,17 @@
     function apr(rate, months) {
       if (!rate || !months) return "";
       return rate + "APR" + months;
+    }
+
+    function resetOfferInputs() {
+      document.getElementById("offerValue1").value = "";
+      document.getElementById("offerValue2").value = "";
+      document.getElementById("offerTerm1").value = "";
+      document.getElementById("offerTerm2").value = "";
+      document.getElementById("offerLeaseAmount").value = "";
+      document.getElementById("offerCashAmount").value = "";
+      document.getElementById("offerCode").value = "";
+      document.getElementById("offerCodeDisplay").value = "";
     }
 
     function setLabelsAndPlaceholders(template, cfg) {
@@ -597,16 +608,24 @@
       switch (template) {
         // Cash-only patterns
         case "BONUS_CASH":
-        case "DEALER_CASH":
-        case "SALES_EVENT_CASH":
-        case "TS_CI":
-        case "TS_ONLY":
           cashLabel.textContent = "Bonus Cash Amount";
           cashInput.placeholder = "Bonus Cash Amount (e.g. 2500)";
-          if (template === "TS_ONLY" || template === "TS_CI") {
-            cashLabel.textContent = "Total Savings Amount";
-            cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
-          }
+          break;
+        case "DEALER_CASH":
+          cashLabel.textContent = "Dealer Cash Amount";
+          cashInput.placeholder = "Dealer Cash Amount (e.g. 2500)";
+          break;
+        case "SALES_EVENT_CASH":
+          cashLabel.textContent = "Sales Event Cash Amount";
+          cashInput.placeholder = "Sales Event Cash Amount (e.g. 2500)";
+          break;
+        case "TS_ONLY":
+          cashLabel.textContent = "Total Savings Amount";
+          cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
+          break;
+        case "TS_CI":
+          cashLabel.textContent = "Total Savings Amount";
+          cashInput.placeholder = "Total Savings Amount (e.g. 2500)";
           break;
 
         case "APR_ONLY":
@@ -618,9 +637,9 @@
 
         case "ZERO_ZERO":
           aprLabel1.textContent = "APR Percentage";
-          aprInput1.placeholder = "APR Percentage (e.g. 0.99)";
-          aprLabel2.textContent = "APR Payments";
-          aprInput2.placeholder = "APR Payments (e.g. 0)";
+          aprInput1.placeholder = "APR Percentage (e.g. 0.00)";
+          aprLabel2.textContent = "Payments";
+          aprInput2.placeholder = "Payments (e.g. 0)";
           term1Label.textContent = "APR Offer Term Months";
           term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
           term2Label.textContent = "APR Payment Days";
@@ -640,6 +659,8 @@
         case "ZERO_PLUS_BC":
         case "ZERO_PLUS_UPBC":
         case "ZERO_OR_UPBC":
+          aprLabel1.textContent = "APR Percentage";
+          aprInput1.placeholder = "APR Percentage (e.g. 0.00)";
           term1Label.textContent = "APR Offer Term Months";
           term1Input.placeholder = "APR Offer Term Months (e.g. 60)";
           term2Label.textContent = "APR Payment Days";
@@ -814,12 +835,16 @@
 
         // 0-0 (with PAY)
         case "ZERO_ZERO": {
-          const rate   = rate1 || "0";
+          // APR Percentage (rate1) + Offer Term Months (term1) + Payments (rate2) + Payment Days (term2)
           const months = term1;
-          const pays   = rate2 || "0";
           const days   = term2;
+          const pays   = rate2 || "0";
+          // For a true 0-0 the user will usually type 0.00 -> we compress to "0"
+          const r = rate1 || "0";
+          const rNum = parseFloat(r);
+          const rateStr = (!isNaN(rNum) && rNum === 0) ? "0" : r;
           if (months && days) {
-            code = rate + "APR" + months + "+" + pays + "PAY" + days;
+            code = rateStr + "APR" + months + "+" + pays + "PAY" + days;
           }
           break;
         }
@@ -843,6 +868,7 @@
           const months = term1;
           const days   = term2;
           if (months && days && bcCode) {
+            // APR Percentage is still user-input, but for 0-0 pattern we output 0APR
             code = "0APR" + months + "+0P" + days + "+" + bcCode;
           }
           break;
@@ -974,7 +1000,6 @@
       document.getElementById("offerCode").value = code;
       document.getElementById("offerCodeDisplay").value = code;
       updateTaxonomy();
-      configureOfferInputs();
     }
 
     // Attach listeners for non-offer fields
@@ -995,8 +1020,16 @@
     });
 
     // Offer builder listeners
+    const offerTemplateEl = document.getElementById("offerTemplate");
+    if (offerTemplateEl) {
+      offerTemplateEl.addEventListener("change", () => {
+        resetOfferInputs();       // clear all offer inputs when changing template
+        configureOfferInputs();   // show/hide fields and set labels
+        buildOfferCode();         // build static codes like HCM/ABW/CTB/URG
+      });
+    }
+
     [
-      "offerTemplate",
       "offerValue1", "offerValue2",
       "offerTerm1", "offerTerm2",
       "offerLeaseAmount",
@@ -1004,8 +1037,7 @@
     ].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
-        const evt = (id === "offerTemplate") ? "change" : "input";
-        el.addEventListener(evt, buildOfferCode);
+        el.addEventListener("input", buildOfferCode);
       }
     });
 
