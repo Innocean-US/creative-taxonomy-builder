@@ -15,11 +15,6 @@
       font-size: 1.6rem;
       margin-bottom: 0.5rem;
     }
-    h2 {
-      font-size: 1.2rem;
-      margin-top: 2rem;
-      margin-bottom: 0.5rem;
-    }
     .field-group {
       margin-bottom: 1rem;
       display: flex;
@@ -342,7 +337,6 @@
   </div>
 
   <!-- OFFER BUILDER -->
-  <h2>Offer Builder</h2>
   <div class="offer-wrapper">
     <div class="offer-row">
       <label class="offer-label" style="margin-right:0.5rem;"><strong>Offer template</strong></label>
@@ -429,7 +423,6 @@
   </div>
 
   <!-- OFFER END DATE -->
-  <h2>Offer End Date</h2>
   <div class="field-group">
     <label>Offer End Date</label>
     <select id="offer_month">
@@ -466,8 +459,7 @@
     <input type="hidden" id="offer_end_code" />
   </div>
 
-  <!-- MARKET -->
-  <h2>Market & Demographic</h2>
+  <!-- MARKET & DEMO -->
   <div class="field-group">
     <label for="market">Market</label>
     <select id="market">
@@ -583,7 +575,6 @@
   </div>
 
   <script>
-    // populate day dropdown after DOM loads
     document.addEventListener("DOMContentLoaded", () => {
       const daySel = document.getElementById("offer_day");
       for (let d = 1; d <= 31; d++) {
@@ -786,7 +777,6 @@
         {wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input")}
       ];
 
-      // reset & hide all
       fieldElems.forEach(f => {
         f.input.value = "";
         f.wrapper.classList.add("hidden");
@@ -1021,10 +1011,10 @@
         const d = parseInt(dVal, 10);
         const y = parseInt(yVal, 10) % 100;
         if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
-          const mStr = String(m);               // no leading zero
-          const dStr = String(d).padStart(2,"0");
+          const mStr = String(m);             // no leading zero
+          const dStr = String(d);             // no leading zero
           const yStr = String(y).padStart(2,"0");
-          code = mStr + dStr + yStr;           // e.g. 12/31/24 -> 123124
+          code = mStr + dStr + yStr;          // e.g. 9/2/24 -> 9224
         }
       }
       document.getElementById("offer_end_code").value = code;
@@ -1048,7 +1038,6 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
-    // wire non-offer dropdowns
     fieldOrder.forEach(id => {
       if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
       const el = document.getElementById(id);
