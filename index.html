@@ -101,10 +101,10 @@
     </select>
   </div>
 
-  <!-- MEDIA TYPE -->
+  <!-- MEDIA TYPE (locked until Region selected) -->
   <div class="field-group">
     <label for="media">Media Type</label>
-    <select id="media">
+    <select id="media" disabled>
       <option value="">-- Select Channel --</option>
       <option value="NIMV">Broadcast Spots</option>
       <option value="IMV">Programmatic Video</option>
@@ -116,10 +116,10 @@
     </select>
   </div>
 
-  <!-- INITIATIVE / CAMPAIGN -->
+  <!-- INITIATIVE / CAMPAIGN (locked until Media selected) -->
   <div class="field-group">
     <label for="initiative">Initiative / Campaign</label>
-    <select id="initiative">
+    <select id="initiative" disabled>
       <option value="">-- Select Initiative --</option>
       <option value="25PROMO">2025 Promo Period Creative</option>
       <option value="SPGSE">Spring Getaway Sales Event</option>
@@ -134,18 +134,18 @@
     </select>
   </div>
 
-  <!-- TITLE (dynamic, populated by JS based on initiative) -->
+  <!-- TITLE (locked until Initiative selected; options populated by JS) -->
   <div class="field-group">
     <label for="title">Title</label>
-    <select id="title">
+    <select id="title" disabled>
       <option value="">-- Select Title --</option>
     </select>
   </div>
 
-  <!-- MODEL YEAR -->
+  <!-- MODEL YEAR (locked until Title selected) -->
   <div class="field-group">
     <label for="model_year">Model Year</label>
-    <select id="model_year">
+    <select id="model_year" disabled>
       <option value="">-- Select Model Year --</option>
       <option value="MY24">MY24</option>
       <option value="MY25">MY25</option>
@@ -157,10 +157,10 @@
     </select>
   </div>
 
-  <!-- MODEL NAME -->
+  <!-- MODEL NAME (locked until Model Year selected) -->
   <div class="field-group">
     <label for="model_name">Model Name</label>
-    <select id="model_name">
+    <select id="model_name" disabled>
       <option value="">-- Select Model --</option>
       <option value="AFL">Alternative Fuel</option>
       <option value="ELA">Elantra ICE</option>
@@ -232,6 +232,10 @@
         <!-- Multi-offer APR / APR or EV BC -->
         <option value="APR_MULTIPLE">APR Multiple</option>
         <option value="APR_OR_EVBC">APR or EV BC</option>
+
+        <!-- NEW: APR + BC or Lease / APR or BC or Lease -->
+        <option value="APR_BC_OR_LEASE">APR + BC or Lease</option>
+        <option value="APR_OR_BC_OR_LEASE">APR or BC or Lease</option>
 
         <!-- Static codes -->
         <option value="HCM_CODE">Hyundai Complimentary Maintenance</option>
@@ -431,7 +435,7 @@
   </div>
 
   <script>
-    // --- Day dropdown for Offer End Date ---
+    // --- Populate Day dropdown for Offer End Date ---
     document.addEventListener("DOMContentLoaded", () => {
       const daySel = document.getElementById("offer_day");
       for (let d = 1; d <= 31; d++) {
@@ -472,7 +476,7 @@
       ATM: "All That & More",
       TRD: "The Road",
 
-      // VS campaign – generic label for ID.4 to avoid duplicate code confusion
+      // VS campaign
       "VSCivic": "Elantra VS Civic",
       "VSCorolla": "Elantra VS Corolla",
       "VSSentra": "Elantra VS Sentra",
@@ -841,6 +845,26 @@
         ]
       },
 
+      // NEW: APR + BC or Lease
+      APR_BC_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
+          {label: "Lease Amount", placeholder: "e.g. 299"}
+        ]
+      },
+
+      // NEW: APR or BC or Lease
+      APR_OR_BC_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
+          {label: "Lease Amount", placeholder: "e.g. 299"}
+        ]
+      },
+
       HCM_CODE: { fields: [] },
       ABW_CODE: { fields: [] },
       CTB_CODE: { fields: [] },
@@ -1076,6 +1100,20 @@
           }
           break;
 
+        // NEW: APR + BC or Lease → 1.99APR60+2.5BC|L299
+        case "APR_BC_OR_LEASE":
+          if (f1Num && f2Int && cashThousands3 && f4Int) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC|L" + f4Int;
+          }
+          break;
+
+        // NEW: APR or BC or Lease → 1.99APR60|2.5BC|L299
+        case "APR_OR_BC_OR_LEASE":
+          if (f1Num && f2Int && cashThousands3 && f4Int) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC|L" + f4Int;
+          }
+          break;
+
         case "HCM_CODE":
           code = "HCM"; break;
         case "ABW_CODE":
@@ -1132,11 +1170,49 @@
       document.getElementById("taxonomyCode").textContent = code;
     }
 
-    // Attach listeners for taxonomy fields
+    // ---- Step-by-step selection locking logic ----
+    function updateStepAvailability() {
+      const region     = document.getElementById("region");
+      const media      = document.getElementById("media");
+      const initiative = document.getElementById("initiative");
+      const title      = document.getElementById("title");
+      const modelYear  = document.getElementById("model_year");
+      const modelName  = document.getElementById("model_name");
+
+      // Step 1: Region → enables Media
+      media.disabled = !region.value;
+
+      // Step 2: Media → enables Initiative
+      initiative.disabled = !media.value;
+
+      // Step 3: Initiative → enables Title
+      title.disabled = !initiative.value;
+
+      // Step 4: Title → enables Model Year
+      modelYear.disabled = !title.value;
+
+      // Step 5: Model Year → enables Model Name
+      modelName.disabled = !modelYear.value;
+    }
+
+    // Attach listeners for step locking + taxonomy updates
+    ["region","media","initiative","title","model_year","model_name"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("change", () => {
+          updateStepAvailability();
+          updateTaxonomy();
+        });
+      }
+    });
+
+    // Attach listeners for other taxonomy fields
     fieldOrder.forEach(id => {
       if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
       const el = document.getElementById(id);
-      if (el) el.addEventListener("change", updateTaxonomy);
+      if (el && !["region","media","initiative","title","model_year","model_name"].includes(id)) {
+        el.addEventListener("change", updateTaxonomy);
+      }
     });
 
     ["model_year","model_name"].forEach(id => {
@@ -1174,6 +1250,7 @@
       updateFieldUi();
       buildOfferCode();
       computeOfferEndCode();
+      updateStepAvailability();
       updateTaxonomy();
     });
   </script>
