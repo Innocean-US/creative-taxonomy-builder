@@ -435,21 +435,11 @@
   </div>
 
   <script>
-    // --- Populate Day dropdown for Offer End Date ---
-    document.addEventListener("DOMContentLoaded", () => {
-      const daySel = document.getElementById("offer_day");
-      for (let d = 1; d <= 31; d++) {
-        const opt = document.createElement("option");
-        opt.value = String(d);
-        opt.textContent = String(d);
-        daySel.appendChild(opt);
-      }
-    });
-
     // --- Title master list and initiative → title mapping ---
 
     const ALL_TITLES = {
       NA: "Not Applicable",
+
       // Promo Period
       LLW: "Lay Low",
       CNF: "Confession",
@@ -610,26 +600,25 @@
         "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
         "BYA","SLG","ROC","RLF","SOF","ATM","TRD"
       ],
-      SPGSE: ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
-      SGSE: ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
-      25WGSE: ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
-      CUA: ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
-      BRD: ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
-      WIN: [
+      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
+      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
+      "25WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
+      "CUA": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
+      "BRD": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
+      "WIN": [
         "VSCivic","VSCorolla","VSSentra","VSCorollaHybrid","VSAccordHybrid",
         "VSID.4","VSMach-E","VSAriya","VSbZ4X","VSModelY","VSPrologue",
         "VSPolestar2","VSModel3","VSC-HR","VSHR-V","VSRenegade","VSCrosstrek",
         "VSCorollaCross","VSTrailblazer","VSTrax","VSLeaf","VSMini","VSBolt",
-        "VSClarityFC","VSMirai","VSModelY","VSExplorer","VSHighlander",
-        "VSPilot","VSGrandCherokee","VSTraverse","VSPathfinder","VSMaverick",
-        "VSOutback","VSRidgeline","VSMurano","VSOutback","VSPassport",
-        "VSHighlander","VSBlazer","VSRAV4Hybrid","VSCR-VHybrid","VSEscapeHybrid",
-        "VSEscapePHEV","VSOutlanderPHEV","VSRAV4PHEV","VSAccord","VSAltima",
-        "VSCamry","VSAccordHybrid","VSCamryHybrid","VSCR-V","VSRAV4","VSRogue",
-        "VSForester","VSEquinox","VSEscape","VSCR-VHybrid","VSRAV4Hybrid",
-        "VSEscapeHybrid","VSRAV4PHEV","VSEscapePHEV","VSModelX","VSR1S"
+        "VSClarityFC","VSMirai","VSExplorer","VSHighlander","VSPilot",
+        "VSGrandCherokee","VSTraverse","VSPathfinder","VSMaverick","VSOutback",
+        "VSRidgeline","VSMurano","VSPassport","VSBlazer","VSRAV4Hybrid",
+        "VSCR-VHybrid","VSEscapeHybrid","VSEscapePHEV","VSOutlanderPHEV",
+        "VSRAV4PHEV","VSAccord","VSAltima","VSCamry","VSCamryHybrid",
+        "VSCR-V","VSRAV4","VSRogue","VSForester","VSEquinox","VSEscape",
+        "VSEscapePHEV","VSModelX","VSR1S"
       ],
-      EVE: [
+      "EVE": [
         "BAP","RAQ","STD","SI","ABW","NAV","SEW","TRUNK","DISPLAY","MPG",
         "RSPA","BSVM","CARGO","RANGE","HEADUP","CABIN","ADVSAF","FINGER",
         "LEGROOM","LIFTGATE","SFE","AWD","TONNEAU","CHARGE","2YRCHARGE","V2L",
@@ -637,8 +626,8 @@
         "SEATS","BOSE","TOWING","LIGHTING","STEER","IIHS","WPCA","ETD",
         "EVMOB","HCM","FEA","COM"
       ],
-      EVECON: ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
-      EVERET: ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"]
+      "EVECON": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
+      "EVERET": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"]
     };
 
     function populateTitleOptions() {
@@ -676,7 +665,6 @@
         titleSel.appendChild(opt);
       });
 
-      // Reset current selection when initiative changes
       titleSel.value = "";
       updateTaxonomy();
     }
@@ -1159,6 +1147,7 @@
           if (id === "model_combo") {
             const my = (document.getElementById("model_year").value || "").trim();
             const mn = (document.getElementById("model_name").value || "").trim();
+            // Option A: single segment, no underscore: MY28ELA
             return (my || "") + (mn || "");
           }
           const el = document.getElementById(id);
@@ -1195,18 +1184,32 @@
       modelName.disabled = !modelYear.value;
     }
 
-    // Attach listeners for step locking + taxonomy updates
+    // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
+
+    // 1) Populate Day dropdown
+    const daySel = document.getElementById("offer_day");
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement("option");
+      opt.value = String(d);
+      opt.textContent = String(d);
+      daySel.appendChild(opt);
+    }
+
+    // 2) Attach listeners for step locking + taxonomy
     ["region","media","initiative","title","model_year","model_name"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener("change", () => {
+          if (id === "initiative") {
+            populateTitleOptions();
+          }
           updateStepAvailability();
           updateTaxonomy();
         });
       }
     });
 
-    // Attach listeners for other taxonomy fields
+    // 3) Attach listeners for other taxonomy fields
     fieldOrder.forEach(id => {
       if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
       const el = document.getElementById(id);
@@ -1215,18 +1218,13 @@
       }
     });
 
-    ["model_year","model_name"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("change", updateTaxonomy);
-    });
-
-    // Offer end date listeners
+    // 4) Offer end date listeners
     ["offer_month","offer_day","offer_year"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.addEventListener("change", computeOfferEndCode);
     });
 
-    // Offer template + fields
+    // 5) Offer template + fields
     document.getElementById("offerTemplate").addEventListener("change", () => {
       ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
         const el = document.getElementById(id);
@@ -1241,18 +1239,13 @@
       if (el) el.addEventListener("input", buildOfferCode);
     });
 
-    // Initiative change should repopulate Title options
-    document.getElementById("initiative").addEventListener("change", populateTitleOptions);
-
-    // Initial bootstrapping
-    document.addEventListener("DOMContentLoaded", () => {
-      populateTitleOptions();   // set initial title list (NA only)
-      updateFieldUi();
-      buildOfferCode();
-      computeOfferEndCode();
-      updateStepAvailability();
-      updateTaxonomy();
-    });
+    // 6) Initial bootstrapping
+    populateTitleOptions();   // sets default title options (NA only when no init selected)
+    updateFieldUi();
+    buildOfferCode();
+    computeOfferEndCode();
+    updateStepAvailability();
+    updateTaxonomy();
   </script>
 </body>
 </html>
