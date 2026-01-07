@@ -131,6 +131,7 @@
       <option value="EVE">Evergreen</option>
       <option value="EVECON">Evergreen Conquest</option>
       <option value="EVERET">Evergreen Retention</option>
+      <option value="AMA">AMA Personalization</option>
     </select>
   </div>
 
@@ -465,6 +466,7 @@
       SOF: "Stand Off",
       ATM: "All That & More",
       TRD: "The Road",
+      FLO: "Floaties",
 
       // VS campaign
       "VSCivic": "Elantra VS Civic",
@@ -592,13 +594,16 @@
       TIME: "No time like today",
       LTSI: "Let That Sink In",
       DOU: "Donuts",
-      KTT: "Kick the Tires"
+      KTT: "Kick the Tires",
+      
+      // AMA Personalization 
+      BUILD: "AMA Personalization",
     };
 
     const INITIATIVE_TITLE_MAP = {
       "25PROMO": [
         "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
-        "BYA","SLG","ROC","RLF","SOF","ATM","TRD"
+        "BYA","SLG","ROC","RLF","SOF","ATM","TRD","FLO"
       ],
       "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
       "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
@@ -628,6 +633,8 @@
       ],
       "EVECON": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
       "EVERET": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"]
+      ],
+      "AMA": ["BUILD"]
     };
 
     function populateTitleOptions() {
