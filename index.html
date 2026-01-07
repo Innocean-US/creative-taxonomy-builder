@@ -1205,15 +1205,21 @@
     // 2) Attach listeners for step locking + taxonomy
     ["region","media","initiative","title","model_year","model_name"].forEach(id => {
       const el = document.getElementById(id);
-      if (el) {
-        el.addEventListener("change", () => {
-          if (id === "initiative") {
-            populateTitleOptions();
-          }
-          updateStepAvailability();
-          updateTaxonomy();
-        });
-      }
+      if (!el) return;
+    
+      el.addEventListener("change", () => {
+    
+        // ONLY do title population when Initiative itself changes
+        if (id === "initiative") {
+          // Clear Title before repopulating
+          const titleSel = document.getElementById("title");
+          titleSel.value = "";
+          populateTitleOptions();
+        }
+    
+        updateStepAvailability();
+        updateTaxonomy();
+      });
     });
 
     // 3) Attach listeners for other taxonomy fields
