@@ -96,9 +96,8 @@
       <option value="EAS">East</option>
       <option value="MAT">Mid-Atlantic</option>
       <option value="MTN">Mountain</option>
-      <option value="SOU">South</option>
       <option value="SCR">South Central</option>
-      <option value="EAS">East</option>
+      <option value="SOU">South</option>
     </select>
   </div>
 
@@ -706,57 +705,59 @@
 
     // -------- MULTI-MODEL HELPERS --------
 
-function createMultiModelRow(lockYear = null) {
+function createMultiModelRow() {
   const row = document.createElement("div");
   row.className = "field-group";
 
   row.innerHTML = `
-    <select class="mm-year">
-      <option value="">-- MY --</option>
-      <option value="MY24">MY24</option>
-      <option value="MY25">MY25</option>
-      <option value="MY26">MY26</option>
-      <option value="MY27">MY27</option>
-      <option value="MY28">MY28</option>
-      <option value="MY29">MY29</option>
-      <option value="MY30">MY30</option>
-    </select>
+    <div class="offer-field">
+      <span class="offer-label">Model Year</span>
+      <select class="mm-year">
+        <option value="">-- MY --</option>
+        <option value="MY24">MY24</option>
+        <option value="MY25">MY25</option>
+        <option value="MY26">MY26</option>
+        <option value="MY27">MY27</option>
+        <option value="MY28">MY28</option>
+        <option value="MY29">MY29</option>
+        <option value="MY30">MY30</option>
+      </select>
+    </div>
 
-    <select class="mm-model">
-      <option value="">-- Model --</option>
-      <option value="AFL">Alternative Fuel</option>
-      <option value="ELA">Elantra ICE</option>
-      <option value="EHV">Elantra HEV</option>
-      <option value="ELN">Elantra N</option>
-      <option value="EGT">Elantra GT</option>
-      <option value="IO5">Ioniq 5</option>
-      <option value="ION">Ioniq 5 N</option>
-      <option value="IO6">Ioniq 6</option>
-      <option value="IO9">Ioniq 9</option>
-      <option value="KON">Kona ICE</option>
-      <option value="KEV">Kona EV</option>
-      <option value="NEX">Nexo</option>
-      <option value="PAL">Palisade ICE</option>
-      <option value="PHE">Palisade HEV</option>
-      <option value="SCZ">Santa Cruz</option>
-      <option value="SFN">Santa Fe ICE</option>
-      <option value="SHV">Santa Fe HEV</option>
-      <option value="SON">Sonata</option>
-      <option value="HYB">Sonata HEV</option>
-      <option value="TUC">Tucson ICE</option>
-      <option value="THV">Tucson HEV</option>
-      <option value="TPV">Tucson PHEV</option>
-      <option value="VEN">Venue</option>
-    </select>
+    <div class="offer-field">
+      <span class="offer-label">Model</span>
+      <select class="mm-model">
+        <option value="">-- Model --</option>
+        <option value="AFL">Alternative Fuel</option>
+        <option value="ELA">Elantra ICE</option>
+        <option value="EHV">Elantra HEV</option>
+        <option value="ELN">Elantra N</option>
+        <option value="EGT">Elantra GT</option>
+        <option value="IO5">Ioniq 5</option>
+        <option value="ION">Ioniq 5 N</option>
+        <option value="IO6">Ioniq 6</option>
+        <option value="IO9">Ioniq 9</option>
+        <option value="KON">Kona ICE</option>
+        <option value="KEV">Kona EV</option>
+        <option value="NEX">Nexo</option>
+        <option value="PAL">Palisade ICE</option>
+        <option value="PHE">Palisade HEV</option>
+        <option value="SCZ">Santa Cruz</option>
+        <option value="SFN">Santa Fe ICE</option>
+        <option value="SHV">Santa Fe HEV</option>
+        <option value="SON">Sonata</option>
+        <option value="HYB">Sonata HEV</option>
+        <option value="TUC">Tucson ICE</option>
+        <option value="THV">Tucson HEV</option>
+        <option value="TPV">Tucson PHEV</option>
+        <option value="VEN">Venue</option>
+      </select>
+    </div>
 
     <button type="button">Remove</button>
   `;
 
   const yearSel = row.querySelector(".mm-year");
-  if (lockYear) {
-    yearSel.value = lockYear;
-    yearSel.disabled = true;
-  }
 
   row.querySelector("button").addEventListener("click", () => {
     row.remove();
@@ -1252,7 +1253,7 @@ function createMultiModelRow(lockYear = null) {
             const rows = document.querySelectorAll("#multiModelRows .field-group");
             const combos = [];
             const seen = new Set();
-            let enforcedYear = null;
+            // let enforcedYear = null;
 
             errorEl.textContent = "";
 
@@ -1261,11 +1262,11 @@ function createMultiModelRow(lockYear = null) {
               const m = row.querySelector(".mm-model").value;
               if (!y || !m) return;
 
-              if (!enforcedYear) enforcedYear = y;
-              if (y !== enforcedYear) {
-                errorEl.textContent = "All models must use the same Model Year.";
-                return;
-              }
+              // if (!enforcedYear) enforcedYear = y;
+              // if (y !== enforcedYear) {
+              //   errorEl.textContent = "All models must use the same Model Year.";
+              //   return;
+              // }
 
               const key = y + m;
               if (seen.has(key)) {
@@ -1351,10 +1352,8 @@ function createMultiModelRow(lockYear = null) {
     });
 
     document.getElementById("addModelBtn").addEventListener("click", () => {
-      const rows = document.querySelectorAll(".mm-year");
-      const lockYear = rows.length ? rows[0].value : null;
       document.getElementById("multiModelRows")
-        .appendChild(createMultiModelRow(lockYear));
+        .appendChild(createMultiModelRow());
     });
 
     // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
