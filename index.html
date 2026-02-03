@@ -1,295 +1,1276 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Campaign Taxonomy Builder</title>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style>
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    max-width: 900px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-  }
-  h1 { font-size: 1.6rem; margin-bottom: 0.5rem; }
-  h2 { font-size: 1.2rem; margin-top: 1.75rem; }
-  .field-group {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-  label { min-width: 160px; font-weight: 600; }
-  select, input[type="text"] { min-width: 220px; padding: 0.25rem 0.5rem; }
-  button { padding: 0.35rem 0.75rem; }
-  .hidden { display: none; }
-  .error { color: #b00020; font-size: 0.85rem; }
-  .code-output {
-    margin-top: 2rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    background: #f9f9f9;
-    border-radius: 6px;
-  }
-  code { font-weight: 600; font-size: 1.1rem; word-break: break-all; }
-</style>
-</head>
-
-<body>
-
-<h1>Campaign Taxonomy Builder</h1>
-<p>Select values below. The tool generates a deterministic taxonomy string.</p>
-
-<!-- REGION -->
-<div class="field-group">
-  <label>Region</label>
-  <select id="region">
-    <option value="">-- Select --</option>
-    <option value="ALR">All Regions</option>
-    <option value="CEN">Central</option>
-    <option value="EAS">East</option>
-  </select>
-</div>
-
-<!-- MEDIA -->
-<div class="field-group">
-  <label>Media</label>
-  <select id="media" disabled>
-    <option value="">-- Select --</option>
-    <option value="IMV">Programmatic Video</option>
-    <option value="DIS">Display</option>
-  </select>
-</div>
-
-<!-- INITIATIVE -->
-<div class="field-group">
-  <label>Initiative</label>
-  <select id="initiative" disabled>
-    <option value="">-- Select --</option>
-    <option value="WGSE">Winter Getaway Sales Event</option>
-    <option value="CRCH">Cross-Channel</option>
-  </select>
-</div>
-
-<!-- TITLE -->
-<div class="field-group">
-  <label>Title</label>
-  <select id="title" disabled>
-    <option value="">-- Select --</option>
-  </select>
-</div>
-
-<!-- MODEL MODE -->
-<div class="field-group hidden" id="modelModeGroup">
-  <label>Model Selection</label>
-  <label><input type="radio" name="modelMode" value="single" checked> Single</label>
-  <label><input type="radio" name="modelMode" value="multiple"> Multiple</label>
-</div>
-
-<!-- SINGLE MODEL -->
-<div id="singleModelBlock">
-  <div class="field-group">
-    <label>Model Year</label>
-    <select id="model_year" disabled>
-      <option value="">-- Select --</option>
-      <option value="MY24">MY24</option>
-      <option value="MY25">MY25</option>
-    </select>
-  </div>
-  <div class="field-group">
-    <label>Model</label>
-    <select id="model_name" disabled>
-      <option value="">-- Select --</option>
-      <option value="TUC">Tucson</option>
-      <option value="ION">Ioniq 5 N</option>
-      <option value="PAL">Palisade</option>
-    </select>
-  </div>
-</div>
-
-<!-- MULTI MODEL -->
-<div id="multiModelBlock" class="hidden">
-  <h2>Models</h2>
-  <div id="multiModelRows"></div>
-  <button type="button" id="addModelBtn">Add Model</button>
-  <div id="modelError" class="error"></div>
-</div>
-
-<!-- OUTPUT -->
-<div class="code-output">
-  <strong>Generated Taxonomy String</strong><br>
-  <code id="taxonomyCode">(select values above)</code>
-</div>
-
-<script>
-/* ---------------- TITLES ---------------- */
-
-const ALL_TITLES = {
-  NA: "Not Applicable",
-  LLW: "Lay Low",
-  EPIC: "Epic Afternoon"
-};
-
-const INITIATIVE_TITLE_MAP = {
-  WGSE: ["LLW"],
-  CRCH: ["EPIC"]
-};
-
-function populateTitleOptions() {
-  const init = initiative.value;
-  title.innerHTML = "<option value=''>-- Select --</option>";
-
-  if (!INITIATIVE_TITLE_MAP[init]) return;
-
-  INITIATIVE_TITLE_MAP[init].forEach(code => {
-    const opt = document.createElement("option");
-    opt.value = code;
-    opt.textContent = ALL_TITLES[code];
-    title.appendChild(opt);
-  });
-}
-
-/* ---------------- MODEL ROW FACTORY ---------------- */
-
-function createModelRow(lockYear = null) {
-  const row = document.createElement("div");
-  row.className = "field-group";
-
-  row.innerHTML = `
-    <select class="mm-year">
-      <option value="">MY</option>
-      <option value="MY24">MY24</option>
-      <option value="MY25">MY25</option>
-    </select>
-    <select class="mm-name">
-      <option value="">Model</option>
-      <option value="TUC">Tucson</option>
-      <option value="ION">Ioniq 5 N</option>
-      <option value="PAL">Palisade</option>
-    </select>
-    <button type="button">Delete</button>
-  `;
-
-  const yearSel = row.querySelector(".mm-year");
-  const modelSel = row.querySelector(".mm-name");
-
-  if (lockYear) {
-    yearSel.value = lockYear;
-    yearSel.disabled = true;
-  }
-
-  row.querySelector("button").onclick = () => {
-    row.remove();
-    updateTaxonomy();
-  };
-
-  yearSel.onchange = modelSel.onchange = updateTaxonomy;
-
-  return row;
-}
-
-/* ---------------- MODEL MODE ---------------- */
-
-document.querySelectorAll("input[name='modelMode']").forEach(r => {
-  r.onchange = e => {
-    if (e.target.value === "multiple") {
-      singleModelBlock.classList.add("hidden");
-      multiModelBlock.classList.remove("hidden");
-      multiModelRows.innerHTML = "";
-      multiModelRows.appendChild(createModelRow());
-    } else {
-      multiModelBlock.classList.add("hidden");
-      singleModelBlock.classList.remove("hidden");
-      modelError.textContent = "";
+  <meta charset="utf-8" />
+  <title>Campaign Taxonomy Builder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
-    updateTaxonomy();
-  };
-});
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .field-group {
+      margin-bottom: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    label {
+      min-width: 160px;
+      font-weight: 600;
+    }
+    select {
+      min-width: 220px;
+      padding: 0.25rem 0.5rem;
+    }
+    input[type="text"] {
+      padding: 0.25rem 0.5rem;
+    }
+    .code-output {
+      margin-top: 2rem;
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .code-output code {
+      font-size: 1.1rem;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    .hint {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.25rem;
+    }
+    .offer-wrapper {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .offer-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+    .offer-field {
+      display: flex;
+      flex-direction: column;
+      margin-right: 0.75rem;
+    }
+    .offer-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.1rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Campaign Taxonomy Builder</h1>
+  <p>Select values below. The tool will generate the full taxonomy string.</p>
 
-addModelBtn.onclick = () => {
-  const firstYear = multiModelRows.querySelector(".mm-year")?.value || null;
-  multiModelRows.appendChild(createModelRow(firstYear));
-};
+  <!-- REGION -->
+  <div class="field-group">
+    <label for="region">Region</label>
+    <select id="region">
+      <option value="">-- Select Region --</option>
+      <option value="ALR">All Regions</option>
+      <option value="CEN">Central</option>
+      <option value="EAS">East</option>
+      <option value="MAT">Mid-Atlantic</option>
+      <option value="MTN">Mountain</option>
+      <option value="SCR">South Central</option>
+      <option value="SOU">South</option>
+    </select>
+  </div>
 
-/* ---------------- TAXONOMY ---------------- */
+  <!-- MEDIA TYPE (locked until Region selected) -->
+  <div class="field-group">
+    <label for="media">Media Type</label>
+    <select id="media" disabled>
+      <option value="">-- Select Channel --</option>
+      <option value="NIMV">Broadcast Spots</option>
+      <option value="IMV">Programmatic Video</option>
+      <option value="DIS">Display</option>
+      <option value="MLA">Meta Static Link Ad</option>
+      <option value="MMPA">Meta Carousel Ad</option>
+      <option value="MVA">Meta Video Ad</option>
+      <option value="AUD">Streaming Audio</option>
+    </select>
+  </div>
 
-function updateTaxonomy() {
-  modelError.textContent = "";
+  <!-- INITIATIVE / CAMPAIGN (locked until Media selected) -->
+  <div class="field-group">
+    <label for="initiative">Initiative / Campaign</label>
+    <select id="initiative" disabled>
+      <option value="">-- Select Initiative --</option>
+      <option value="25PROMO">2025 Promo Period Creative</option>
+      <option value="SPGSE">Spring Getaway Sales Event</option>
+      <option value="SGSE">Summer Getaway Sales Event</option>
+      <option value="WGSE">Winter Getaway Sales Event</option>
+      <option value="WIN">Wins Every Time VS Campaign</option>
+      <option value="CUA">Customer Assurance</option>
+      <option value="BRD">Brand</option>
+      <option value="EVE">Evergreen</option>
+      <option value="EVECON">Evergreen Conquest</option>
+      <option value="EVERET">Evergreen Retention</option>
+      <option value="AMA">AMA Personalization</option>
+      <option value="CRCH">Cross-Channel</option>
+    </select>
+  </div>
 
-  const parts = [];
-  ["region","media","initiative","title"].forEach(id => {
-    if (window[id].value) parts.push(window[id].value);
-  });
+  <!-- TITLE (locked until Initiative selected; options populated by JS) -->
+  <div class="field-group">
+    <label for="title">Title</label>
+    <select id="title" disabled>
+      <option value="">-- Select Title --</option>
+    </select>
+  </div>
 
-  const mode = document.querySelector("input[name='modelMode']:checked").value;
+  <!-- MODEL YEAR (locked until Title selected) -->
+  <div class="field-group">
+    <label for="model_year">Model Year</label>
+    <select id="model_year" disabled>
+      <option value="">-- Select Model Year --</option>
+      <option value="MY24">MY24</option>
+      <option value="MY25">MY25</option>
+      <option value="MY26">MY26</option>
+      <option value="MY27">MY27</option>
+      <option value="MY28">MY28</option>
+      <option value="MY29">MY29</option>
+      <option value="MY30">MY30</option>
+    </select>
+  </div>
 
-  if (mode === "multiple") {
-    const combos = [];
-    const seen = new Set();
-    let enforcedYear = null;
+  <!-- MODEL NAME (locked until Model Year selected) -->
+  <div class="field-group">
+    <label for="model_name">Model Name</label>
+    <select id="model_name" disabled>
+      <option value="">-- Select Model --</option>
+      <option value="AFL">Alternative Fuel</option>
+      <option value="ELA">Elantra ICE</option>
+      <option value="EHV">Elantra HEV</option>
+      <option value="ELN">Elantra N</option>
+      <option value="EGT">Elantra GT</option>
+      <option value="IO5">Ioniq 5</option>
+      <option value="ION">Ioniq 5 N</option>
+      <option value="IO6">Ioniq 6</option>
+      <option value="IO9">Ioniq 9</option>
+      <option value="KON">Kona ICE</option>
+      <option value="KEV">Kona EV</option>
+      <option value="NEX">Nexo</option>
+      <option value="PAL">Palisade ICE</option>
+      <option value="PHE">Palisade HEV</option>
+      <option value="SCZ">Santa Cruz</option>
+      <option value="SFN">Santa Fe ICE</option>
+      <option value="SHV">Santa Fe HEV</option>
+      <option value="SON">Sonata</option>
+      <option value="HYB">Sonata HEV</option>
+      <option value="TUC">Tucson ICE</option>
+      <option value="THV">Tucson HEV</option>
+      <option value="TPV">Tucson PHEV</option>
+      <option value="VEN">Venue</option>
+      <option value="MLM">Multiple Models</option>
+    </select>
+  </div>
 
-    multiModelRows.querySelectorAll(".field-group").forEach(row => {
-      const y = row.querySelector(".mm-year").value;
-      const m = row.querySelector(".mm-name").value;
-      if (!y || !m) return;
+  <!-- OFFER BUILDER HEADER -->
+  <h2>Offer Builder</h2>
 
-      if (!enforcedYear) enforcedYear = y;
-      if (y !== enforcedYear) {
-        modelError.textContent = "All models must use the same Model Year.";
-        taxonomyCode.textContent = "(validation error)";
-        return;
+  <!-- OFFER BUILDER CARD -->
+  <div class="offer-wrapper">
+    <div class="offer-row">
+      <label class="offer-label" style="margin-right:0.5rem;"><strong>Offer template</strong></label>
+      <select id="offerTemplate">
+        <option value="">-- Select Offer --</option>
+
+        <!-- Cash only -->
+        <option value="BONUS_CASH">Bonus Cash</option>
+        <option value="DEALER_CASH">Dealer Cash</option>
+        <option value="SALES_EVENT_CASH">Sales Event Cash</option>
+        <option value="TS_CI">Total Savings + Charger + Installation</option>
+        <option value="TS_ONLY">Total Savings</option>
+
+        <!-- APR / 0-0 / APR+BC patterns -->
+        <option value="APR_ONLY">APR</option>
+        <option value="ZERO_ZERO">0-0</option>
+        <option value="APR_PLUS_BC">APR + BC</option>
+        <option value="APR_OR_BC">APR or BC</option>
+        <option value="ZERO_PLUS_BC">0-0 + BC</option>
+        <option value="ZERO_PLUS_UPBC">0-0 plus up to BC</option>
+        <option value="ZERO_OR_UPBC">0-0 or up to BC</option>
+        <option value="APR_PLUS_CI">APR + Charger + Installation</option>
+        <option value="APR_BC_CI">APR + BC + Charger + Installation</option>
+
+        <!-- Lease family -->
+        <option value="LEASE_ONLY">Lease</option>
+        <option value="LEASE_PLUS_BC">Lease + Bonus Cash</option>
+        <option value="SIGN_DRIVE">Sign &amp; Drive</option>
+        <option value="LEASE_PLUS_EV">Lease + EV Bonus</option>
+        <option value="LEASE_PLUS_EV_CI">Lease + EV Bonus + Charger + Installation</option>
+
+        <!-- APR + Lease / APR or Lease / APR + No Payments -->
+        <option value="APR_PLUS_LEASE">APR + Lease</option>
+        <option value="APR_OR_LEASE">APR or Lease</option>
+        <option value="APR_PLUS_NOPAY">APR + No Payments</option>
+
+        <!-- Multi-offer APR / APR or EV BC -->
+        <option value="APR_MULTIPLE">APR Multiple</option>
+        <option value="APR_OR_EVBC">APR or EV BC</option>
+
+        <!-- NEW: APR + BC or Lease / APR or BC or Lease -->
+        <option value="APR_BC_OR_LEASE">APR + BC or Lease</option>
+        <option value="APR_OR_BC_OR_LEASE">APR or BC or Lease</option>
+
+        <!-- Static codes -->
+        <option value="HCM_CODE">Hyundai Complimentary Maintenance</option>
+        <option value="ABW_CODE">America's Best Warranty</option>
+        <option value="CTB_CODE">Click to Buy</option>
+        <option value="URG_CODE">Urgency</option>
+      </select>
+    </div>
+
+    <!-- Generic offer fields -->
+    <div class="offer-row" id="offerFieldsRow">
+      <div class="offer-field" id="field1">
+        <span class="offer-label" id="field1Label">Field 1</span>
+        <input id="field1Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field2">
+        <span class="offer-label" id="field2Label">Field 2</span>
+        <input id="field2Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field3">
+        <span class="offer-label" id="field3Label">Field 3</span>
+        <input id="field3Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field4">
+        <span class="offer-label" id="field4Label">Field 4</span>
+        <input id="field4Input" type="text" placeholder="" />
+      </div>
+      <div class="offer-field" id="field5">
+        <span class="offer-label" id="field5Label">Field 5</span>
+        <input id="field5Input" type="text" placeholder="" />
+      </div>
+    </div>
+
+    <!-- Offer Code -->
+    <div class="offer-row">
+      <div class="offer-field">
+        <span class="offer-label"><strong>Offer Code</strong></span>
+        <input id="offerCodeDisplay" type="text"
+               placeholder="0APR60+0P90+UP2.5BC"
+               readonly
+               style="min-width:260px;" />
+        <input type="hidden" id="offerCode" />
+      </div>
+    </div>
+  </div>
+
+  <!-- OFFER END DATE -->
+  <div class="field-group">
+    <label>Offer End Date</label>
+    <select id="offer_month">
+      <option value="">Month</option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+
+    <select id="offer_day">
+      <option value="">Day</option>
+    </select>
+
+    <select id="offer_year">
+      <option value="">Year</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+      <option value="2027">2027</option>
+      <option value="2028">2028</option>
+      <option value="2029">2029</option>
+      <option value="2030">2030</option>
+    </select>
+
+    <input type="hidden" id="offer_end_code" />
+  </div>
+
+  <!-- MARKET & DEMO -->
+  <div class="field-group">
+    <label for="market">Market</label>
+    <select id="market">
+      <option value="">-- Select Market --</option>
+      <option value="ALB">ALB – Albuquerque-Santa Fe, NM</option>
+      <option value="ABQ">ABQ – Albuquerque-Santa Fe, NM</option>
+      <option value="ATL">ATL – Atlanta, GA</option>
+      <option value="AUS">AUS – Austin, TX</option>
+      <option value="BAL">BAL – Baltimore, MD</option>
+      <option value="PTB">PTB – Bangor, ME</option>
+      <option value="BIR">BIR – Birmingham (Anniston and Tuscaloosa), AL</option>
+      <option value="BOC">BOC – Boca Raton, FL</option>
+      <option value="BOI">BOI – Boise, ID</option>
+      <option value="BOS">BOS – Boston (Manchester), MA</option>
+      <option value="BUF">BUF – Buffalo, NY</option>
+      <option value="CHA">CHA – Charlotte, NC</option>
+      <option value="CHI">CHI – Chicago, IL</option>
+      <option value="CIN">CIN – Cincinnati, OH</option>
+      <option value="CLE">CLE – Cleveland-Akron (Canton), OH</option>
+      <option value="CSP">CSP – Colorado Springs-Pueblo, CO</option>
+      <option value="COL">COL – Columbus, OH</option>
+      <option value="DAL">DAL – Dallas-Fort Worth, TX</option>
+      <option value="DEN">DEN – Denver, CO</option>
+      <option value="DET">DET – Detroit, MI</option>
+      <option value="ELP">ELP – El Paso (Las Cruces), TX</option>
+      <option value="FTM">FTM – Fort Myers-Naples, FL</option>
+      <option value="FSM">FSM – Fort Smith-Fayetteville-Springdale-Rogers, AR</option>
+      <option value="FRS">FRS – Fresno-Visalia, CA</option>
+      <option value="GHW">GHW – Greensboro-High Point-Winston-Salem, NC</option>
+      <option value="GNV">GNV – Greenville-Spartanburg-Asheville-Anderson, SC</option>
+      <option value="MCA">MCA – Harlingen-Weslaco-Brownsville-McAllen, TX</option>
+      <option value="HRB">HRB – Harrisburg-Lancaster-Lebanon-York, PA</option>
+      <option value="HAR">HAR – Hartford & New Haven, CT</option>
+      <option value="HON">HON – Honolulu, HI</option>
+      <option value="HOU">HOU – Houston, TX</option>
+      <option value="IND">IND – Indianapolis, IN</option>
+      <option value="JAC">JAC – Jacksonville, FL</option>
+      <option value="KAN">KAN – Kansas City, MO</option>
+      <option value="LVG">LVG – Las Vegas, NV</option>
+      <option value="LRA">LRA – Little Rock-Pine Bluff, AR</option>
+      <option value="LOS">LOS – Los Angeles, CA</option>
+      <option value="MEM">MEM – Memphis, TN</option>
+      <option value="MIA">MIA – Miami-Fort Lauderdale, FL</option>
+      <option value="MIL">MIL – Milwaukee, WI</option>
+      <option value="MIN">MIN – Minneapolis-St. Paul, MN</option>
+      <option value="MOB">MOB – Mobile-Pensacola (Fort Walton Beach), AL</option>
+      <option value="MUL">MUL – Multiple</option>
+      <option value="NAS">NAS – Nashville, TN</option>
+      <option value="NAT">NAT – National</option>
+      <option value="NOL">NOL – New Orleans, LA</option>
+      <option value="NYC">NYC – New York, NY</option>
+      <option value="NOR">NOR – Norfolk-Portsmouth-Newport News, VA</option>
+      <option value="OKC">OKC – Oklahoma City, OK</option>
+      <option value="OMH">OMH – Omaha, NE</option>
+      <option value="ORL">ORL – Orlando-Daytona Beach-Melbourne, FL</option>
+      <option value="PHI">PHI – Philadelphia, PA</option>
+      <option value="PHO">PHO – Phoenix (Prescott), AZ</option>
+      <option value="PIT">PIT – Pittsburgh, PA</option>
+      <option value="POR">POR – Portland, OR</option>
+      <option value="PTA">PTA – Portland-Auburn, ME</option>
+      <option value="PRV">PRV – Providence-New Bedford, RI</option>
+      <option value="RAL">RAL – Raleigh-Durham (Fayetteville), NC</option>
+      <option value="RCH">RCH – Richmond-Petersburg, VA</option>
+      <option value="ROH">ROH – Rochester, NY</option>
+      <option value="SAC">SAC – Sacramento-Stockton-Modesto, CA</option>
+      <option value="SLC">SLC – Salt Lake City, UT</option>
+      <option value="SAN">SAN – San Antonio, TX</option>
+      <option value="SDO">SDO – San Diego, CA</option>
+      <option value="SFO">SFO – San Francisco-Oakland-San Jose, CA</option>
+      <option value="SAV">SAV – Savannah, GA</option>
+      <option value="SEA">SEA – Seattle-Tacoma, WA</option>
+      <option value="SCH">SCH – Springfield-Holyoke, MA</option>
+      <option value="STL">STL – St. Louis, MO</option>
+      <option value="TAM">TAM – Tampa-St. Petersburg (Sarasota), FL</option>
+      <option value="TUC">TUC – Tucson (Sierra Vista), AZ</option>
+      <option value="TUL">TUL – Tulsa, OK</option>
+      <option value="WDC">WDC – Washington, D.C. (Hagerstown)</option>
+      <option value="WPB">WPB – West Palm Beach-Fort Pierce, FL</option>
+      <option value="WIL">WIL – Wilkes Barre-Scranton-Hazleton, PA</option>
+    </select>
+  </div>
+
+  <div class="field-group">
+    <label for="demo_market">Demographic Market</label>
+    <select id="demo_market">
+      <option value="">-- Select Demographic --</option>
+      <option value="GM">GM – General Market</option>
+      <option value="HM">HM – Hispanic Market</option>
+    </select>
+  </div>
+
+  <!-- LENGTH / SIZE -->
+  <div class="field-group">
+    <label for="length">Length / Size</label>
+    <select id="length">
+      <option value="">-- Select Length/Size --</option>
+      <option value="15">15</option>
+      <option value="30">30</option>
+      <option value="1x1">1x1</option>
+      <option value="9x16">9x16</option>
+      <option value="16x9">16x9</option>
+      <option value="NA">NA</option>
+    </select>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="code-output">
+    <div><strong>Generated Taxonomy String:</strong></div>
+    <code id="taxonomyCode">(select values above)</code>
+    <div class="hint">
+      This updates live as you change fields. Copy + paste as needed.
+    </div>
+  </div>
+
+  <script>
+    // --- Title master list and initiative → title mapping ---
+
+    const ALL_TITLES = {
+      NA: "Not Applicable",
+
+      // Promo Period
+      TOW: "The Tow",
+      NLBR1: "No Looking Back R1",
+      WFH: "Work From Home",
+      DIN: "Diner",
+      DGL: "Dog Life R1",
+      WAP: "Watch Party",
+      SHD: "Shade",
+      HOM: "Home",
+      COL: "College",
+      BYA: "Booya",
+      SLG: "Short Long R2",
+      ROC: "Rock Out",
+      RLF: "Real Friends",
+      SOF: "Stand Off",
+      ATM: "All That & More",
+      TRD: "The Road",
+      FLO: "Floaties",
+      TEA: "Spill the Tea",
+      GOL: "Golf Pro",
+      "GOL|IO5": "Golf Pro - Ioniq 5 Drive Off",
+      "GOL|SON": "Golf Pro - Sonata Drive Off",
+
+      // Sales Events (SPGSE, SGSE, WGSE)
+      LLW: "Lay Low",
+      CNF: "Confession",
+      CPT: "Couple's Therapy",
+      LWF: "Lawyer Friend",
+      DAD: "Dad Santa",
+      "DAD|IO5": "Dad Santa - Ioniq 5 Drive Off",
+      "DAD|SON": "Dad Santa - Sonata Drive Off",
+      COP: "Mall Cop",
+
+      // VS Campaign
+      "VSCivic": "Elantra VS Civic",
+      "VSCorolla": "Elantra VS Corolla",
+      "VSSentra": "Elantra VS Sentra",
+      "VSCorollaHybrid": "Elantra Hybrid VS Corolla Hybrid",
+      "VSAccordHybrid": "Elantra Hybrid VS Accord Hybrid / Sonata Hybrid VS Accord Hybrid",
+      "VSID.4": "VS ID.4",
+      "VSMach-E": "Ioniq 5 VS Mach-E",
+      "VSAriya": "Ioniq 5 VS Ariya",
+      "VSbZ4X": "Ioniq 5 VS bZ4X",
+      "VSModelY": "VS Model Y",
+      "VSPrologue": "Ioniq 5 VS Prologue",
+      "VSPolestar2": "Ioniq 6 VS Polestar 2",
+      "VSModel3": "Ioniq 6 VS Model 3",
+      "VSC-HR": "Kona VS C-HR",
+      "VSHR-V": "Kona VS HR-V",
+      "VSRenegade": "Kona VS Renegade",
+      "VSCrosstrek": "Kona VS Crosstrek",
+      "VSCorollaCross": "Kona VS Corolla Cross",
+      "VSTrailblazer": "Kona VS Trailblazer",
+      "VSTrax": "Kona VS Trax",
+      "VSLeaf": "Kona EV VS Leaf",
+      "VSMini": "Kona EV VS Mini",
+      "VSBolt": "Kona EV VS Bolt",
+      "VSClarityFC": "Nexo VS Clarity FC",
+      "VSMirai": "Nexo VS Mirai",
+      "VSExplorer": "Palisade VS Explorer",
+      "VSHighlander": "Palisade / Santa Fe VS Highlander",
+      "VSPilot": "Palisade VS Pilot",
+      "VSGrandCherokee": "Palisade VS Grand Cherokee",
+      "VSTraverse": "Palisade VS Traverse",
+      "VSPathfinder": "Palisade VS Pathfinder",
+      "VSMaverick": "Santa Cruz VS Maverick",
+      "VSOutback": "Santa Cruz / Santa Fe VS Outback",
+      "VSRidgeline": "Santa Cruz VS Ridgeline",
+      "VSMurano": "Santa Fe VS Murano",
+      "VSPassport": "Santa Fe VS Passport",
+      "VSBlazer": "Santa Fe VS Blazer",
+      "VSRAV4Hybrid": "Santa Fe / Tucson Hybrid VS RAV4 Hybrid",
+      "VSCR-VHybrid": "Santa Fe / Tucson Hybrid VS CR-V Hybrid",
+      "VSEscapeHybrid": "Santa Fe / Tucson Hybrid VS Escape Hybrid",
+      "VSEscapePHEV": "Santa Fe / Tucson PHEV VS Escape PHEV",
+      "VSOutlanderPHEV": "Santa Fe PHEV VS Outlander PHEV",
+      "VSRAV4PHEV": "Santa Fe / Tucson PHEV VS RAV4 PHEV",
+      "VSAccord": "Sonata VS Accord",
+      "VSAltima": "Sonata VS Altima",
+      "VSCamry": "Sonata VS Camry",
+      "VSCamryHybrid": "Sonata Hybrid VS Camry Hybrid",
+      "VSCR-V": "Tucson VS CR-V",
+      "VSRAV4": "Tucson VS RAV4",
+      "VSRogue": "Tucson VS Rogue",
+      "VSForester": "Tucson VS Forester",
+      "VSEquinox": "Tucson VS Equinox",
+      "VSEscape": "Tucson VS Escape",
+      "VSEscapePHEV": "Tucson PHEV VS Escape PHEV",
+      "VSModelX": "Ioniq 9 VS Model X",
+      "VSR1S": "Ioniq 9 VS R1S",
+
+      // Brand / CUA storytelling
+      HYW: "The Hyundai Way",
+      BTR: "Brand The Road",
+      VIK: "Vikings",
+      HWL: "Howl",
+      CHU: "Charged Up",
+      EXT: "Exterior IO9",
+      INT: "Interior IO9",
+      ELBR: "Elbow Room",
+      CWBY: "Cowboy",
+
+      // Evergreen Feature/Offer
+      BAP: "Build And Price",
+      RAQ: "Request A Quote",
+      STD: "Schedule Test Drive",
+      SI: "Search Inventory",
+      ABW: "America's Best Warranty",
+      NAV: "Navigation Screen",
+      SEW: "Safe Exit Warning",
+      TRUNK: "Hands Free Smart Trunk",
+      DISPLAY: "Display Screen",
+      MPG: "MPG",
+      RSPA: "Remote Smart Parking Assist",
+      BSVM: "Blind Spot View Monitor",
+      CARGO: "Cargo Room",
+      RANGE: "Range",
+      HEADUP: "Head-Up Display",
+      CABIN: "Cabin/Interior Space",
+      ADVSAF: "Advanced Safety Features",
+      FINGER: "Fingerprint Recognition",
+      LEGROOM: "Spacious Legroom",
+      LIFTGATE: "Hands-Free Smart Power Liftgate",
+      SFE: "Safe Exit Assist",
+      AWD: "HTRAC AWD",
+      TONNEAU: "Tonneau Bed Cover",
+      CHARGE: "Ultra-Fast Charging",
+      "2YRCHARGE": "2 Years Unlimited Charging",
+      V2L: "Vehicle-to-Load",
+      TORQUE: "Torque",
+      NGRIN: "N Grin Boost",
+      EVB: "Electric Battery Warranty",
+      DESIGN: "Design",
+      CARPLAY: "Apple CarPlay/Android Auto",
+      HPOWER: "Horsepower",
+      VFS: "Ventilated Front Seats",
+      DIGKEY: "Digital Key 2",
+      SEATS: "3rd Row Heated Seats/3rd Row",
+      BOSE: "Bose Audio",
+      TOWING: "Towing Capacity",
+      LIGHTING: "Ambient Lighting",
+      STEER: "Heated Steering Wheel",
+      IIHS: "IIHS Top Safety Pick/+ Award",
+      WPCA: "World Performance Car Award",
+      ETD: "Experience the Difference (Mobile)",
+      EVMOB: "EV Messaging (Mobile)",
+      HCM: "Hyundai Complimentary Maintenance",
+      FEA: "Multiple Features",
+      COM: "Multiple Features (Competitive)",
+      NAUVOTY: "North American Utility Vehicle of the Year",
+
+      // Evergreen Conquest/Retention
+      WAR: "Warranty",
+      INSP: "Inspection",
+      RA: "Roadside Assistance",
+      FIND: "Find yours",
+      HURRY: "Hurry in",
+      TIME: "No time like today",
+      LTSI: "Let That Sink In",
+      DOU: "Donuts",
+      KTT: "Kick the Tires",
+      
+      // AMA Personalization 
+      BUILD: "AMA Personalization",
+
+      // Cross-Channel 
+      EPIC: "Epic Afternoon",
+    };
+
+    // Code Grouping for Conditional Logic (if user selects Promo Period, only these are populated)
+    const INITIATIVE_TITLE_MAP = {
+      "25PROMO": [
+        "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
+        "BYA","SLG","ROC","RLF","SOF","ATM","TRD","FLO"
+      ],
+      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
+      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
+      "WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
+      "CUA": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
+      "BRD": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
+      "WIN": [
+        "VSCivic","VSCorolla","VSSentra","VSCorollaHybrid","VSAccordHybrid",
+        "VSID.4","VSMach-E","VSAriya","VSbZ4X","VSModelY","VSPrologue",
+        "VSPolestar2","VSModel3","VSC-HR","VSHR-V","VSRenegade","VSCrosstrek",
+        "VSCorollaCross","VSTrailblazer","VSTrax","VSLeaf","VSMini","VSBolt",
+        "VSClarityFC","VSMirai","VSExplorer","VSHighlander","VSPilot",
+        "VSGrandCherokee","VSTraverse","VSPathfinder","VSMaverick","VSOutback",
+        "VSRidgeline","VSMurano","VSPassport","VSBlazer","VSRAV4Hybrid",
+        "VSCR-VHybrid","VSEscapeHybrid","VSEscapePHEV","VSOutlanderPHEV",
+        "VSRAV4PHEV","VSAccord","VSAltima","VSCamry","VSCamryHybrid",
+        "VSCR-V","VSRAV4","VSRogue","VSForester","VSEquinox","VSEscape",
+        "VSEscapePHEV","VSModelX","VSR1S"
+      ],
+      "EVE": [
+        "BAP","RAQ","STD","SI","ABW","NAV","SEW","TRUNK","DISPLAY","MPG",
+        "RSPA","BSVM","CARGO","RANGE","HEADUP","CABIN","ADVSAF","FINGER",
+        "LEGROOM","LIFTGATE","SFE","AWD","TONNEAU","CHARGE","2YRCHARGE","V2L",
+        "TORQUE","NGRIN","EVB","DESIGN","CARPLAY","HPOWER","VFS","DIGKEY",
+        "SEATS","BOSE","TOWING","LIGHTING","STEER","IIHS","WPCA","ETD",
+        "EVMOB","HCM","FEA","COM","NAUVOTY"
+      ],
+      "EVECON": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
+      "EVERET": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
+      "AMA": ["BUILD"],
+      "CRCH": ["EPIC"]
+    };
+
+    function populateTitleOptions() {
+      const initiativeSel = document.getElementById("initiative");
+      const titleSel = document.getElementById("title");
+      const initVal = initiativeSel.value;
+
+      titleSel.innerHTML = "";
+
+      // Placeholder
+      const ph = document.createElement("option");
+      ph.value = "";
+      ph.textContent = "-- Select Title --";
+      titleSel.appendChild(ph);
+
+      // Always allow NA
+      if (ALL_TITLES["NA"]) {
+        const naOpt = document.createElement("option");
+        naOpt.value = "NA";
+        naOpt.textContent = ALL_TITLES["NA"];
+        titleSel.appendChild(naOpt);
       }
 
-      const key = y + m;
-      if (seen.has(key)) {
-        modelError.textContent = "Duplicate model selections are not allowed.";
-        row.querySelector(".mm-name").value = "";
-        taxonomyCode.textContent = "(validation error)";
-        return;
+      const codes =
+        initVal && INITIATIVE_TITLE_MAP[initVal]
+          ? INITIATIVE_TITLE_MAP[initVal]
+          : [];
+
+      codes.forEach(code => {
+        const label = ALL_TITLES[code];
+        if (!label || code === "NA") return;
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = label;
+        titleSel.appendChild(opt);
+      });
+
+      titleSel.value = "";
+      updateTaxonomy();
+    }
+
+    // --- Existing taxonomy + offer code machinery ---
+
+    const fieldOrder = [
+      "region",
+      "media",
+      "initiative",
+      "title",
+      "model_combo",
+      "offerCode",
+      "offer_end_code",
+      "market",
+      "demo_market",
+      "length"
+    ];
+
+    const templateUi = {
+      BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "e.g. 2500"} ] },
+      DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "e.g. 2500"} ] },
+      SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "e.g. 2500"} ] },
+      TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
+      TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
+
+      APR_ONLY: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
+        ]
+      },
+
+      ZERO_ZERO: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"}
+        ]
+      },
+
+      APR_PLUS_BC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
+        ]
+      },
+
+      APR_OR_BC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
+        ]
+      },
+
+      ZERO_PLUS_BC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
+        ]
+      },
+
+      ZERO_PLUS_UPBC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
+        ]
+      },
+
+      ZERO_OR_UPBC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
+        ]
+      },
+
+      APR_PLUS_CI: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
+        ]
+      },
+
+      APR_BC_CI: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 500"}
+        ]
+      },
+
+      LEASE_ONLY: {
+        fields: [
+          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
+        ]
+      },
+      LEASE_PLUS_BC: {
+        fields: [
+          {label: "Lease Amount", placeholder: "e.g. 239"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 1500"}
+        ]
+      },
+      SIGN_DRIVE: { fields: [] },
+      LEASE_PLUS_EV: {
+        fields: [
+          {label: "Lease Amount", placeholder: "e.g. 239"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
+        ]
+      },
+      LEASE_PLUS_EV_CI: {
+        fields: [
+          {label: "Lease Amount", placeholder: "e.g. 239"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
+        ]
+      },
+
+      APR_PLUS_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
+          {label: "Lease Amount", placeholder: "e.g. 239"}
+        ]
+      },
+      APR_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
+          {label: "Lease Amount", placeholder: "e.g. 239"}
+        ]
+      },
+      APR_PLUS_NOPAY: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 3.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"}
+        ]
+      },
+
+      APR_MULTIPLE: {
+        fields: [
+          {label: "APR Percentage 1", placeholder: "e.g. 2.99"},
+          {label: "APR Offer Term Months 1", placeholder: "e.g. 60"},
+          {label: "APR Percentage 2", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months 2", placeholder: "e.g. 48"}
+        ]
+      },
+
+      APR_OR_EVBC: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
+        ]
+      },
+
+      // NEW: APR + BC or Lease
+      APR_BC_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
+          {label: "Lease Amount", placeholder: "e.g. 299"}
+        ]
+      },
+
+      // NEW: APR or BC or Lease
+      APR_OR_BC_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 1.99"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
+          {label: "Lease Amount", placeholder: "e.g. 299"}
+        ]
+      },
+
+      HCM_CODE: { fields: [] },
+      ABW_CODE: { fields: [] },
+      CTB_CODE: { fields: [] },
+      URG_CODE: { fields: [] }
+    };
+
+    function cleanNumeric(val) {
+      return (val || "").replace(/[^0-9.]/g, "");
+    }
+    function cleanInt(val) {
+      return (val || "").replace(/[^0-9]/g, "");
+    }
+    function toThousands(amount) {
+      const numeric = parseFloat(cleanNumeric(amount));
+      if (isNaN(numeric) || numeric <= 0) return "";
+      return (numeric / 1000).toFixed(1);
+    }
+
+    function updateFieldUi() {
+      const template = document.getElementById("offerTemplate").value;
+      const cfg = templateUi[template] || {fields: []};
+
+      const fieldElems = [
+        {wrapper: document.getElementById("field1"), label: document.getElementById("field1Label"), input: document.getElementById("field1Input")},
+        {wrapper: document.getElementById("field2"), label: document.getElementById("field2Label"), input: document.getElementById("field2Input")},
+        {wrapper: document.getElementById("field3"), label: document.getElementById("field3Label"), input: document.getElementById("field3Input")},
+        {wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input")},
+        {wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input")}
+      ];
+
+      fieldElems.forEach(f => {
+        f.input.value = "";
+        f.wrapper.classList.add("hidden");
+      });
+
+      cfg.fields.forEach((fcfg, idx) => {
+        if (idx > 4) return;
+        const f = fieldElems[idx];
+        f.wrapper.classList.remove("hidden");
+        f.label.textContent = fcfg.label;
+        f.input.placeholder = fcfg.placeholder || "";
+      });
+
+      document.getElementById("offerFieldsRow")
+        .classList.toggle("hidden", cfg.fields.length === 0);
+    }
+
+    function buildOfferCode() {
+      const template = document.getElementById("offerTemplate").value;
+
+      const f1 = document.getElementById("field1Input").value;
+      const f2 = document.getElementById("field2Input").value;
+      const f3 = document.getElementById("field3Input").value;
+      const f4 = document.getElementById("field4Input").value;
+      const f5 = document.getElementById("field5Input").value;
+
+      const f1Num = cleanNumeric(f1);
+      const f2Num = cleanNumeric(f2);
+      const f3Num = cleanNumeric(f3);
+      const f4Num = cleanNumeric(f4);
+      const f5Num = cleanNumeric(f5);
+
+      const f1Int = cleanInt(f1);
+      const f2Int = cleanInt(f2);
+      const f3Int = cleanInt(f3);
+      const f4Int = cleanInt(f4);
+      const f5Int = cleanInt(f5);
+
+      const cashThousands1 = toThousands(f1);
+      const cashThousands2 = toThousands(f2);
+      const cashThousands3 = toThousands(f3);
+      const cashThousands4 = toThousands(f4);
+      const cashThousands5 = toThousands(f5);
+
+      let code = "";
+
+      switch (template) {
+        case "BONUS_CASH":
+          if (cashThousands1) code = cashThousands1 + "BC";
+          break;
+        case "DEALER_CASH":
+          if (cashThousands1) code = cashThousands1 + "DC";
+          break;
+        case "SALES_EVENT_CASH":
+          if (cashThousands1) code = cashThousands1 + "SEC";
+          break;
+        case "TS_CI":
+          if (cashThousands1) code = cashThousands1 + "TS+CI";
+          break;
+        case "TS_ONLY":
+          if (cashThousands1) code = cashThousands1 + "TS";
+          break;
+
+        case "APR_ONLY":
+          if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
+          break;
+
+        case "ZERO_ZERO": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          if (months && days) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "PAY" + days;
+          }
+          break;
+        }
+
+        case "APR_PLUS_BC":
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC";
+          }
+          break;
+
+        case "APR_OR_BC":
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC";
+          }
+          break;
+
+        case "ZERO_PLUS_BC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "+" + bc + "BC";
+          }
+          break;
+        }
+
+        case "ZERO_PLUS_UPBC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "+UP" + bc + "BC";
+          }
+          break;
+        }
+
+        case "ZERO_OR_UPBC": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const bc = cashThousands5;
+          if (months && days && bc) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "|UP" + bc + "BC";
+          }
+          break;
+        }
+
+        case "APR_PLUS_CI":
+          if (f1Num && f2Int) {
+            code = f1Num + "APR" + f2Int + "+CI";
+          }
+          break;
+
+        case "APR_BC_CI":
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC+CI";
+          }
+          break;
+
+        case "LEASE_ONLY":
+          if (f1Int) code = "L" + f1Int;
+          break;
+
+        case "LEASE_PLUS_BC":
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "BC";
+          }
+          break;
+
+        case "SIGN_DRIVE":
+          code = "SD000";
+          break;
+
+        case "LEASE_PLUS_EV":
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "EVBC";
+          }
+          break;
+
+        case "LEASE_PLUS_EV_CI":
+          if (f1Int && cashThousands2) {
+            code = "L" + f1Int + "+" + cashThousands2 + "EVBC+CI";
+          }
+          break;
+
+        case "APR_PLUS_LEASE":
+          if (f1Num && f2Int && f3Int) {
+            code = f1Num + "APR" + f2Int + "+L" + f3Int;
+          }
+          break;
+
+        case "APR_OR_LEASE":
+          if (f1Num && f2Int && f3Int) {
+            code = f1Num + "APR" + f2Int + "|L" + f3Int;
+          }
+          break;
+
+        case "APR_PLUS_NOPAY":
+          if (f1Num && f2Int && f4Int) {
+            const pays = f3Int || 0;
+            code = f1Num + "APR" + f2Int + "+" + pays + "P" + f4Int;
+          }
+          break;
+
+        case "APR_MULTIPLE":
+          if (f1Num && f2Int && f3Num && f4Int) {
+            const c1 = f1Num + "APR" + f2Int;
+            const c2 = f3Num + "APR" + f4Int;
+            code = c1 + "|" + c2;
+          }
+          break;
+
+        case "APR_OR_EVBC":
+          if (f1Num && f2Int && cashThousands3) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
+          }
+          break;
+
+        // NEW: APR + BC or Lease → 1.99APR60+2.5BC|L299
+        case "APR_BC_OR_LEASE":
+          if (f1Num && f2Int && cashThousands3 && f4Int) {
+            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC|L" + f4Int;
+          }
+          break;
+
+        // NEW: APR or BC or Lease → 1.99APR60|2.5BC|L299
+        case "APR_OR_BC_OR_LEASE":
+          if (f1Num && f2Int && cashThousands3 && f4Int) {
+            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC|L" + f4Int;
+          }
+          break;
+
+        case "HCM_CODE":
+          code = "HCM"; break;
+        case "ABW_CODE":
+          code = "ABW"; break;
+        case "CTB_CODE":
+          code = "CTB"; break;
+        case "URG_CODE":
+          code = "URG"; break;
+
+        default:
+          code = "";
       }
 
-      seen.add(key);
-      combos.push(key);
+      document.getElementById("offerCode").value = code;
+      document.getElementById("offerCodeDisplay").value = code;
+      updateTaxonomy();
+    }
+
+    function computeOfferEndCode() {
+      const mVal = document.getElementById("offer_month").value;
+      const dVal = document.getElementById("offer_day").value;
+      const yVal = document.getElementById("offer_year").value;
+      let code = "";
+
+      if (mVal && dVal && yVal) {
+        const m = parseInt(mVal, 10);
+        const d = parseInt(dVal, 10);
+        const y = parseInt(yVal, 10) % 100;
+        if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
+          const mStr = String(m);
+          const dStr = String(d);
+          const yStr = String(y).padStart(2,"0");
+          code = mStr + dStr + yStr; // e.g. 9/2/24 -> 9224
+        }
+      }
+      document.getElementById("offer_end_code").value = code;
+      updateTaxonomy();
+    }
+
+    function updateTaxonomy() {
+      const parts = fieldOrder
+        .map(id => {
+          if (id === "model_combo") {
+            const my = (document.getElementById("model_year").value || "").trim();
+            const mn = (document.getElementById("model_name").value || "").trim();
+            // Option A: single segment, no underscore: MY28ELA
+            return (my || "") + (mn || "");
+          }
+          const el = document.getElementById(id);
+          return el ? (el.value || "").trim() : "";
+        })
+        .filter(Boolean);
+
+      const code = parts.length ? parts.join("_") : "(select values above)";
+      document.getElementById("taxonomyCode").textContent = code;
+    }
+
+    // ---- Step-by-step selection locking logic ----
+    function updateStepAvailability() {
+      const region     = document.getElementById("region");
+      const media      = document.getElementById("media");
+      const initiative = document.getElementById("initiative");
+      const title      = document.getElementById("title");
+      const modelYear  = document.getElementById("model_year");
+      const modelName  = document.getElementById("model_name");
+
+      // Step 1: Region → enables Media
+      media.disabled = !region.value;
+
+      // Step 2: Media → enables Initiative
+      initiative.disabled = !media.value;
+
+      // Step 3: Initiative → enables Title
+      title.disabled = !initiative.value;
+
+      // Step 4: Title → enables Model Year
+      modelYear.disabled = !title.value;
+
+      // Step 5: Model Year → enables Model Name
+      modelName.disabled = !modelYear.value;
+    }
+
+    // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
+
+    // 1) Populate Day dropdown
+    const daySel = document.getElementById("offer_day");
+    for (let d = 1; d <= 31; d++) {
+      const opt = document.createElement("option");
+      opt.value = String(d);
+      opt.textContent = String(d);
+      daySel.appendChild(opt);
+    }
+
+    // 2) Attach listeners for step locking + taxonomy
+    ["region","media","initiative","title","model_year","model_name"].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+    
+      el.addEventListener("change", () => {
+    
+        // ONLY do title population when Initiative itself changes
+        if (id === "initiative") {
+          // Clear Title before repopulating
+          const titleSel = document.getElementById("title");
+          titleSel.value = "";
+          populateTitleOptions();
+        }
+    
+        updateStepAvailability();
+        updateTaxonomy();
+      });
     });
 
-    if (combos.length < 2) {
-      modelError.textContent = "Select at least two models.";
-      taxonomyCode.textContent = "(select at least two models)";
-      return;
-    }
+    // 3) Attach listeners for other taxonomy fields
+    fieldOrder.forEach(id => {
+      if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
+      const el = document.getElementById(id);
+      if (el && !["region","media","initiative","title","model_year","model_name"].includes(id)) {
+        el.addEventListener("change", updateTaxonomy);
+      }
+    });
 
-    parts.push(combos.join("|"));
-  } else {
-    if (model_year.value && model_name.value) {
-      parts.push(model_year.value + model_name.value);
-    }
-  }
+    // 4) Offer end date listeners
+    ["offer_month","offer_day","offer_year"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", computeOfferEndCode);
+    });
 
-  taxonomyCode.textContent = parts.join("_");
-}
+    // 5) Offer template + fields
+    document.getElementById("offerTemplate").addEventListener("change", () => {
+      ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = "";
+      });
+      updateFieldUi();
+      buildOfferCode();
+    });
 
-/* ---------------- LOCKING ---------------- */
+    ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("input", buildOfferCode);
+    });
 
-function updateLocks() {
-  media.disabled = !region.value;
-  initiative.disabled = !media.value;
-  title.disabled = !initiative.value;
-  modelModeGroup.classList.toggle("hidden", !title.value);
-  model_year.disabled = !title.value;
-  model_name.disabled = !model_year.value;
-}
-
-["region","media","initiative","title","model_year","model_name"].forEach(id => {
-  window[id].addEventListener("change", () => {
-    if (id === "initiative") populateTitleOptions();
-    updateLocks();
+    // 6) Initial bootstrapping
+    populateTitleOptions();   // sets default title options (NA only when no init selected)
+    updateFieldUi();
+    buildOfferCode();
+    computeOfferEndCode();
+    updateStepAvailability();
     updateTaxonomy();
-  });
-});
-
-updateLocks();
-</script>
-
+  </script>
 </body>
 </html>
