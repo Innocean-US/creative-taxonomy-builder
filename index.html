@@ -144,6 +144,21 @@
     </select>
   </div>
 
+  <!-- MODEL MODE -->
+<div class="field-group hidden" id="modelModeGroup">
+  <label>Model Selection</label>
+  <label><input type="radio" name="modelMode" value="single" checked /> Single</label>
+  <label><input type="radio" name="modelMode" value="multiple" /> Multiple</label>
+</div>
+
+<!-- MULTI MODEL BUILDER -->
+<div id="multiModelBlock" class="hidden">
+  <h2>Models</h2>
+  <div id="multiModelRows"></div>
+  <button type="button" id="addModelBtn">Add Model</button>
+  <div id="modelError" class="hint" style="color:#b00020;"></div>
+</div>
+
   <!-- MODEL YEAR (locked until Title selected) -->
   <div class="field-group">
     <label for="model_year">Model Year</label>
@@ -187,7 +202,7 @@
       <option value="THV">Tucson HEV</option>
       <option value="TPV">Tucson PHEV</option>
       <option value="VEN">Venue</option>
-      <option value="MLM">Multiple Models</option>
+      <!-- <option value="MLM">Multiple Models</option> -->
     </select>
   </div>
 
@@ -688,6 +703,71 @@
       updateTaxonomy();
     }
 
+    // -------- MULTI-MODEL HELPERS --------
+
+function createMultiModelRow(lockYear = null) {
+  const row = document.createElement("div");
+  row.className = "field-group";
+
+  row.innerHTML = `
+    <select class="mm-year">
+      <option value="">-- MY --</option>
+      <option value="MY24">MY24</option>
+      <option value="MY25">MY25</option>
+      <option value="MY26">MY26</option>
+      <option value="MY27">MY27</option>
+      <option value="MY28">MY28</option>
+      <option value="MY29">MY29</option>
+      <option value="MY30">MY30</option>
+    </select>
+
+    <select class="mm-model">
+      <option value="">-- Model --</option>
+      <option value="AFL">Alternative Fuel</option>
+      <option value="ELA">Elantra ICE</option>
+      <option value="EHV">Elantra HEV</option>
+      <option value="ELN">Elantra N</option>
+      <option value="EGT">Elantra GT</option>
+      <option value="IO5">Ioniq 5</option>
+      <option value="ION">Ioniq 5 N</option>
+      <option value="IO6">Ioniq 6</option>
+      <option value="IO9">Ioniq 9</option>
+      <option value="KON">Kona ICE</option>
+      <option value="KEV">Kona EV</option>
+      <option value="NEX">Nexo</option>
+      <option value="PAL">Palisade ICE</option>
+      <option value="PHE">Palisade HEV</option>
+      <option value="SCZ">Santa Cruz</option>
+      <option value="SFN">Santa Fe ICE</option>
+      <option value="SHV">Santa Fe HEV</option>
+      <option value="SON">Sonata</option>
+      <option value="HYB">Sonata HEV</option>
+      <option value="TUC">Tucson ICE</option>
+      <option value="THV">Tucson HEV</option>
+      <option value="TPV">Tucson PHEV</option>
+      <option value="VEN">Venue</option>
+    </select>
+
+    <button type="button">Remove</button>
+  `;
+
+  const yearSel = row.querySelector(".mm-year");
+  if (lockYear) {
+    yearSel.value = lockYear;
+    yearSel.disabled = true;
+  }
+
+  row.querySelector("button").addEventListener("click", () => {
+    row.remove();
+    updateTaxonomy();
+  });
+
+  yearSel.addEventListener("change", updateTaxonomy);
+  row.querySelector(".mm-model").addEventListener("change", updateTaxonomy);
+
+  return row;
+  }
+
     // --- Existing taxonomy + offer code machinery ---
 
     const fieldOrder = [
@@ -1163,12 +1243,51 @@
     function updateTaxonomy() {
       const parts = fieldOrder
         .map(id => {
-          if (id === "model_combo") {
-            const my = (document.getElementById("model_year").value || "").trim();
-            const mn = (document.getElementById("model_name").value || "").trim();
-            // Option A: single segment, no underscore: MY28ELA
-            return (my || "") + (mn || "");
+        if (id === "model_combo") {
+          const mode = document.querySelector("input[name='modelMode']:checked")?.value || "single";
+          const errorEl = document.getElementById("modelError");
+
+          if (mode === "multiple") {
+            const rows = document.querySelectorAll("#multiModelRows .field-group");
+            const combos = [];
+            const seen = new Set();
+            let enforcedYear = null;
+
+            errorEl.textContent = "";
+
+            rows.forEach(row => {
+              const y = row.querySelector(".mm-year").value;
+              const m = row.querySelector(".mm-model").value;
+              if (!y || !m) return;
+
+              if (!enforcedYear) enforcedYear = y;
+              if (y !== enforcedYear) {
+                errorEl.textContent = "All models must use the same Model Year.";
+                return;
+              }
+
+              const key = y + m;
+              if (seen.has(key)) {
+                errorEl.textContent = "Duplicate model selections are not allowed.";
+                return;
+              }
+
+              seen.add(key);
+              combos.push(key);
+            });
+
+            if (combos.length < 2) {
+              errorEl.textContent = "Select at least two models.";
+              return "";
+            }
+
+            return combos.join("|");
           }
+
+          const my = (document.getElementById("model_year").value || "").trim();
+          const mn = (document.getElementById("model_name").value || "").trim();
+          return (my || "") + (mn || "");
+        }
           const el = document.getElementById(id);
           return el ? (el.value || "").trim() : "";
         })
@@ -1201,7 +1320,41 @@
 
       // Step 5: Model Year → enables Model Name
       modelName.disabled = !modelYear.value;
+
+      // PATCH 6: Show / hide Model Selection (Single vs Multiple)
+      // Only appears once a Title is selected
+      document.getElementById("modelModeGroup")
+        .classList.toggle("hidden", !title.value);
     }
+
+    // -------- MODEL MODE TOGGLING --------
+
+    document.querySelectorAll("input[name='modelMode']").forEach(radio => {
+      radio.addEventListener("change", () => {
+        const isMulti = radio.value === "multiple" && radio.checked;
+
+        document.getElementById("multiModelBlock").classList.toggle("hidden", !isMulti);
+        document.getElementById("model_year").closest(".field-group").classList.toggle("hidden", isMulti);
+        document.getElementById("model_name").closest(".field-group").classList.toggle("hidden", isMulti);
+
+        const rows = document.getElementById("multiModelRows");
+        rows.innerHTML = "";
+
+        if (isMulti) {
+          rows.appendChild(createMultiModelRow());
+        }
+
+        document.getElementById("modelError").textContent = "";
+        updateTaxonomy();
+      });
+    });
+
+    document.getElementById("addModelBtn").addEventListener("click", () => {
+      const rows = document.querySelectorAll(".mm-year");
+      const lockYear = rows.length ? rows[0].value : null;
+      document.getElementById("multiModelRows")
+        .appendChild(createMultiModelRow(lockYear));
+    });
 
     // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
 
