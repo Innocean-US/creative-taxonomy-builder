@@ -124,7 +124,7 @@
       <option value="25PROMO">2025 Promo Period Creative</option>
       <option value="SPGSE">Spring Getaway Sales Event</option>
       <option value="SGSE">Summer Getaway Sales Event</option>
-      <option value="25WGSE">2025 Winter Getaway Sales Event</option>
+      <option value="WGSE">Winter Getaway Sales Event</option>
       <option value="WIN">Wins Every Time VS Campaign</option>
       <option value="CUA">Customer Assurance</option>
       <option value="BRD">Brand</option>
@@ -443,14 +443,6 @@
       NA: "Not Applicable",
 
       // Promo Period
-      LLW: "Lay Low",
-      CNF: "Confession",
-      CPT: "Couple's Therapy",
-      LWF: "Lawyer Friend",
-      DAD: "Dad Santa",
-      "DAD|IO5": "Dad Santa - Ioniq 5 Drive Off",
-      "DAD|SON": "Dad Santa - Sonata Drive Off",
-      COP: "Mall Cop",
       TOW: "The Tow",
       NLBR1: "No Looking Back R1",
       WFH: "Work From Home",
@@ -468,8 +460,20 @@
       ATM: "All That & More",
       TRD: "The Road",
       FLO: "Floaties",
+      TEA: "Spill the Tea",
+      GOL: "Golf Pro",
 
-      // VS campaign
+      // Sales Events (SPGSE, SGSE, WGSE)
+      LLW: "Lay Low",
+      CNF: "Confession",
+      CPT: "Couple's Therapy",
+      LWF: "Lawyer Friend",
+      DAD: "Dad Santa",
+      "DAD|IO5": "Dad Santa - Ioniq 5 Drive Off",
+      "DAD|SON": "Dad Santa - Sonata Drive Off",
+      COP: "Mall Cop",
+
+      // VS Campaign
       "VSCivic": "Elantra VS Civic",
       "VSCorolla": "Elantra VS Corolla",
       "VSSentra": "Elantra VS Sentra",
@@ -605,14 +609,15 @@
       EPIC: "Epic Afternoon",
     };
 
+    // Code Grouping for Conditional Logic (if user selects Promo Period, only these are populated)
     const INITIATIVE_TITLE_MAP = {
       "25PROMO": [
         "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
         "BYA","SLG","ROC","RLF","SOF","ATM","TRD","FLO"
       ],
-      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
-      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
-      "25WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP"],
+      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL"],
+      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL"],
+      "WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL"],
       "CUA": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
       "BRD": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY"],
       "WIN": [
