@@ -970,7 +970,14 @@ function createMultiModelRow() {
     function toThousands(amount) {
       const numeric = parseFloat(cleanNumeric(amount));
       if (isNaN(numeric) || numeric <= 0) return "";
-      return (numeric / 1000).toFixed(1);
+    
+      const value = numeric / 1000;
+    
+      // Truncate to 2 decimals WITHOUT rounding
+      const truncated = Math.floor(value * 100) / 100;
+    
+      // Convert to string and remove trailing zeros
+      return truncated.toString();
     }
 
     function updateFieldUi() {
