@@ -219,6 +219,9 @@
       <select id="offerTemplate">
         <option value="">-- Select Offer --</option>
 
+        <!-- No Offer -->
+        <option value="NA">NA</option>
+
         <!-- Cash only -->
         <option value="BONUS_CASH">Bonus Cash</option>
         <option value="DEALER_CASH">Dealer Cash</option>
@@ -345,6 +348,7 @@
     <select id="market">
       <option value="">-- Select Market --</option>
       <option value="MUL">MUL – Multiple</option>
+      <option value="NAT">NAT – National</option>
       <option value="ALB">ALB – Albuquerque-Santa Fe, NM</option>
       <option value="ABQ">ABQ – Albuquerque-Santa Fe, NM</option>
       <option value="ATL">ATL – Atlanta, GA</option>
@@ -388,7 +392,6 @@
       <option value="MIN">MIN – Minneapolis-St. Paul, MN</option>
       <option value="MOB">MOB – Mobile-Pensacola (Fort Walton Beach), AL</option>
       <option value="NAS">NAS – Nashville, TN</option>
-      <option value="NAT">NAT – National</option>
       <option value="NOL">NOL – New Orleans, LA</option>
       <option value="NYC">NYC – New York, NY</option>
       <option value="NOR">NOR – Norfolk-Portsmouth-Newport News, VA</option>
@@ -806,6 +809,7 @@ function createMultiModelRow() {
     ];
 
     const templateUi = {
+      NA: { fields: [] },
       BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "e.g. 2500"} ] },
       DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "e.g. 2500"} ] },
       SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "e.g. 2500"} ] },
@@ -999,6 +1003,31 @@ function createMultiModelRow() {
       return truncated.toString();
     }
 
+    function setOfferEndDateState(isDisabled, forceNA = false) {
+      const m = document.getElementById("offer_month");
+      const d = document.getElementById("offer_day");
+      const y = document.getElementById("offer_year");
+    
+      m.disabled = isDisabled;
+      d.disabled = isDisabled;
+      y.disabled = isDisabled;
+    
+      if (isDisabled) {
+        // Clear visible dropdowns
+        m.value = "";
+        d.value = "";
+        y.value = "";
+    
+        // Force taxonomy segment to NA
+        document.getElementById("offer_end_code").value = forceNA ? "NA" : "";
+      } else {
+        // Recompute normally when re-enabled
+        computeOfferEndCode();
+      }
+    
+      updateTaxonomy();
+    }
+
     function updateFieldUi() {
       const template = document.getElementById("offerTemplate").value;
       const cfg = templateUi[template] || {fields: []};
@@ -1058,6 +1087,9 @@ function createMultiModelRow() {
       let code = "";
 
       switch (template) {
+        case "NA":
+          code = "NA";
+          break;
         case "BONUS_CASH":
           if (cashThousands1) code = cashThousands1 + "BC";
           break;
@@ -1249,6 +1281,12 @@ function createMultiModelRow() {
     }
 
     function computeOfferEndCode() {
+        // If Offer End Date inputs are disabled (Offer template = NA),
+        // keep the current value ("NA") and do not overwrite it.
+        if (document.getElementById("offer_month").disabled) {
+          updateTaxonomy();
+          return;
+        }
       const mVal = document.getElementById("offer_month").value;
       const dVal = document.getElementById("offer_day").value;
       const yVal = document.getElementById("offer_year").value;
@@ -1431,12 +1469,20 @@ function createMultiModelRow() {
 
     // 5) Offer template + fields
     document.getElementById("offerTemplate").addEventListener("change", () => {
+      const template = document.getElementById("offerTemplate").value;
       ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = "";
       });
       updateFieldUi();
       buildOfferCode();
+    
+      // NEW: If template is NA, disable Offer End Date and force NA output
+      if (template === "NA") {
+        setOfferEndDateState(true, true); // disabled + force "NA"
+      } else {
+        setOfferEndDateState(false); // re-enable and compute normally
+      }
     });
 
     ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
@@ -1448,6 +1494,13 @@ function createMultiModelRow() {
     populateTitleOptions();   // sets default title options (NA only when no init selected)
     updateFieldUi();
     buildOfferCode();
+    // Ensure Offer End Date state matches current template on load
+    const initialTemplate = document.getElementById("offerTemplate").value;
+    if (initialTemplate === "NA") {
+      setOfferEndDateState(true, true);
+    } else {
+      setOfferEndDateState(false);
+    }
     computeOfferEndCode();
     updateStepAvailability();
     updateTaxonomy();
