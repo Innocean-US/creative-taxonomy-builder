@@ -237,6 +237,7 @@
         <option value="ZERO_PLUS_BC">0-0 + BC</option>
         <option value="ZERO_PLUS_UPBC">0-0 plus up to BC</option>
         <option value="ZERO_OR_UPBC">0-0 or up to BC</option>
+        <option value="ZERO_OR_LEASE">0-0 or Lease</option>
         <option value="APR_PLUS_CI">APR + Charger + Installation</option>
         <option value="APR_BC_CI">APR + BC + Charger + Installation</option>
 
@@ -892,6 +893,17 @@ function createMultiModelRow() {
         ]
       },
 
+      // NEW: 0-0 or Lease
+      ZERO_OR_LEASE: {
+        fields: [
+          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
+          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
+          {label: "Payments", placeholder: "e.g. 0"},
+          {label: "APR Payment Days", placeholder: "e.g. 90"},
+          {label: "Lease Amount", placeholder: "e.g. 239"}
+        ]
+      },
+
       APR_PLUS_CI: {
         fields: [
           {label: "APR Percentage", placeholder: "e.g. 3.99"},
@@ -1187,6 +1199,21 @@ function createMultiModelRow() {
             const rNum = parseFloat(rate);
             const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
             code = rStr + "APR" + months + "+" + pays + "P" + days + "|UP" + bc + "BC";
+          }
+          break;
+        }
+
+        // NEW: 0-0 or Lease → 0APR60+0P90|L239
+        case "ZERO_OR_LEASE": {
+          const rate = f1Num || "0";
+          const months = f2Int;
+          const pays = f3Int || "0";
+          const days = f4Int;
+          const lease = f5Int; // Lease Amount (field 5)
+          if (months && days && lease) {
+            const rNum = parseFloat(rate);
+            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+            code = rStr + "APR" + months + "+" + pays + "P" + days + "|L" + lease;
           }
           break;
         }
