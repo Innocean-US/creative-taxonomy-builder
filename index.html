@@ -343,7 +343,7 @@
     <input type="hidden" id="offer_end_code" />
   </div>
 
-  <!-- MARKET & DEMO -->
+  <!-- MARKET -->
   <div class="field-group">
     <label for="market">Market</label>
     <select id="market">
@@ -424,8 +424,20 @@
       <option value="WPB">WPB – West Palm Beach-Fort Pierce, FL</option>
       <option value="WIL">WIL – Wilkes Barre-Scranton-Hazleton, PA</option>
     </select>
-  </div>
 
+  <!-- Marketing Tag (optional) -->
+  <label for="marketing_tag" style="min-width:160px;">Marketing Tag <span style="font-weight:400;color:#666;">(optional)</span></label>
+  <select id="marketing_tag" style="min-width:220px;">
+    <option value="">-- None --</option>
+    <option value="FIFA">FIFA</option>
+  </select>
+
+  <div class="hint" style="flex-basis:100%; margin-left:160px;">
+    Optional. If selected, Market will output as <strong>MARKET.TAG</strong> (e.g., <strong>TAM.FIFA</strong>).
+  </div>
+</div>
+
+  <!-- MARKET DEMO -->
   <div class="field-group">
     <label for="demo_market">Demographic Market</label>
     <select id="demo_market">
@@ -824,7 +836,7 @@ function createMultiModelRow() {
       "model_combo",
       "offerCode",
       "offer_end_code",
-      "market",
+      "market_combo",
       "demo_market",
       "length"
     ];
@@ -1354,62 +1366,68 @@ function createMultiModelRow() {
       updateTaxonomy();
     }
 
-    function updateTaxonomy() {
-      const parts = fieldOrder
-        .map(id => {
+  function updateTaxonomy() {
+    const parts = fieldOrder
+      .map(id => {
+  
+        // --- existing model combo logic (unchanged) ---
         if (id === "model_combo") {
           const mode = document.querySelector("input[name='modelMode']:checked")?.value || "single";
           const errorEl = document.getElementById("modelError");
-
+  
           if (mode === "multiple") {
             const rows = document.querySelectorAll("#multiModelRows .field-group");
             const combos = [];
             const seen = new Set();
-            // let enforcedYear = null;
-
+  
             errorEl.textContent = "";
-
+  
             rows.forEach(row => {
               const y = row.querySelector(".mm-year").value;
               const m = row.querySelector(".mm-model").value;
               if (!y || !m) return;
-
-              // if (!enforcedYear) enforcedYear = y;
-              // if (y !== enforcedYear) {
-              //   errorEl.textContent = "All models must use the same Model Year.";
-              //   return;
-              // }
-
+  
               const key = y + m;
               if (seen.has(key)) {
                 errorEl.textContent = "Duplicate model selections are not allowed.";
                 return;
               }
-
+  
               seen.add(key);
               combos.push(key);
             });
-
+  
             if (combos.length < 2) {
               errorEl.textContent = "Select at least two models.";
               return "";
             }
-
+  
             return combos.join("|");
           }
-
+  
           const my = (document.getElementById("model_year").value || "").trim();
           const mn = (document.getElementById("model_name").value || "").trim();
           return (my || "") + (mn || "");
         }
-          const el = document.getElementById(id);
-          return el ? (el.value || "").trim() : "";
-        })
-        .filter(Boolean);
-
-      const code = parts.length ? parts.join("_") : "(select values above)";
-      document.getElementById("taxonomyCode").textContent = code;
-    }
+  
+        // --- NEW: market + optional marketing tag (TAM.FIFA) ---
+        if (id === "market_combo") {
+          const market = (document.getElementById("market").value || "").trim();
+          const tag = (document.getElementById("marketing_tag").value || "").trim();
+  
+          if (!market) return "";
+          return tag ? (market + "." + tag) : market;
+        }
+  
+        // --- default behavior for normal fields ---
+        const el = document.getElementById(id);
+        return el ? (el.value || "").trim() : "";
+      })
+      .filter(Boolean);
+  
+    const code = parts.length ? parts.join("_") : "(select values above)";
+    document.getElementById("taxonomyCode").textContent = code;
+  }
 
     // ---- Step-by-step selection locking logic ----
     function updateStepAvailability() {
@@ -1501,11 +1519,17 @@ function createMultiModelRow() {
 
     // 3) Attach listeners for other taxonomy fields
     fieldOrder.forEach(id => {
-      if (id === "model_combo" || id === "offerCode" || id === "offer_end_code") return;
+      if (id === "model_combo" || id === "market_combo" || id === "offerCode" || id === "offer_end_code") return;
       const el = document.getElementById(id);
       if (el && !["region","media","initiative","title","model_year","model_name"].includes(id)) {
         el.addEventListener("change", updateTaxonomy);
       }
+    });
+
+    // Market + Marketing Tag should both trigger taxonomy updates
+    ["market", "marketing_tag"].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("change", updateTaxonomy);
     });
 
     // 4) Offer end date listeners
