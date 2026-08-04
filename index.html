@@ -225,9 +225,11 @@
         <!-- Cash only -->
         <option value="BONUS_CASH">Bonus Cash</option>
         <option value="DEALER_CASH">Dealer Cash</option>
+        <option value="CUSTOMER_CASH">Customer Cash</option>
         <option value="SALES_EVENT_CASH">Sales Event Cash</option>
         <option value="TS_CI">Total Savings + Charger + Installation</option>
         <option value="TS_ONLY">Total Savings</option>
+        
 
         <!-- APR / 0-0 / APR+BC patterns -->
         <option value="APR_ONLY">APR</option>
@@ -527,7 +529,6 @@
       "NWL|IO5": "New Look - Ioniq 5 Drive Off",
       "NWL|ELA": "New Look - Elantra Drive Off",
       SCM: "Summer Camp",
-      CCA: "Customer Cash",
 
       // Sales Events (SPGSE, SGSE, WGSE)
       LLW: "Lay Low",
@@ -695,11 +696,11 @@
       "PROMO": [
         "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
         "BYA","SLG","ROC","RLF","SOF","ATM","TRD","FLO","CLD","PRL",
-        "LFC","RTL","RTM","RTR","WHPH","NWR","NWR|KON","NWR|ELA","CCA"
+        "LFC","RTL","RTM","RTR","WHPH","NWR","NWR|KON","NWR|ELA",
       ],
-      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON","CCA"],
-      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON","NWL","NWL|IO5","NWL|ELA","SCM","CCA"],
-      "WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON","CCA"],
+      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
+      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON","NWL","NWL|IO5","NWL|ELA","SCM"],
+      "WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
       "CUA": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY","EVL","EVL|IO5","EVL|IO9"],
       "BRD": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY","EVL","EVL|IO5","EVL|IO9"],
       "WIN": [
@@ -867,6 +868,7 @@ function createMultiModelRow() {
       NA: { fields: [] },
       BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "e.g. 2500"} ] },
       DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "e.g. 2500"} ] },
+      CUSTOMER_CASH: { fields: [ { label: "Customer Cash Amount", placeholder: "e.g. 2500" } ] },
       SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "e.g. 2500"} ] },
       TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
       TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
@@ -1161,6 +1163,9 @@ function createMultiModelRow() {
           break;
         case "DEALER_CASH":
           if (cashThousands1) code = cashThousands1 + "DC";
+          break;
+        case "CUSTOMER_CASH":
+          if (cashThousands1) code = cashThousands1 + "CC";
           break;
         case "SALES_EVENT_CASH":
           if (cashThousands1) code = cashThousands1 + "SEC";
