@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>Campaign Taxonomy Builder</title>
@@ -11,15 +12,18 @@
       margin: 2rem auto;
       padding: 0 1rem;
     }
+
     h1 {
       font-size: 1.6rem;
       margin-bottom: 0.5rem;
     }
+
     h2 {
       font-size: 1.2rem;
       margin-top: 1.75rem;
       margin-bottom: 0.5rem;
     }
+
     .field-group {
       margin-bottom: 1rem;
       display: flex;
@@ -27,17 +31,21 @@
       align-items: center;
       flex-wrap: wrap;
     }
+
     label {
       min-width: 160px;
       font-weight: 600;
     }
+
     select {
       min-width: 220px;
       padding: 0.25rem 0.5rem;
     }
+
     input[type="text"] {
       padding: 0.25rem 0.5rem;
     }
+
     .code-output {
       margin-top: 2rem;
       padding: 1rem;
@@ -45,21 +53,25 @@
       border: 1px solid #ccc;
       background: #f9f9f9;
     }
+
     .code-output code {
       font-size: 1.1rem;
       font-weight: 600;
       word-break: break-all;
     }
+
     .hint {
       font-size: 0.85rem;
       color: #666;
       margin-top: 0.25rem;
     }
+
     .offer-wrapper {
       border: 1px solid #ddd;
       border-radius: 6px;
       padding: 1rem;
     }
+
     .offer-row {
       display: flex;
       flex-wrap: wrap;
@@ -67,21 +79,25 @@
       align-items: center;
       margin-top: 0.5rem;
     }
+
     .offer-field {
       display: flex;
       flex-direction: column;
       margin-right: 0.75rem;
     }
+
     .offer-label {
       font-size: 0.8rem;
       font-weight: 600;
       margin-bottom: 0.1rem;
     }
+
     .hidden {
       display: none;
     }
   </style>
 </head>
+
 <body>
   <h1>Campaign Taxonomy Builder</h1>
   <p>Select values below. The tool will generate the full taxonomy string.</p>
@@ -149,19 +165,19 @@
   </div>
 
   <!-- MODEL MODE -->
-<div class="field-group hidden" id="modelModeGroup">
-  <label>Model Selection</label>
-  <label><input type="radio" name="modelMode" value="single" checked /> Single</label>
-  <label><input type="radio" name="modelMode" value="multiple" /> Multiple</label>
-</div>
+  <div class="field-group hidden" id="modelModeGroup">
+    <label>Model Selection</label>
+    <label><input type="radio" name="modelMode" value="single" checked /> Single</label>
+    <label><input type="radio" name="modelMode" value="multiple" /> Multiple</label>
+  </div>
 
-<!-- MULTI MODEL BUILDER -->
-<div id="multiModelBlock" class="hidden">
-  <h2>Models</h2>
-  <div id="multiModelRows"></div>
-  <button type="button" id="addModelBtn">Add Model</button>
-  <div id="modelError" class="hint" style="color:#b00020;"></div>
-</div>
+  <!-- MULTI MODEL BUILDER -->
+  <div id="multiModelBlock" class="hidden">
+    <h2>Models</h2>
+    <div id="multiModelRows"></div>
+    <button type="button" id="addModelBtn">Add Model</button>
+    <div id="modelError" class="hint" style="color:#b00020;"></div>
+  </div>
 
   <!-- MODEL YEAR (locked until Title selected) -->
   <div class="field-group">
@@ -230,7 +246,7 @@
         <option value="SALES_EVENT_CASH">Sales Event Cash</option>
         <option value="TS_CI">Total Savings + Charger + Installation</option>
         <option value="TS_ONLY">Total Savings</option>
-        
+
 
         <!-- APR / 0-0 / APR+BC patterns -->
         <option value="APR_ONLY">APR</option>
@@ -300,10 +316,7 @@
     <div class="offer-row">
       <div class="offer-field">
         <span class="offer-label"><strong>Offer Code</strong></span>
-        <input id="offerCodeDisplay" type="text"
-               placeholder="0APR60+0P90+UP2.5BC"
-               readonly
-               style="min-width:260px;" />
+        <input id="offerCodeDisplay" type="text" placeholder="0APR60+0P90+UP2.5BC" readonly style="min-width:260px;" />
         <input type="hidden" id="offerCode" />
       </div>
     </div>
@@ -428,372 +441,377 @@
       <option value="WIL">WIL – Wilkes Barre-Scranton-Hazleton, PA</option>
     </select>
 
-  <!-- MARKETING TAG (optional) -->
-  <div class="field-group">
-    <label for="marketing_tag">
-      Marketing Tag <span style="font-weight:400;color:#666;">(optional)</span>
-    </label>
-    <select id="marketing_tag">
-      <option value="">-- None --</option>
-      <option value="FIFA">FIFA</option>
-    </select>
-    <div class="hint" style="flex-basis:100%; margin-left:160px;">
-      Optional. If selected, Market will output as <strong>MARKET.TAG</strong> (e.g., <strong>TAM.FIFA</strong>).
+    <!-- MARKETING TAG (optional) -->
+    <div class="field-group">
+      <label for="marketing_tag">
+        Marketing Tag <span style="font-weight:400;color:#666;">(optional)</span>
+      </label>
+      <select id="marketing_tag">
+        <option value="">-- None --</option>
+        <option value="FIFA">FIFA</option>
+      </select>
+      <div class="hint" style="flex-basis:100%; margin-left:160px;">
+        Optional. If selected, Market will output as <strong>MARKET.TAG</strong> (e.g., <strong>TAM.FIFA</strong>).
+      </div>
     </div>
-  </div>
 
-  <!-- MARKET DEMO -->
-  <div class="field-group">
-    <label for="demo_market">Demographic Market</label>
-    <select id="demo_market">
-      <option value="">-- Select Demographic --</option>
-      <option value="GM">GM – General Market</option>
-      <option value="HM">HM – Hispanic Market</option>
-    </select>
-  </div>
-
-  <!-- LENGTH / SIZE -->
-  <div class="field-group">
-    <label for="length">Length / Size</label>
-    <select id="length">
-      <option value="">-- Select Length/Size --</option>
-      <option value="15">15</option>
-      <option value="15_9x16">15_9x16</option>
-      <option value="15_16x9">15_16x9</option>
-      <option value="30">30</option>
-      <option value="30_16x9">30_16x9</option>
-      <option value="1x1">1x1</option>
-      <option value="9x16">9x16</option>
-      <option value="16x9">16x9</option>
-      <option value="160x600">160x600</option>
-      <option value="300x50">300x50</option>
-      <option value="300x60">300x60</option>
-      <option value="300x250">300x250</option>
-      <option value="300x600">300x600</option>
-      <option value="728x90">728x90</option>
-      <option value="960x1200">960x1200</option>
-      <option value="1080x1920">1080x1920</option>
-      <option value="1200x628">1200x628</option>
-      <option value="1200x1200">1200x1200</option>
-      <option value="NA">NA</option>
-    </select>
-  </div>
-
-  <!-- OUTPUT -->
-  <div class="code-output">
-    <div><strong>Generated Taxonomy String:</strong></div>
-    <code id="taxonomyCode">(select values above)</code>
-    <div class="hint">
-      This updates live as you change fields. Copy + paste as needed.
+    <!-- MARKET DEMO -->
+    <div class="field-group">
+      <label for="demo_market">Demographic Market</label>
+      <select id="demo_market">
+        <option value="">-- Select Demographic --</option>
+        <option value="GM">GM – General Market</option>
+        <option value="HM">HM – Hispanic Market</option>
+      </select>
     </div>
-  </div>
 
-  <script>
-    // --- Title master list and initiative → title mapping ---
+    <!-- LENGTH / SIZE -->
+    <div class="field-group">
+      <label for="length">Length / Size</label>
+      <select id="length">
+        <option value="">-- Select Length/Size --</option>
+        <option value="15">15</option>
+        <option value="15_9x16">15_9x16</option>
+        <option value="15_16x9">15_16x9</option>
+        <option value="30">30</option>
+        <option value="30_16x9">30_16x9</option>
+        <option value="1x1">1x1</option>
+        <option value="9x16">9x16</option>
+        <option value="16x9">16x9</option>
+        <option value="160x600">160x600</option>
+        <option value="300x50">300x50</option>
+        <option value="300x60">300x60</option>
+        <option value="300x250">300x250</option>
+        <option value="300x600">300x600</option>
+        <option value="728x90">728x90</option>
+        <option value="960x1200">960x1200</option>
+        <option value="1080x1920">1080x1920</option>
+        <option value="1200x628">1200x628</option>
+        <option value="1200x1200">1200x1200</option>
+        <option value="NA">NA</option>
+      </select>
+    </div>
 
-    const ALL_TITLES = {
-      NA: "Not Applicable",
+    <!-- OUTPUT -->
+    <div class="code-output">
+      <div><strong>Generated Taxonomy String:</strong></div>
+      <code id="taxonomyCode">(select values above)</code>
+      <div class="hint">
+        This updates live as you change fields. Copy + paste as needed.
+      </div>
+    </div>
 
-      // Promo Period
-      TOW: "The Tow",
-      NLBR1: "No Looking Back R1",
-      WFH: "Work From Home",
-      DIN: "Diner",
-      DGL: "Dog Life R1",
-      WAP: "Watch Party",
-      SHD: "Shade",
-      HOM: "Home",
-      COL: "College",
-      BYA: "Booya",
-      SLG: "Short Long R2",
-      ROC: "Rock Out",
-      RLF: "Real Friends",
-      SOF: "Stand Off",
-      ATM: "All That & More",
-      TRD: "The Road",
-      FLO: "Floaties",
-      CLD: "Clouds",
-      PRL: "Priceless",
-      LFC: "Love at First Charge",
-      RTL: "Ritual",
-      RTM: "Ritual (Him Version)",
-      RTR: "Ritual (Her Version)",
-      WHPH: "Work Hard Play Hard",
-      NWR: "New Rides",
-      "NWR|KON": "New Rides - Kona Drive Off",
-      "NWR|ELA": "New Rides - Elantra Drive Off",
-      "NWR|KON|INTVO": "New Rides - Kona Drive Off | Interim VO",
-      "NWR|ELA|INTVO": "New Rides - Elantra Drive Off | Interim VO",
-      SUV: "SUV Month",
-      TEA: "Spill the Tea",
-      GOL: "Golf Pro",
-      "GOL|IO5": "Golf Pro - Ioniq 5 Drive Off",
-      "GOL|SON": "Golf Pro - Sonata Drive Off",
-      NWL: "New Look",
-      "NWL|IO5": "New Look - Ioniq 5 Drive Off",
-      "NWL|ELA": "New Look - Elantra Drive Off",
-      SCM: "Summer Camp",
+    <script>
+      // --- Title master list and initiative → title mapping ---
 
-      // Sales Events (SPGSE, SGSE, WGSE)
-      LLW: "Lay Low",
-      CNF: "Confession",
-      CPT: "Couple's Therapy",
-      LWF: "Lawyer Friend",
-      DAD: "Dad Santa",
-      "DAD|IO5": "Dad Santa - Ioniq 5 Drive Off",
-      "DAD|SON": "Dad Santa - Sonata Drive Off",
-      COP: "Mall Cop",
+      const ALL_TITLES = {
+        NA: "Not Applicable",
 
-      // VS Campaign
-      "VSCivic": "Elantra VS Civic",
-      "VSCorolla": "Elantra VS Corolla",
-      "VSSentra": "Elantra VS Sentra",
-      "VSCorollaHybrid": "Elantra Hybrid VS Corolla Hybrid",
-      "VSAccordHybrid": "Elantra Hybrid VS Accord Hybrid / Sonata Hybrid VS Accord Hybrid",
-      "VSID.4": "Ioniq 5 VS ID.4",
-      "VSMach-E": "Ioniq 5 VS Mach-E",
-      "VSAriya": "Ioniq 5 VS Ariya",
-      "VSbZ4X": "Ioniq 5 VS bZ4X",
-      "VSModelY": "Ioniq 5 VS Model Y",
-      "VSPrologue": "Ioniq 5 VS Prologue",
-      "VSPolestar2": "Ioniq 6 VS Polestar 2",
-      "VSModel3": "Ioniq 6 VS Model 3",
-      "VSC-HR": "Kona VS C-HR",
-      "VSHR-V": "Kona VS HR-V",
-      "VSRenegade": "Kona VS Renegade",
-      "VSCrosstrek": "Kona VS Crosstrek",
-      "VSCorollaCross": "Kona VS Corolla Cross",
-      "VSTrailblazer": "Kona VS Trailblazer",
-      "VSTrax": "Kona VS Trax",
-      "VSLeaf": "Kona EV VS Leaf",
-      "VSMini": "Kona EV VS Mini",
-      "VSBolt": "Kona EV VS Bolt",
-      "VSClarityFC": "Nexo VS Clarity FC",
-      "VSMirai": "Nexo VS Mirai",
-      "VSExplorer": "Palisade VS Explorer",
-      "VSHighlander": "Palisade / Santa Fe VS Highlander",
-      "VSGrandHighlander": "Palisade VS Grand Highlander",
-      "VSPilot": "Palisade VS Pilot",
-      "VSGrandCherokee": "Palisade VS Grand Cherokee",
-      "VSTraverse": "Palisade VS Traverse",
-      "VSPathfinder": "Palisade VS Pathfinder",
-      "VSHighlanderHybrid": "Palisade Hybrid VS Highlander Hybrid",
-      "VSGrandHighlanderHybrid": "Palisade Hybrid VS Grand Highlander Hybrid",
-      "VSMaverick": "Santa Cruz VS Maverick",
-      "VSOutback": "Santa Cruz / Santa Fe VS Outback",
-      "VSRidgeline": "Santa Cruz VS Ridgeline",
-      "VSMurano": "Santa Fe VS Murano",
-      "VSPassport": "Santa Fe VS Passport",
-      "VSBlazer": "Santa Fe VS Blazer",
-      "VSRAV4Hybrid": "Santa Fe / Tucson Hybrid VS RAV4 Hybrid",
-      "VSCR-VHybrid": "Santa Fe / Tucson Hybrid VS CR-V Hybrid",
-      "VSEscapeHybrid": "Santa Fe / Tucson Hybrid VS Escape Hybrid",
-      "VSCX-50": "Tucson Hybrid VS CX-50",
-      "VSEscapePHEV": "Santa Fe / Tucson PHEV VS Escape PHEV",
-      "VSOutlanderPHEV": "Santa Fe PHEV VS Outlander PHEV",
-      "VSRAV4PHEV": "Santa Fe / Tucson PHEV VS RAV4 PHEV",
-      "VSAccord": "Sonata VS Accord",
-      "VSAltima": "Sonata VS Altima",
-      "VSCamry": "Sonata VS Camry",
-      "VSCamryHybrid": "Sonata Hybrid VS Camry Hybrid",
-      "VSCR-V": "Tucson VS CR-V",
-      "VSRAV4": "Tucson VS RAV4",
-      "VSRogue": "Tucson VS Rogue",
-      "VSForester": "Tucson VS Forester",
-      "VSEquinox": "Tucson VS Equinox",
-      "VSEscape": "Tucson VS Escape",
-      "VSEscapePHEV": "Tucson PHEV VS Escape PHEV",
-      "VSModelX": "Ioniq 9 VS Model X",
-      "VSR1S": "Ioniq 9 VS R1S",
+        // Promo Period
+        TOW: "The Tow",
+        NLBR1: "No Looking Back R1",
+        WFH: "Work From Home",
+        DIN: "Diner",
+        DGL: "Dog Life R1",
+        WAP: "Watch Party",
+        SHD: "Shade",
+        HOM: "Home",
+        COL: "College",
+        BYA: "Booya",
+        SLG: "Short Long R2",
+        ROC: "Rock Out",
+        RLF: "Real Friends",
+        SOF: "Stand Off",
+        ATM: "All That & More",
+        TRD: "The Road",
+        FLO: "Floaties",
+        CLD: "Clouds",
+        PRL: "Priceless",
+        LFC: "Love at First Charge",
+        RTL: "Ritual",
+        RTM: "Ritual (Him Version)",
+        RTR: "Ritual (Her Version)",
+        WHPH: "Work Hard Play Hard",
+        NWR: "New Rides",
+        "NWR|KON": "New Rides - Kona Drive Off",
+        "NWR|ELA": "New Rides - Elantra Drive Off",
+        "NWR|KON|INTVO": "New Rides - Kona Drive Off | Interim VO",
+        "NWR|ELA|INTVO": "New Rides - Elantra Drive Off | Interim VO",
+        SUV: "SUV Month",
+        TEA: "Spill the Tea",
+        GOL: "Golf Pro",
+        "GOL|IO5": "Golf Pro - Ioniq 5 Drive Off",
+        "GOL|SON": "Golf Pro - Sonata Drive Off",
+        NWL: "New Look",
+        "NWL|IO5": "New Look - Ioniq 5 Drive Off",
+        "NWL|ELA": "New Look - Elantra Drive Off",
+        SCM: "Summer Camp",
 
-      // Brand / CUA storytelling
-      HYW: "The Hyundai Way",
-      BTR: "Brand The Road",
-      VIK: "Vikings",
-      HWL: "Howl",
-      CHU: "Charged Up",
-      EXT: "Exterior IO9",
-      INT: "Interior IO9",
-      ELBR: "Elbow Room",
-      CWBY: "Cowboy",
-      EVL: "EV Love",
-      "EVL|IO5": "EV Love - Ioniq 5 Drive Off",
-      "EVL|IO9": "EV Love - Ioniq 9 Drive Off",
-      'HHOW|LWR': "Hyundai Hope on Wheels | Little Warrior",
+        // Sales Events (SPGSE, SGSE, WGSE)
+        CNF: "Confession",
+        COP: "Mall Cop",
+        CPT: "Couple's Therapy",
+        DAD: "Dad Santa",
+        "DAD|IO5": "Dad Santa - Ioniq 5 Drive Off",
+        "DAD|SON": "Dad Santa - Sonata Drive Off",
+        "HAL|SFN": "Hallmark - SANTA Fe Drive Off",
+        "HAL|ELA": "Hallmark - ELANTRA Drive Off",
+        "HAL|PAL": "Hallmark - PALISADE Drive Off",
+        "HAL|IO5": "Hallmark - IONIQ 5 Drive Off",
+        LLW: "Lay Low",
+        LWF: "Lawyer Friend",
 
-      // Evergreen Feature/Offer
-      BAP: "Build And Price",
-      RAQ: "Request A Quote",
-      STD: "Schedule Test Drive",
-      SI: "Search Inventory",
-      ABW: "America's Best Warranty",
-      NAV: "Navigation Screen",
-      SEW: "Safe Exit Warning",
-      TRUNK: "Hands Free Smart Trunk",
-      DISPLAY: "Display Screen",
-      MPG: "MPG",
-      RSPA: "Remote Smart Parking Assist",
-      BSVM: "Blind Spot View Monitor",
-      CARGO: "Cargo Room",
-      RANGE: "Range",
-      HEADUP: "Head-Up Display",
-      CABIN: "Cabin/Interior Space",
-      ADVSAF: "Advanced Safety Features",
-      FINGER: "Fingerprint Recognition",
-      LEGROOM: "Spacious Legroom",
-      LIFTGATE: "Hands-Free Smart Power Liftgate",
-      SFE: "Safe Exit Assist",
-      AWD: "HTRAC AWD",
-      TONNEAU: "Tonneau Bed Cover",
-      CHARGE: "Ultra-Fast Charging",
-      "2YRCHARGE": "2 Years Unlimited Charging",
-      V2L: "Vehicle-to-Load",
-      TORQUE: "Torque",
-      NGRIN: "N Grin Boost",
-      EVB: "Electric Battery Warranty",
-      DESIGN: "Design",
-      CARPLAY: "Apple CarPlay/Android Auto",
-      HPOWER: "Horsepower",
-      VFS: "Ventilated Front Seats",
-      DIGKEY: "Digital Key 2",
-      SEATS: "3rd Row Heated Seats/3rd Row",
-      BOSE: "Bose Audio",
-      TOWING: "Towing Capacity",
-      LIGHTING: "Ambient Lighting",
-      STEER: "Heated Steering Wheel",
-      IIHS: "IIHS Top Safety Pick/+ Award",
-      WPCA: "World Performance Car Award",
-      ETD: "Experience the Difference (Mobile)",
-      EVMOB: "EV Messaging (Mobile)",
-      HCM: "Hyundai Complimentary Maintenance",
-      FEA: "Multiple Features",
-      COM: "Multiple Features (Competitive)",
-      NAUVOTY: "North American Utility Vehicle of the Year",
-      EVC: "EV Campaign",
-      HDA2: "Highway Driving Assist 2",
-      CAM: "Integrated Dash Cam",
-      EDAEV: "Edmunds Top Rated EV",
-      EDASUV: "Edmunds Top Rated SUV",
-      EDABEST: "Edmunds Top Rated Best of the Best",
-      CGAEV: "CarGurus Best EV Award",
-      USASUV: "U.S. News Best SUV Brand Award",
+        // VS Campaign
+        "VSCivic": "Elantra VS Civic",
+        "VSCorolla": "Elantra VS Corolla",
+        "VSSentra": "Elantra VS Sentra",
+        "VSCorollaHybrid": "Elantra Hybrid VS Corolla Hybrid",
+        "VSAccordHybrid": "Elantra Hybrid VS Accord Hybrid / Sonata Hybrid VS Accord Hybrid",
+        "VSID.4": "Ioniq 5 VS ID.4",
+        "VSMach-E": "Ioniq 5 VS Mach-E",
+        "VSAriya": "Ioniq 5 VS Ariya",
+        "VSbZ4X": "Ioniq 5 VS bZ4X",
+        "VSModelY": "Ioniq 5 VS Model Y",
+        "VSPrologue": "Ioniq 5 VS Prologue",
+        "VSPolestar2": "Ioniq 6 VS Polestar 2",
+        "VSModel3": "Ioniq 6 VS Model 3",
+        "VSC-HR": "Kona VS C-HR",
+        "VSHR-V": "Kona VS HR-V",
+        "VSRenegade": "Kona VS Renegade",
+        "VSCrosstrek": "Kona VS Crosstrek",
+        "VSCorollaCross": "Kona VS Corolla Cross",
+        "VSTrailblazer": "Kona VS Trailblazer",
+        "VSTrax": "Kona VS Trax",
+        "VSLeaf": "Kona EV VS Leaf",
+        "VSMini": "Kona EV VS Mini",
+        "VSBolt": "Kona EV VS Bolt",
+        "VSClarityFC": "Nexo VS Clarity FC",
+        "VSMirai": "Nexo VS Mirai",
+        "VSExplorer": "Palisade VS Explorer",
+        "VSHighlander": "Palisade / Santa Fe VS Highlander",
+        "VSGrandHighlander": "Palisade VS Grand Highlander",
+        "VSPilot": "Palisade VS Pilot",
+        "VSGrandCherokee": "Palisade VS Grand Cherokee",
+        "VSTraverse": "Palisade VS Traverse",
+        "VSPathfinder": "Palisade VS Pathfinder",
+        "VSHighlanderHybrid": "Palisade Hybrid VS Highlander Hybrid",
+        "VSGrandHighlanderHybrid": "Palisade Hybrid VS Grand Highlander Hybrid",
+        "VSMaverick": "Santa Cruz VS Maverick",
+        "VSOutback": "Santa Cruz / Santa Fe VS Outback",
+        "VSRidgeline": "Santa Cruz VS Ridgeline",
+        "VSMurano": "Santa Fe VS Murano",
+        "VSPassport": "Santa Fe VS Passport",
+        "VSBlazer": "Santa Fe VS Blazer",
+        "VSRAV4Hybrid": "Santa Fe / Tucson Hybrid VS RAV4 Hybrid",
+        "VSCR-VHybrid": "Santa Fe / Tucson Hybrid VS CR-V Hybrid",
+        "VSEscapeHybrid": "Santa Fe / Tucson Hybrid VS Escape Hybrid",
+        "VSCX-50": "Tucson Hybrid VS CX-50",
+        "VSEscapePHEV": "Santa Fe / Tucson PHEV VS Escape PHEV",
+        "VSOutlanderPHEV": "Santa Fe PHEV VS Outlander PHEV",
+        "VSRAV4PHEV": "Santa Fe / Tucson PHEV VS RAV4 PHEV",
+        "VSAccord": "Sonata VS Accord",
+        "VSAltima": "Sonata VS Altima",
+        "VSCamry": "Sonata VS Camry",
+        "VSCamryHybrid": "Sonata Hybrid VS Camry Hybrid",
+        "VSCR-V": "Tucson VS CR-V",
+        "VSRAV4": "Tucson VS RAV4",
+        "VSRogue": "Tucson VS Rogue",
+        "VSForester": "Tucson VS Forester",
+        "VSEquinox": "Tucson VS Equinox",
+        "VSEscape": "Tucson VS Escape",
+        "VSEscapePHEV": "Tucson PHEV VS Escape PHEV",
+        "VSModelX": "Ioniq 9 VS Model X",
+        "VSR1S": "Ioniq 9 VS R1S",
 
-      // Evergreen Conquest/Retention
-      WAR: "Warranty",
-      INSP: "Inspection",
-      RA: "Roadside Assistance",
-      FIND: "Find yours",
-      HURRY: "Hurry in",
-      TIME: "No time like today",
-      LTSI: "Let That Sink In",
-      DOU: "Donuts",
-      KTT: "Kick the Tires",
-      
-      // AMA Personalization 
-      BUILD: "AMA Personalization",
+        // Brand / CUA storytelling
+        HYW: "The Hyundai Way",
+        BTR: "Brand The Road",
+        VIK: "Vikings",
+        HWL: "Howl",
+        CHU: "Charged Up",
+        EXT: "Exterior IO9",
+        INT: "Interior IO9",
+        ELBR: "Elbow Room",
+        CWBY: "Cowboy",
+        EVL: "EV Love",
+        "EVL|IO5": "EV Love - Ioniq 5 Drive Off",
+        "EVL|IO9": "EV Love - Ioniq 9 Drive Off",
+        'HHOW|LWR': "Hyundai Hope on Wheels | Little Warrior",
 
-      // Cross-Channel 
-      EPIC: "Epic Afternoon",
-    };
+        // Evergreen Feature/Offer
+        BAP: "Build And Price",
+        RAQ: "Request A Quote",
+        STD: "Schedule Test Drive",
+        SI: "Search Inventory",
+        ABW: "America's Best Warranty",
+        NAV: "Navigation Screen",
+        SEW: "Safe Exit Warning",
+        TRUNK: "Hands Free Smart Trunk",
+        DISPLAY: "Display Screen",
+        MPG: "MPG",
+        RSPA: "Remote Smart Parking Assist",
+        BSVM: "Blind Spot View Monitor",
+        CARGO: "Cargo Room",
+        RANGE: "Range",
+        HEADUP: "Head-Up Display",
+        CABIN: "Cabin/Interior Space",
+        ADVSAF: "Advanced Safety Features",
+        FINGER: "Fingerprint Recognition",
+        LEGROOM: "Spacious Legroom",
+        LIFTGATE: "Hands-Free Smart Power Liftgate",
+        SFE: "Safe Exit Assist",
+        AWD: "HTRAC AWD",
+        TONNEAU: "Tonneau Bed Cover",
+        CHARGE: "Ultra-Fast Charging",
+        "2YRCHARGE": "2 Years Unlimited Charging",
+        V2L: "Vehicle-to-Load",
+        TORQUE: "Torque",
+        NGRIN: "N Grin Boost",
+        EVB: "Electric Battery Warranty",
+        DESIGN: "Design",
+        CARPLAY: "Apple CarPlay/Android Auto",
+        HPOWER: "Horsepower",
+        VFS: "Ventilated Front Seats",
+        DIGKEY: "Digital Key 2",
+        SEATS: "3rd Row Heated Seats/3rd Row",
+        BOSE: "Bose Audio",
+        TOWING: "Towing Capacity",
+        LIGHTING: "Ambient Lighting",
+        STEER: "Heated Steering Wheel",
+        IIHS: "IIHS Top Safety Pick/+ Award",
+        WPCA: "World Performance Car Award",
+        ETD: "Experience the Difference (Mobile)",
+        EVMOB: "EV Messaging (Mobile)",
+        HCM: "Hyundai Complimentary Maintenance",
+        FEA: "Multiple Features",
+        COM: "Multiple Features (Competitive)",
+        NAUVOTY: "North American Utility Vehicle of the Year",
+        EVC: "EV Campaign",
+        HDA2: "Highway Driving Assist 2",
+        CAM: "Integrated Dash Cam",
+        EDAEV: "Edmunds Top Rated EV",
+        EDASUV: "Edmunds Top Rated SUV",
+        EDABEST: "Edmunds Top Rated Best of the Best",
+        CGAEV: "CarGurus Best EV Award",
+        USASUV: "U.S. News Best SUV Brand Award",
 
-    // Code Grouping for Conditional Logic (if user selects Promo Period, only these are populated)
-    const INITIATIVE_TITLE_MAP = {
-      "PROMO": [
-        "TOW","NLBR1","WFH","DIN","DGL","WAP","SHD","HOM","COL",
-        "BYA","SLG","ROC","RLF","SOF","ATM","TRD","FLO","CLD","PRL",
-        "LFC","RTL","RTM","RTR","WHPH","NWR","NWR|KON","NWR|ELA","NWR|KON|INTVO","NWR|ELA|INTVO","SUV",
-      ],
-      "SPGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
-      "SGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON","NWL","NWL|IO5","NWL|ELA","SCM"],
-      "WGSE": ["LLW","CNF","CPT","LWF","DAD","DAD|IO5","DAD|SON","COP","TEA","GOL","GOL|IO5","GOL|SON"],
-      "CUA": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY","EVL","EVL|IO5","EVL|IO9"],
-      "BRD": ["HYW","BTR","VIK","HWL","CHU","EXT","INT","ELBR","CWBY","EVL","EVL|IO5","EVL|IO9","HHOW|LWR"],
-      "WIN": [
-        "VSCivic","VSCorolla","VSSentra","VSCorollaHybrid","VSAccordHybrid",
-        "VSID.4","VSMach-E","VSAriya","VSbZ4X","VSModelY","VSPrologue",
-        "VSPolestar2","VSModel3","VSC-HR","VSHR-V","VSRenegade","VSCrosstrek",
-        "VSCorollaCross","VSTrailblazer","VSTrax","VSLeaf","VSMini","VSBolt",
-        "VSClarityFC","VSMirai","VSExplorer","VSHighlander","VSGrandHighlander","VSPilot",
-        "VSGrandCherokee","VSTraverse","VSPathfinder","VSHighlanderHybrid","VSGrandHighlanderHybrid","VSMaverick","VSOutback",
-        "VSRidgeline","VSMurano","VSPassport","VSBlazer","VSRAV4Hybrid",
-        "VSCR-VHybrid","VSCX-50","VSEscapeHybrid","VSEscapePHEV","VSOutlanderPHEV",
-        "VSRAV4PHEV","VSAccord","VSAltima","VSCamry","VSCamryHybrid",
-        "VSCR-V","VSRAV4","VSRogue","VSForester","VSEquinox","VSEscape",
-        "VSEscapePHEV","VSModelX","VSR1S"
-      ],
-      "MORE": [
-        "VSCivic","VSCorolla","VSSentra","VSCorollaHybrid","VSAccordHybrid",
-        "VSID.4","VSMach-E","VSAriya","VSbZ4X","VSModelY","VSPrologue",
-        "VSPolestar2","VSModel3","VSC-HR","VSHR-V","VSRenegade","VSCrosstrek",
-        "VSCorollaCross","VSTrailblazer","VSTrax","VSLeaf","VSMini","VSBolt",
-        "VSClarityFC","VSMirai","VSExplorer","VSHighlander","VSGrandHighlander","VSPilot",
-        "VSGrandCherokee","VSTraverse","VSPathfinder","VSHighlanderHybrid","VSGrandHighlanderHybrid","VSMaverick","VSOutback",
-        "VSRidgeline","VSMurano","VSPassport","VSBlazer","VSRAV4Hybrid",
-        "VSCR-VHybrid","VSCX-50","VSEscapeHybrid","VSEscapePHEV","VSOutlanderPHEV",
-        "VSRAV4PHEV","VSAccord","VSAltima","VSCamry","VSCamryHybrid",
-        "VSCR-V","VSRAV4","VSRogue","VSForester","VSEquinox","VSEscape",
-        "VSEscapePHEV","VSModelX","VSR1S"
-      ],
-      "EVE": [
-        "BAP","RAQ","STD","SI","ABW","NAV","SEW","TRUNK","DISPLAY","MPG",
-        "RSPA","BSVM","CARGO","RANGE","HEADUP","CABIN","ADVSAF","FINGER",
-        "LEGROOM","LIFTGATE","SFE","AWD","TONNEAU","CHARGE","2YRCHARGE","V2L",
-        "TORQUE","NGRIN","EVB","DESIGN","CARPLAY","HPOWER","VFS","DIGKEY",
-        "SEATS","BOSE","TOWING","LIGHTING","STEER","IIHS","WPCA","ETD",
-        "EVMOB","HCM","FEA","COM","NAUVOTY","EVC","HDA2","CAM","EDAEV","EDASUV","EDABEST","CGAEV","USASUV"
-      ],
-      "EVECON": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
-      "EVERET": ["WAR","INSP","RA","FIND","HURRY","TIME","LTSI","DOU","KTT"],
-      "AMA": ["BUILD"],
-      "CRCH": ["EPIC"]
-    };
+        // Evergreen Conquest/Retention
+        WAR: "Warranty",
+        INSP: "Inspection",
+        RA: "Roadside Assistance",
+        FIND: "Find yours",
+        HURRY: "Hurry in",
+        TIME: "No time like today",
+        LTSI: "Let That Sink In",
+        DOU: "Donuts",
+        KTT: "Kick the Tires",
 
-    function populateTitleOptions() {
-      const initiativeSel = document.getElementById("initiative");
-      const titleSel = document.getElementById("title");
-      const initVal = initiativeSel.value;
+        // AMA Personalization 
+        BUILD: "AMA Personalization",
 
-      titleSel.innerHTML = "";
+        // Cross-Channel 
+        EPIC: "Epic Afternoon",
 
-      // Placeholder
-      const ph = document.createElement("option");
-      ph.value = "";
-      ph.textContent = "-- Select Title --";
-      titleSel.appendChild(ph);
+      };
 
-      // Always allow NA
-      if (ALL_TITLES["NA"]) {
-        const naOpt = document.createElement("option");
-        naOpt.value = "NA";
-        naOpt.textContent = ALL_TITLES["NA"];
-        titleSel.appendChild(naOpt);
+      // Code Grouping for Conditional Logic (if user selects Promo Period, only these are populated)
+      const INITIATIVE_TITLE_MAP = {
+        "PROMO": [
+          "TOW", "NLBR1", "WFH", "DIN", "DGL", "WAP", "SHD", "HOM", "COL",
+          "BYA", "SLG", "ROC", "RLF", "SOF", "ATM", "TRD", "FLO", "CLD", "PRL",
+          "LFC", "RTL", "RTM", "RTR", "WHPH", "NWR", "NWR|KON", "NWR|ELA", "NWR|KON|INTVO", "NWR|ELA|INTVO", "SUV",
+        ],
+        "SPGSE": ["LLW", "CNF", "CPT", "LWF", "DAD", "DAD|IO5", "DAD|SON", "COP", "TEA", "GOL", "GOL|IO5", "GOL|SON"],
+        "SGSE": ["LLW", "CNF", "CPT", "LWF", "DAD", "DAD|IO5", "DAD|SON", "COP", "TEA", "GOL", "GOL|IO5", "GOL|SON", "NWL", "NWL|IO5", "NWL|ELA", "SCM"],
+        "WGSE": ["LLW", "CNF", "CPT", "LWF", "DAD", "DAD|IO5", "DAD|SON", "COP", "TEA", "GOL", "GOL|IO5", "GOL|SON", "HAL|SFN", "HAL|ELA", "HAL|PAL", "HAL|IO5"],
+        "CUA": ["HYW", "BTR", "VIK", "HWL", "CHU", "EXT", "INT", "ELBR", "CWBY", "EVL", "EVL|IO5", "EVL|IO9"],
+        "BRD": ["HYW", "BTR", "VIK", "HWL", "CHU", "EXT", "INT", "ELBR", "CWBY", "EVL", "EVL|IO5", "EVL|IO9", "HHOW|LWR"],
+        "WIN": [
+          "VSCivic", "VSCorolla", "VSSentra", "VSCorollaHybrid", "VSAccordHybrid",
+          "VSID.4", "VSMach-E", "VSAriya", "VSbZ4X", "VSModelY", "VSPrologue",
+          "VSPolestar2", "VSModel3", "VSC-HR", "VSHR-V", "VSRenegade", "VSCrosstrek",
+          "VSCorollaCross", "VSTrailblazer", "VSTrax", "VSLeaf", "VSMini", "VSBolt",
+          "VSClarityFC", "VSMirai", "VSExplorer", "VSHighlander", "VSGrandHighlander", "VSPilot",
+          "VSGrandCherokee", "VSTraverse", "VSPathfinder", "VSHighlanderHybrid", "VSGrandHighlanderHybrid", "VSMaverick", "VSOutback",
+          "VSRidgeline", "VSMurano", "VSPassport", "VSBlazer", "VSRAV4Hybrid",
+          "VSCR-VHybrid", "VSCX-50", "VSEscapeHybrid", "VSEscapePHEV", "VSOutlanderPHEV",
+          "VSRAV4PHEV", "VSAccord", "VSAltima", "VSCamry", "VSCamryHybrid",
+          "VSCR-V", "VSRAV4", "VSRogue", "VSForester", "VSEquinox", "VSEscape",
+          "VSEscapePHEV", "VSModelX", "VSR1S"
+        ],
+        "MORE": [
+          "VSCivic", "VSCorolla", "VSSentra", "VSCorollaHybrid", "VSAccordHybrid",
+          "VSID.4", "VSMach-E", "VSAriya", "VSbZ4X", "VSModelY", "VSPrologue",
+          "VSPolestar2", "VSModel3", "VSC-HR", "VSHR-V", "VSRenegade", "VSCrosstrek",
+          "VSCorollaCross", "VSTrailblazer", "VSTrax", "VSLeaf", "VSMini", "VSBolt",
+          "VSClarityFC", "VSMirai", "VSExplorer", "VSHighlander", "VSGrandHighlander", "VSPilot",
+          "VSGrandCherokee", "VSTraverse", "VSPathfinder", "VSHighlanderHybrid", "VSGrandHighlanderHybrid", "VSMaverick", "VSOutback",
+          "VSRidgeline", "VSMurano", "VSPassport", "VSBlazer", "VSRAV4Hybrid",
+          "VSCR-VHybrid", "VSCX-50", "VSEscapeHybrid", "VSEscapePHEV", "VSOutlanderPHEV",
+          "VSRAV4PHEV", "VSAccord", "VSAltima", "VSCamry", "VSCamryHybrid",
+          "VSCR-V", "VSRAV4", "VSRogue", "VSForester", "VSEquinox", "VSEscape",
+          "VSEscapePHEV", "VSModelX", "VSR1S"
+        ],
+        "EVE": [
+          "BAP", "RAQ", "STD", "SI", "ABW", "NAV", "SEW", "TRUNK", "DISPLAY", "MPG",
+          "RSPA", "BSVM", "CARGO", "RANGE", "HEADUP", "CABIN", "ADVSAF", "FINGER",
+          "LEGROOM", "LIFTGATE", "SFE", "AWD", "TONNEAU", "CHARGE", "2YRCHARGE", "V2L",
+          "TORQUE", "NGRIN", "EVB", "DESIGN", "CARPLAY", "HPOWER", "VFS", "DIGKEY",
+          "SEATS", "BOSE", "TOWING", "LIGHTING", "STEER", "IIHS", "WPCA", "ETD",
+          "EVMOB", "HCM", "FEA", "COM", "NAUVOTY", "EVC", "HDA2", "CAM", "EDAEV", "EDASUV", "EDABEST", "CGAEV", "USASUV"
+        ],
+        "EVECON": ["WAR", "INSP", "RA", "FIND", "HURRY", "TIME", "LTSI", "DOU", "KTT"],
+        "EVERET": ["WAR", "INSP", "RA", "FIND", "HURRY", "TIME", "LTSI", "DOU", "KTT"],
+        "AMA": ["BUILD"],
+        "CRCH": ["EPIC"]
+      };
+
+      function populateTitleOptions() {
+        const initiativeSel = document.getElementById("initiative");
+        const titleSel = document.getElementById("title");
+        const initVal = initiativeSel.value;
+
+        titleSel.innerHTML = "";
+
+        // Placeholder
+        const ph = document.createElement("option");
+        ph.value = "";
+        ph.textContent = "-- Select Title --";
+        titleSel.appendChild(ph);
+
+        // Always allow NA
+        if (ALL_TITLES["NA"]) {
+          const naOpt = document.createElement("option");
+          naOpt.value = "NA";
+          naOpt.textContent = ALL_TITLES["NA"];
+          titleSel.appendChild(naOpt);
+        }
+
+        const codes =
+          initVal && INITIATIVE_TITLE_MAP[initVal]
+            ? INITIATIVE_TITLE_MAP[initVal]
+            : [];
+
+        codes.forEach(code => {
+          const label = ALL_TITLES[code];
+          if (!label || code === "NA") return;
+          const opt = document.createElement("option");
+          opt.value = code;
+          opt.textContent = label;
+          titleSel.appendChild(opt);
+        });
+
+        titleSel.value = "";
+        updateTaxonomy();
       }
 
-      const codes =
-        initVal && INITIATIVE_TITLE_MAP[initVal]
-          ? INITIATIVE_TITLE_MAP[initVal]
-          : [];
+      // -------- MULTI-MODEL HELPERS --------
 
-      codes.forEach(code => {
-        const label = ALL_TITLES[code];
-        if (!label || code === "NA") return;
-        const opt = document.createElement("option");
-        opt.value = code;
-        opt.textContent = label;
-        titleSel.appendChild(opt);
-      });
+      function createMultiModelRow() {
+        const row = document.createElement("div");
+        row.className = "field-group";
 
-      titleSel.value = "";
-      updateTaxonomy();
-    }
-
-    // -------- MULTI-MODEL HELPERS --------
-
-function createMultiModelRow() {
-  const row = document.createElement("div");
-  row.className = "field-group";
-
-  row.innerHTML = `
+        row.innerHTML = `
     <div class="offer-field">
       <span class="offer-label">Model Year</span>
       <select class="mm-year">
@@ -841,772 +859,773 @@ function createMultiModelRow() {
     <button type="button">Remove</button>
   `;
 
-  const yearSel = row.querySelector(".mm-year");
+        const yearSel = row.querySelector(".mm-year");
 
-  row.querySelector("button").addEventListener("click", () => {
-    row.remove();
-    updateTaxonomy();
-  });
+        row.querySelector("button").addEventListener("click", () => {
+          row.remove();
+          updateTaxonomy();
+        });
 
-  yearSel.addEventListener("change", updateTaxonomy);
-  row.querySelector(".mm-model").addEventListener("change", updateTaxonomy);
+        yearSel.addEventListener("change", updateTaxonomy);
+        row.querySelector(".mm-model").addEventListener("change", updateTaxonomy);
 
-  return row;
-  }
-
-    // --- Existing taxonomy + offer code machinery ---
-
-    const fieldOrder = [
-      "region",
-      "media",
-      "initiative",
-      "title",
-      "model_combo",
-      "offerCode",
-      "offer_end_code",
-      "market_combo",
-      "demo_market",
-      "length"
-    ];
-
-    const templateUi = {
-      NA: { fields: [] },
-      BONUS_CASH: { fields: [ {label: "Bonus Cash Amount", placeholder: "e.g. 2500"} ] },
-      DEALER_CASH: { fields: [ {label: "Dealer Cash Amount", placeholder: "e.g. 2500"} ] },
-      CUSTOMER_CASH: { fields: [ { label: "Customer Cash Amount", placeholder: "e.g. 2500" } ] },
-      SALES_EVENT_CASH: { fields: [ {label: "Sales Event Cash Amount", placeholder: "e.g. 2500"} ] },
-      TS_CI: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
-      TS_ONLY: { fields: [ {label: "Total Savings Amount", placeholder: "e.g. 2500"} ] },
-
-      APR_ONLY: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 2.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
-        ]
-      },
-
-      ZERO_ZERO: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"}
-        ]
-      },
-
-      APR_PLUS_BC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 2.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
-        ]
-      },
-
-      APR_OR_BC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 2.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
-        ]
-      },
-
-      ZERO_PLUS_BC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
-        ]
-      },
-
-      ZERO_PLUS_UPBC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
-        ]
-      },
-
-      ZERO_OR_UPBC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"}
-        ]
-      },
-
-      // NEW: 0-0 or Lease
-      ZERO_OR_LEASE: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.00 or 0"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"},
-          {label: "Lease Amount", placeholder: "e.g. 239"}
-        ]
-      },
-
-      APR_PLUS_CI: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 3.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 72"}
-        ]
-      },
-
-      APR_BC_CI: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 3.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 500"}
-        ]
-      },
-
-      LEASE_ONLY: {
-        fields: [
-          {label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)"}
-        ]
-      },
-      LEASE_PLUS_BC: {
-        fields: [
-          {label: "Lease Amount", placeholder: "e.g. 239"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 1500"}
-        ]
-      },
-      SIGN_DRIVE: { fields: [] },
-      LEASE_PLUS_EV: {
-        fields: [
-          {label: "Lease Amount", placeholder: "e.g. 239"},
-          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
-        ]
-      },
-      LEASE_PLUS_EV_CI: {
-        fields: [
-          {label: "Lease Amount", placeholder: "e.g. 239"},
-          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
-        ]
-      },
-
-      APR_PLUS_LEASE: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 1.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
-          {label: "Lease Amount", placeholder: "e.g. 239"}
-        ]
-      },
-      APR_OR_LEASE: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 1.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 48"},
-          {label: "Lease Amount", placeholder: "e.g. 239"}
-        ]
-      },
-      APR_PLUS_NOPAY: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 3.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 72"},
-          {label: "Payments", placeholder: "e.g. 0"},
-          {label: "APR Payment Days", placeholder: "e.g. 90"}
-        ]
-      },
-
-      APR_MULTIPLE: {
-        fields: [
-          {label: "APR Percentage 1", placeholder: "e.g. 2.99"},
-          {label: "APR Offer Term Months 1", placeholder: "e.g. 60"},
-          {label: "APR Percentage 2", placeholder: "e.g. 1.99"},
-          {label: "APR Offer Term Months 2", placeholder: "e.g. 48"}
-        ]
-      },
-
-      APR_OR_EVBC: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 0.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "EV Bonus Cash Amount", placeholder: "e.g. 7500"}
-        ]
-      },
-
-      // NEW: APR + BC or Lease
-      APR_BC_OR_LEASE: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 1.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
-          {label: "Lease Amount", placeholder: "e.g. 299"}
-        ]
-      },
-
-      // NEW: APR or BC or Lease
-      APR_OR_BC_OR_LEASE: {
-        fields: [
-          {label: "APR Percentage", placeholder: "e.g. 1.99"},
-          {label: "APR Offer Term Months", placeholder: "e.g. 60"},
-          {label: "Bonus Cash Amount", placeholder: "e.g. 2500"},
-          {label: "Lease Amount", placeholder: "e.g. 299"}
-        ]
-      },
-
-      HCM_CODE: { fields: [] },
-      ABW_CODE: { fields: [] },
-      CTB_CODE: { fields: [] },
-      URG_CODE: { fields: [] }
-    };
-
-    function cleanNumeric(val) {
-      return (val || "").replace(/[^0-9.]/g, "");
-    }
-    function cleanInt(val) {
-      return (val || "").replace(/[^0-9]/g, "");
-    }
-    function toThousands(amount) {
-      const numeric = parseFloat(cleanNumeric(amount));
-      if (isNaN(numeric) || numeric <= 0) return "";
-    
-      const value = numeric / 1000;
-    
-      // Truncate to 2 decimals WITHOUT rounding
-      const truncated = Math.floor(value * 100) / 100;
-    
-      // Convert to string and remove trailing zeros
-      return truncated.toString();
-    }
-
-    function setOfferEndDateState(isDisabled, forceNA = false) {
-      const m = document.getElementById("offer_month");
-      const d = document.getElementById("offer_day");
-      const y = document.getElementById("offer_year");
-    
-      m.disabled = isDisabled;
-      d.disabled = isDisabled;
-      y.disabled = isDisabled;
-    
-      if (isDisabled) {
-        // Clear visible dropdowns
-        m.value = "";
-        d.value = "";
-        y.value = "";
-    
-        // Force taxonomy segment to NA
-        document.getElementById("offer_end_code").value = forceNA ? "NA" : "";
-      } else {
-        // Recompute normally when re-enabled
-        computeOfferEndCode();
+        return row;
       }
-    
-      updateTaxonomy();
-    }
 
-    function updateFieldUi() {
-      const template = document.getElementById("offerTemplate").value;
-      const cfg = templateUi[template] || {fields: []};
+      // --- Existing taxonomy + offer code machinery ---
 
-      const fieldElems = [
-        {wrapper: document.getElementById("field1"), label: document.getElementById("field1Label"), input: document.getElementById("field1Input")},
-        {wrapper: document.getElementById("field2"), label: document.getElementById("field2Label"), input: document.getElementById("field2Input")},
-        {wrapper: document.getElementById("field3"), label: document.getElementById("field3Label"), input: document.getElementById("field3Input")},
-        {wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input")},
-        {wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input")}
+      const fieldOrder = [
+        "region",
+        "media",
+        "initiative",
+        "title",
+        "model_combo",
+        "offerCode",
+        "offer_end_code",
+        "market_combo",
+        "demo_market",
+        "length"
       ];
 
-      fieldElems.forEach(f => {
-        f.input.value = "";
-        f.wrapper.classList.add("hidden");
-      });
+      const templateUi = {
+        NA: { fields: [] },
+        BONUS_CASH: { fields: [{ label: "Bonus Cash Amount", placeholder: "e.g. 2500" }] },
+        DEALER_CASH: { fields: [{ label: "Dealer Cash Amount", placeholder: "e.g. 2500" }] },
+        CUSTOMER_CASH: { fields: [{ label: "Customer Cash Amount", placeholder: "e.g. 2500" }] },
+        SALES_EVENT_CASH: { fields: [{ label: "Sales Event Cash Amount", placeholder: "e.g. 2500" }] },
+        TS_CI: { fields: [{ label: "Total Savings Amount", placeholder: "e.g. 2500" }] },
+        TS_ONLY: { fields: [{ label: "Total Savings Amount", placeholder: "e.g. 2500" }] },
 
-      cfg.fields.forEach((fcfg, idx) => {
-        if (idx > 4) return;
-        const f = fieldElems[idx];
-        f.wrapper.classList.remove("hidden");
-        f.label.textContent = fcfg.label;
-        f.input.placeholder = fcfg.placeholder || "";
-      });
+        APR_ONLY: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 2.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 72" }
+          ]
+        },
 
-      document.getElementById("offerFieldsRow")
-        .classList.toggle("hidden", cfg.fields.length === 0);
-    }
+        ZERO_ZERO: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.00 or 0" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" }
+          ]
+        },
 
-    function buildOfferCode() {
-      const template = document.getElementById("offerTemplate").value;
+        APR_PLUS_BC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 2.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" }
+          ]
+        },
 
-      const f1 = document.getElementById("field1Input").value;
-      const f2 = document.getElementById("field2Input").value;
-      const f3 = document.getElementById("field3Input").value;
-      const f4 = document.getElementById("field4Input").value;
-      const f5 = document.getElementById("field5Input").value;
+        APR_OR_BC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 2.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" }
+          ]
+        },
 
-      const f1Num = cleanNumeric(f1);
-      const f2Num = cleanNumeric(f2);
-      const f3Num = cleanNumeric(f3);
-      const f4Num = cleanNumeric(f4);
-      const f5Num = cleanNumeric(f5);
+        ZERO_PLUS_BC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.00 or 0" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" }
+          ]
+        },
 
-      const f1Int = cleanInt(f1);
-      const f2Int = cleanInt(f2);
-      const f3Int = cleanInt(f3);
-      const f4Int = cleanInt(f4);
-      const f5Int = cleanInt(f5);
+        ZERO_PLUS_UPBC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.00 or 0" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" }
+          ]
+        },
 
-      const cashThousands1 = toThousands(f1);
-      const cashThousands2 = toThousands(f2);
-      const cashThousands3 = toThousands(f3);
-      const cashThousands4 = toThousands(f4);
-      const cashThousands5 = toThousands(f5);
+        ZERO_OR_UPBC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.00 or 0" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" }
+          ]
+        },
 
-      let code = "";
+        // NEW: 0-0 or Lease
+        ZERO_OR_LEASE: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.00 or 0" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" },
+            { label: "Lease Amount", placeholder: "e.g. 239" }
+          ]
+        },
 
-      switch (template) {
-        case "NA":
-          code = "NA";
-          break;
-        case "BONUS_CASH":
-          if (cashThousands1) code = cashThousands1 + "BC";
-          break;
-        case "DEALER_CASH":
-          if (cashThousands1) code = cashThousands1 + "DC";
-          break;
-        case "CUSTOMER_CASH":
-          if (cashThousands1) code = cashThousands1 + "CC";
-          break;
-        case "SALES_EVENT_CASH":
-          if (cashThousands1) code = cashThousands1 + "SEC";
-          break;
-        case "TS_CI":
-          if (cashThousands1) code = cashThousands1 + "TS+CI";
-          break;
-        case "TS_ONLY":
-          if (cashThousands1) code = cashThousands1 + "TS";
-          break;
+        APR_PLUS_CI: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 3.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 72" }
+          ]
+        },
 
-        case "APR_ONLY":
-          if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
-          break;
+        APR_BC_CI: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 3.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 72" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 500" }
+          ]
+        },
 
-        case "ZERO_ZERO": {
-          const rate = f1Num || "0";
-          const months = f2Int;
-          const pays = f3Int || "0";
-          const days = f4Int;
-          if (months && days) {
-            const rNum = parseFloat(rate);
-            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
-            code = rStr + "APR" + months + "+" + pays + "PAY" + days;
-          }
-          break;
-        }
+        LEASE_ONLY: {
+          fields: [
+            { label: "Lease Amount", placeholder: "Lease Amount (e.g. 239)" }
+          ]
+        },
+        LEASE_PLUS_BC: {
+          fields: [
+            { label: "Lease Amount", placeholder: "e.g. 239" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 1500" }
+          ]
+        },
+        SIGN_DRIVE: { fields: [] },
+        LEASE_PLUS_EV: {
+          fields: [
+            { label: "Lease Amount", placeholder: "e.g. 239" },
+            { label: "EV Bonus Cash Amount", placeholder: "e.g. 7500" }
+          ]
+        },
+        LEASE_PLUS_EV_CI: {
+          fields: [
+            { label: "Lease Amount", placeholder: "e.g. 239" },
+            { label: "EV Bonus Cash Amount", placeholder: "e.g. 7500" }
+          ]
+        },
 
-        case "APR_PLUS_BC":
-          if (f1Num && f2Int && cashThousands3) {
-            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC";
-          }
-          break;
+        APR_PLUS_LEASE: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 1.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 48" },
+            { label: "Lease Amount", placeholder: "e.g. 239" }
+          ]
+        },
+        APR_OR_LEASE: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 1.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 48" },
+            { label: "Lease Amount", placeholder: "e.g. 239" }
+          ]
+        },
+        APR_PLUS_NOPAY: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 3.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 72" },
+            { label: "Payments", placeholder: "e.g. 0" },
+            { label: "APR Payment Days", placeholder: "e.g. 90" }
+          ]
+        },
 
-        case "APR_OR_BC":
-          if (f1Num && f2Int && cashThousands3) {
-            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC";
-          }
-          break;
+        APR_MULTIPLE: {
+          fields: [
+            { label: "APR Percentage 1", placeholder: "e.g. 2.99" },
+            { label: "APR Offer Term Months 1", placeholder: "e.g. 60" },
+            { label: "APR Percentage 2", placeholder: "e.g. 1.99" },
+            { label: "APR Offer Term Months 2", placeholder: "e.g. 48" }
+          ]
+        },
 
-        case "ZERO_PLUS_BC": {
-          const rate = f1Num || "0";
-          const months = f2Int;
-          const pays = f3Int || "0";
-          const days = f4Int;
-          const bc = cashThousands5;
-          if (months && days && bc) {
-            const rNum = parseFloat(rate);
-            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
-            code = rStr + "APR" + months + "+" + pays + "P" + days + "+" + bc + "BC";
-          }
-          break;
-        }
+        APR_OR_EVBC: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 0.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "EV Bonus Cash Amount", placeholder: "e.g. 7500" }
+          ]
+        },
 
-        case "ZERO_PLUS_UPBC": {
-          const rate = f1Num || "0";
-          const months = f2Int;
-          const pays = f3Int || "0";
-          const days = f4Int;
-          const bc = cashThousands5;
-          if (months && days && bc) {
-            const rNum = parseFloat(rate);
-            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
-            code = rStr + "APR" + months + "+" + pays + "P" + days + "+UP" + bc + "BC";
-          }
-          break;
-        }
+        // NEW: APR + BC or Lease
+        APR_BC_OR_LEASE: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 1.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" },
+            { label: "Lease Amount", placeholder: "e.g. 299" }
+          ]
+        },
 
-        case "ZERO_OR_UPBC": {
-          const rate = f1Num || "0";
-          const months = f2Int;
-          const pays = f3Int || "0";
-          const days = f4Int;
-          const bc = cashThousands5;
-          if (months && days && bc) {
-            const rNum = parseFloat(rate);
-            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
-            code = rStr + "APR" + months + "+" + pays + "P" + days + "|UP" + bc + "BC";
-          }
-          break;
-        }
+        // NEW: APR or BC or Lease
+        APR_OR_BC_OR_LEASE: {
+          fields: [
+            { label: "APR Percentage", placeholder: "e.g. 1.99" },
+            { label: "APR Offer Term Months", placeholder: "e.g. 60" },
+            { label: "Bonus Cash Amount", placeholder: "e.g. 2500" },
+            { label: "Lease Amount", placeholder: "e.g. 299" }
+          ]
+        },
 
-        // NEW: 0-0 or Lease → 0APR60+0P90|L239
-        case "ZERO_OR_LEASE": {
-          const rate = f1Num || "0";
-          const months = f2Int;
-          const pays = f3Int || "0";
-          const days = f4Int;
-          const lease = f5Int; // Lease Amount (field 5)
-          if (months && days && lease) {
-            const rNum = parseFloat(rate);
-            const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
-            code = rStr + "APR" + months + "+" + pays + "P" + days + "|L" + lease;
-          }
-          break;
-        }
+        HCM_CODE: { fields: [] },
+        ABW_CODE: { fields: [] },
+        CTB_CODE: { fields: [] },
+        URG_CODE: { fields: [] }
+      };
 
-        case "APR_PLUS_CI":
-          if (f1Num && f2Int) {
-            code = f1Num + "APR" + f2Int + "+CI";
-          }
-          break;
+      function cleanNumeric(val) {
+        return (val || "").replace(/[^0-9.]/g, "");
+      }
+      function cleanInt(val) {
+        return (val || "").replace(/[^0-9]/g, "");
+      }
+      function toThousands(amount) {
+        const numeric = parseFloat(cleanNumeric(amount));
+        if (isNaN(numeric) || numeric <= 0) return "";
 
-        case "APR_BC_CI":
-          if (f1Num && f2Int && cashThousands3) {
-            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC+CI";
-          }
-          break;
+        const value = numeric / 1000;
 
-        case "LEASE_ONLY":
-          if (f1Int) code = "L" + f1Int;
-          break;
+        // Truncate to 2 decimals WITHOUT rounding
+        const truncated = Math.floor(value * 100) / 100;
 
-        case "LEASE_PLUS_BC":
-          if (f1Int && cashThousands2) {
-            code = "L" + f1Int + "+" + cashThousands2 + "BC";
-          }
-          break;
-
-        case "SIGN_DRIVE":
-          code = "SD000";
-          break;
-
-        case "LEASE_PLUS_EV":
-          if (f1Int && cashThousands2) {
-            code = "L" + f1Int + "+" + cashThousands2 + "EVBC";
-          }
-          break;
-
-        case "LEASE_PLUS_EV_CI":
-          if (f1Int && cashThousands2) {
-            code = "L" + f1Int + "+" + cashThousands2 + "EVBC+CI";
-          }
-          break;
-
-        case "APR_PLUS_LEASE":
-          if (f1Num && f2Int && f3Int) {
-            code = f1Num + "APR" + f2Int + "+L" + f3Int;
-          }
-          break;
-
-        case "APR_OR_LEASE":
-          if (f1Num && f2Int && f3Int) {
-            code = f1Num + "APR" + f2Int + "|L" + f3Int;
-          }
-          break;
-
-        case "APR_PLUS_NOPAY":
-          if (f1Num && f2Int && f4Int) {
-            const pays = f3Int || 0;
-            code = f1Num + "APR" + f2Int + "+" + pays + "P" + f4Int;
-          }
-          break;
-
-        case "APR_MULTIPLE":
-          if (f1Num && f2Int && f3Num && f4Int) {
-            const c1 = f1Num + "APR" + f2Int;
-            const c2 = f3Num + "APR" + f4Int;
-            code = c1 + "|" + c2;
-          }
-          break;
-
-        case "APR_OR_EVBC":
-          if (f1Num && f2Int && cashThousands3) {
-            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
-          }
-          break;
-
-        // NEW: APR + BC or Lease → 1.99APR60+2.5BC|L299
-        case "APR_BC_OR_LEASE":
-          if (f1Num && f2Int && cashThousands3 && f4Int) {
-            code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC|L" + f4Int;
-          }
-          break;
-
-        // NEW: APR or BC or Lease → 1.99APR60|2.5BC|L299
-        case "APR_OR_BC_OR_LEASE":
-          if (f1Num && f2Int && cashThousands3 && f4Int) {
-            code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC|L" + f4Int;
-          }
-          break;
-
-        case "HCM_CODE":
-          code = "HCM"; break;
-        case "ABW_CODE":
-          code = "ABW"; break;
-        case "CTB_CODE":
-          code = "CTB"; break;
-        case "URG_CODE":
-          code = "URG"; break;
-
-        default:
-          code = "";
+        // Convert to string and remove trailing zeros
+        return truncated.toString();
       }
 
-      document.getElementById("offerCode").value = code;
-      document.getElementById("offerCodeDisplay").value = code;
-      updateTaxonomy();
-    }
+      function setOfferEndDateState(isDisabled, forceNA = false) {
+        const m = document.getElementById("offer_month");
+        const d = document.getElementById("offer_day");
+        const y = document.getElementById("offer_year");
 
-    function computeOfferEndCode() {
+        m.disabled = isDisabled;
+        d.disabled = isDisabled;
+        y.disabled = isDisabled;
+
+        if (isDisabled) {
+          // Clear visible dropdowns
+          m.value = "";
+          d.value = "";
+          y.value = "";
+
+          // Force taxonomy segment to NA
+          document.getElementById("offer_end_code").value = forceNA ? "NA" : "";
+        } else {
+          // Recompute normally when re-enabled
+          computeOfferEndCode();
+        }
+
+        updateTaxonomy();
+      }
+
+      function updateFieldUi() {
+        const template = document.getElementById("offerTemplate").value;
+        const cfg = templateUi[template] || { fields: [] };
+
+        const fieldElems = [
+          { wrapper: document.getElementById("field1"), label: document.getElementById("field1Label"), input: document.getElementById("field1Input") },
+          { wrapper: document.getElementById("field2"), label: document.getElementById("field2Label"), input: document.getElementById("field2Input") },
+          { wrapper: document.getElementById("field3"), label: document.getElementById("field3Label"), input: document.getElementById("field3Input") },
+          { wrapper: document.getElementById("field4"), label: document.getElementById("field4Label"), input: document.getElementById("field4Input") },
+          { wrapper: document.getElementById("field5"), label: document.getElementById("field5Label"), input: document.getElementById("field5Input") }
+        ];
+
+        fieldElems.forEach(f => {
+          f.input.value = "";
+          f.wrapper.classList.add("hidden");
+        });
+
+        cfg.fields.forEach((fcfg, idx) => {
+          if (idx > 4) return;
+          const f = fieldElems[idx];
+          f.wrapper.classList.remove("hidden");
+          f.label.textContent = fcfg.label;
+          f.input.placeholder = fcfg.placeholder || "";
+        });
+
+        document.getElementById("offerFieldsRow")
+          .classList.toggle("hidden", cfg.fields.length === 0);
+      }
+
+      function buildOfferCode() {
+        const template = document.getElementById("offerTemplate").value;
+
+        const f1 = document.getElementById("field1Input").value;
+        const f2 = document.getElementById("field2Input").value;
+        const f3 = document.getElementById("field3Input").value;
+        const f4 = document.getElementById("field4Input").value;
+        const f5 = document.getElementById("field5Input").value;
+
+        const f1Num = cleanNumeric(f1);
+        const f2Num = cleanNumeric(f2);
+        const f3Num = cleanNumeric(f3);
+        const f4Num = cleanNumeric(f4);
+        const f5Num = cleanNumeric(f5);
+
+        const f1Int = cleanInt(f1);
+        const f2Int = cleanInt(f2);
+        const f3Int = cleanInt(f3);
+        const f4Int = cleanInt(f4);
+        const f5Int = cleanInt(f5);
+
+        const cashThousands1 = toThousands(f1);
+        const cashThousands2 = toThousands(f2);
+        const cashThousands3 = toThousands(f3);
+        const cashThousands4 = toThousands(f4);
+        const cashThousands5 = toThousands(f5);
+
+        let code = "";
+
+        switch (template) {
+          case "NA":
+            code = "NA";
+            break;
+          case "BONUS_CASH":
+            if (cashThousands1) code = cashThousands1 + "BC";
+            break;
+          case "DEALER_CASH":
+            if (cashThousands1) code = cashThousands1 + "DC";
+            break;
+          case "CUSTOMER_CASH":
+            if (cashThousands1) code = cashThousands1 + "CC";
+            break;
+          case "SALES_EVENT_CASH":
+            if (cashThousands1) code = cashThousands1 + "SEC";
+            break;
+          case "TS_CI":
+            if (cashThousands1) code = cashThousands1 + "TS+CI";
+            break;
+          case "TS_ONLY":
+            if (cashThousands1) code = cashThousands1 + "TS";
+            break;
+
+          case "APR_ONLY":
+            if (f1Num && f2Int) code = f1Num + "APR" + f2Int;
+            break;
+
+          case "ZERO_ZERO": {
+            const rate = f1Num || "0";
+            const months = f2Int;
+            const pays = f3Int || "0";
+            const days = f4Int;
+            if (months && days) {
+              const rNum = parseFloat(rate);
+              const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+              code = rStr + "APR" + months + "+" + pays + "PAY" + days;
+            }
+            break;
+          }
+
+          case "APR_PLUS_BC":
+            if (f1Num && f2Int && cashThousands3) {
+              code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC";
+            }
+            break;
+
+          case "APR_OR_BC":
+            if (f1Num && f2Int && cashThousands3) {
+              code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC";
+            }
+            break;
+
+          case "ZERO_PLUS_BC": {
+            const rate = f1Num || "0";
+            const months = f2Int;
+            const pays = f3Int || "0";
+            const days = f4Int;
+            const bc = cashThousands5;
+            if (months && days && bc) {
+              const rNum = parseFloat(rate);
+              const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+              code = rStr + "APR" + months + "+" + pays + "P" + days + "+" + bc + "BC";
+            }
+            break;
+          }
+
+          case "ZERO_PLUS_UPBC": {
+            const rate = f1Num || "0";
+            const months = f2Int;
+            const pays = f3Int || "0";
+            const days = f4Int;
+            const bc = cashThousands5;
+            if (months && days && bc) {
+              const rNum = parseFloat(rate);
+              const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+              code = rStr + "APR" + months + "+" + pays + "P" + days + "+UP" + bc + "BC";
+            }
+            break;
+          }
+
+          case "ZERO_OR_UPBC": {
+            const rate = f1Num || "0";
+            const months = f2Int;
+            const pays = f3Int || "0";
+            const days = f4Int;
+            const bc = cashThousands5;
+            if (months && days && bc) {
+              const rNum = parseFloat(rate);
+              const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+              code = rStr + "APR" + months + "+" + pays + "P" + days + "|UP" + bc + "BC";
+            }
+            break;
+          }
+
+          // NEW: 0-0 or Lease → 0APR60+0P90|L239
+          case "ZERO_OR_LEASE": {
+            const rate = f1Num || "0";
+            const months = f2Int;
+            const pays = f3Int || "0";
+            const days = f4Int;
+            const lease = f5Int; // Lease Amount (field 5)
+            if (months && days && lease) {
+              const rNum = parseFloat(rate);
+              const rStr = (!isNaN(rNum) && rNum === 0) ? "0" : rate;
+              code = rStr + "APR" + months + "+" + pays + "P" + days + "|L" + lease;
+            }
+            break;
+          }
+
+          case "APR_PLUS_CI":
+            if (f1Num && f2Int) {
+              code = f1Num + "APR" + f2Int + "+CI";
+            }
+            break;
+
+          case "APR_BC_CI":
+            if (f1Num && f2Int && cashThousands3) {
+              code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC+CI";
+            }
+            break;
+
+          case "LEASE_ONLY":
+            if (f1Int) code = "L" + f1Int;
+            break;
+
+          case "LEASE_PLUS_BC":
+            if (f1Int && cashThousands2) {
+              code = "L" + f1Int + "+" + cashThousands2 + "BC";
+            }
+            break;
+
+          case "SIGN_DRIVE":
+            code = "SD000";
+            break;
+
+          case "LEASE_PLUS_EV":
+            if (f1Int && cashThousands2) {
+              code = "L" + f1Int + "+" + cashThousands2 + "EVBC";
+            }
+            break;
+
+          case "LEASE_PLUS_EV_CI":
+            if (f1Int && cashThousands2) {
+              code = "L" + f1Int + "+" + cashThousands2 + "EVBC+CI";
+            }
+            break;
+
+          case "APR_PLUS_LEASE":
+            if (f1Num && f2Int && f3Int) {
+              code = f1Num + "APR" + f2Int + "+L" + f3Int;
+            }
+            break;
+
+          case "APR_OR_LEASE":
+            if (f1Num && f2Int && f3Int) {
+              code = f1Num + "APR" + f2Int + "|L" + f3Int;
+            }
+            break;
+
+          case "APR_PLUS_NOPAY":
+            if (f1Num && f2Int && f4Int) {
+              const pays = f3Int || 0;
+              code = f1Num + "APR" + f2Int + "+" + pays + "P" + f4Int;
+            }
+            break;
+
+          case "APR_MULTIPLE":
+            if (f1Num && f2Int && f3Num && f4Int) {
+              const c1 = f1Num + "APR" + f2Int;
+              const c2 = f3Num + "APR" + f4Int;
+              code = c1 + "|" + c2;
+            }
+            break;
+
+          case "APR_OR_EVBC":
+            if (f1Num && f2Int && cashThousands3) {
+              code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "EVBC";
+            }
+            break;
+
+          // NEW: APR + BC or Lease → 1.99APR60+2.5BC|L299
+          case "APR_BC_OR_LEASE":
+            if (f1Num && f2Int && cashThousands3 && f4Int) {
+              code = f1Num + "APR" + f2Int + "+" + cashThousands3 + "BC|L" + f4Int;
+            }
+            break;
+
+          // NEW: APR or BC or Lease → 1.99APR60|2.5BC|L299
+          case "APR_OR_BC_OR_LEASE":
+            if (f1Num && f2Int && cashThousands3 && f4Int) {
+              code = f1Num + "APR" + f2Int + "|" + cashThousands3 + "BC|L" + f4Int;
+            }
+            break;
+
+          case "HCM_CODE":
+            code = "HCM"; break;
+          case "ABW_CODE":
+            code = "ABW"; break;
+          case "CTB_CODE":
+            code = "CTB"; break;
+          case "URG_CODE":
+            code = "URG"; break;
+
+          default:
+            code = "";
+        }
+
+        document.getElementById("offerCode").value = code;
+        document.getElementById("offerCodeDisplay").value = code;
+        updateTaxonomy();
+      }
+
+      function computeOfferEndCode() {
         // If Offer End Date inputs are disabled (Offer template = NA),
         // keep the current value ("NA") and do not overwrite it.
         if (document.getElementById("offer_month").disabled) {
           updateTaxonomy();
           return;
         }
-      const mVal = document.getElementById("offer_month").value;
-      const dVal = document.getElementById("offer_day").value;
-      const yVal = document.getElementById("offer_year").value;
-      let code = "";
+        const mVal = document.getElementById("offer_month").value;
+        const dVal = document.getElementById("offer_day").value;
+        const yVal = document.getElementById("offer_year").value;
+        let code = "";
 
-      if (mVal && dVal && yVal) {
-        const m = parseInt(mVal, 10);
-        const d = parseInt(dVal, 10);
-        const y = parseInt(yVal, 10) % 100;
-        if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
-          const mStr = String(m);
-          const dStr = String(d);
-          const yStr = String(y).padStart(2,"0");
-          code = mStr + dStr + yStr; // e.g. 9/2/24 -> 9224
-        }
-      }
-      document.getElementById("offer_end_code").value = code;
-      updateTaxonomy();
-    }
-
-  function updateTaxonomy() {
-    const parts = fieldOrder
-      .map(id => {
-  
-        // --- existing model combo logic (unchanged) ---
-        if (id === "model_combo") {
-          const mode = document.querySelector("input[name='modelMode']:checked")?.value || "single";
-          const errorEl = document.getElementById("modelError");
-  
-          if (mode === "multiple") {
-            const rows = document.querySelectorAll("#multiModelRows .field-group");
-            const combos = [];
-            const seen = new Set();
-  
-            errorEl.textContent = "";
-  
-            rows.forEach(row => {
-              const y = row.querySelector(".mm-year").value;
-              const m = row.querySelector(".mm-model").value;
-              if (!y || !m) return;
-  
-              const key = y + m;
-              if (seen.has(key)) {
-                errorEl.textContent = "Duplicate model selections are not allowed.";
-                return;
-              }
-  
-              seen.add(key);
-              combos.push(key);
-            });
-  
-            if (combos.length < 2) {
-              errorEl.textContent = "Select at least two models.";
-              return "";
-            }
-  
-            return combos.join("|");
+        if (mVal && dVal && yVal) {
+          const m = parseInt(mVal, 10);
+          const d = parseInt(dVal, 10);
+          const y = parseInt(yVal, 10) % 100;
+          if (!isNaN(m) && !isNaN(d) && !isNaN(y)) {
+            const mStr = String(m);
+            const dStr = String(d);
+            const yStr = String(y).padStart(2, "0");
+            code = mStr + dStr + yStr; // e.g. 9/2/24 -> 9224
           }
-  
-          const my = (document.getElementById("model_year").value || "").trim();
-          const mn = (document.getElementById("model_name").value || "").trim();
-          return (my || "") + (mn || "");
         }
-  
-        // --- NEW: market + optional marketing tag (TAM.FIFA) ---
-        if (id === "market_combo") {
-          const market = (document.getElementById("market").value || "").trim();
-          const tag = (document.getElementById("marketing_tag").value || "").trim();
-  
-          if (!market) return "";
-          return tag ? (market + "." + tag) : market;
-        }
-  
-        // --- default behavior for normal fields ---
-        const el = document.getElementById(id);
-        return el ? (el.value || "").trim() : "";
-      })
-      .filter(Boolean);
-  
-    const code = parts.length ? parts.join("_") : "(select values above)";
-    document.getElementById("taxonomyCode").textContent = code;
-  }
-
-    // ---- Step-by-step selection locking logic ----
-    function updateStepAvailability() {
-      const region     = document.getElementById("region");
-      const media      = document.getElementById("media");
-      const initiative = document.getElementById("initiative");
-      const title      = document.getElementById("title");
-      const modelYear  = document.getElementById("model_year");
-      const modelName  = document.getElementById("model_name");
-
-      // Step 1: Region → enables Media
-      media.disabled = !region.value;
-
-      // Step 2: Media → enables Initiative
-      initiative.disabled = !media.value;
-
-      // Step 3: Initiative → enables Title
-      title.disabled = !initiative.value;
-
-      // Step 4: Title → enables Model Year
-      modelYear.disabled = !title.value;
-
-      // Step 5: Model Year → enables Model Name
-      modelName.disabled = !modelYear.value;
-
-      // PATCH 6: Show / hide Model Selection (Single vs Multiple)
-      // Only appears once a Title is selected
-      document.getElementById("modelModeGroup")
-        .classList.toggle("hidden", !title.value);
-    }
-
-    // -------- MODEL MODE TOGGLING --------
-
-    document.querySelectorAll("input[name='modelMode']").forEach(radio => {
-      radio.addEventListener("change", () => {
-        const isMulti = radio.value === "multiple" && radio.checked;
-
-        document.getElementById("multiModelBlock").classList.toggle("hidden", !isMulti);
-        document.getElementById("model_year").closest(".field-group").classList.toggle("hidden", isMulti);
-        document.getElementById("model_name").closest(".field-group").classList.toggle("hidden", isMulti);
-
-        const rows = document.getElementById("multiModelRows");
-        rows.innerHTML = "";
-
-        if (isMulti) {
-          rows.appendChild(createMultiModelRow());
-        }
-
-        document.getElementById("modelError").textContent = "";
+        document.getElementById("offer_end_code").value = code;
         updateTaxonomy();
-      });
-    });
-
-    document.getElementById("addModelBtn").addEventListener("click", () => {
-      document.getElementById("multiModelRows")
-        .appendChild(createMultiModelRow());
-    });
-
-    // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
-
-    // 1) Populate Day dropdown
-    const daySel = document.getElementById("offer_day");
-    for (let d = 1; d <= 31; d++) {
-      const opt = document.createElement("option");
-      opt.value = String(d);
-      opt.textContent = String(d);
-      daySel.appendChild(opt);
-    }
-
-    // 2) Attach listeners for step locking + taxonomy
-    ["region","media","initiative","title","model_year","model_name"].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-    
-      el.addEventListener("change", () => {
-    
-        // ONLY do title population when Initiative itself changes
-        if (id === "initiative") {
-          // Clear Title before repopulating
-          const titleSel = document.getElementById("title");
-          titleSel.value = "";
-          populateTitleOptions();
-        }
-    
-        updateStepAvailability();
-        updateTaxonomy();
-      });
-    });
-
-    // 3) Attach listeners for other taxonomy fields
-    fieldOrder.forEach(id => {
-      if (id === "model_combo" || id === "market_combo" || id === "offerCode" || id === "offer_end_code") return;
-      const el = document.getElementById(id);
-      if (el && !["region","media","initiative","title","model_year","model_name"].includes(id)) {
-        el.addEventListener("change", updateTaxonomy);
       }
-    });
 
-    // Market + Marketing Tag should both trigger taxonomy updates
-    ["market", "marketing_tag"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("change", updateTaxonomy);
-    });
+      function updateTaxonomy() {
+        const parts = fieldOrder
+          .map(id => {
 
-    // 4) Offer end date listeners
-    ["offer_month","offer_day","offer_year"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("change", computeOfferEndCode);
-    });
+            // --- existing model combo logic (unchanged) ---
+            if (id === "model_combo") {
+              const mode = document.querySelector("input[name='modelMode']:checked")?.value || "single";
+              const errorEl = document.getElementById("modelError");
 
-    // 5) Offer template + fields
-    document.getElementById("offerTemplate").addEventListener("change", () => {
-      const template = document.getElementById("offerTemplate").value;
-      ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
+              if (mode === "multiple") {
+                const rows = document.querySelectorAll("#multiModelRows .field-group");
+                const combos = [];
+                const seen = new Set();
+
+                errorEl.textContent = "";
+
+                rows.forEach(row => {
+                  const y = row.querySelector(".mm-year").value;
+                  const m = row.querySelector(".mm-model").value;
+                  if (!y || !m) return;
+
+                  const key = y + m;
+                  if (seen.has(key)) {
+                    errorEl.textContent = "Duplicate model selections are not allowed.";
+                    return;
+                  }
+
+                  seen.add(key);
+                  combos.push(key);
+                });
+
+                if (combos.length < 2) {
+                  errorEl.textContent = "Select at least two models.";
+                  return "";
+                }
+
+                return combos.join("|");
+              }
+
+              const my = (document.getElementById("model_year").value || "").trim();
+              const mn = (document.getElementById("model_name").value || "").trim();
+              return (my || "") + (mn || "");
+            }
+
+            // --- NEW: market + optional marketing tag (TAM.FIFA) ---
+            if (id === "market_combo") {
+              const market = (document.getElementById("market").value || "").trim();
+              const tag = (document.getElementById("marketing_tag").value || "").trim();
+
+              if (!market) return "";
+              return tag ? (market + "." + tag) : market;
+            }
+
+            // --- default behavior for normal fields ---
+            const el = document.getElementById(id);
+            return el ? (el.value || "").trim() : "";
+          })
+          .filter(Boolean);
+
+        const code = parts.length ? parts.join("_") : "(select values above)";
+        document.getElementById("taxonomyCode").textContent = code;
+      }
+
+      // ---- Step-by-step selection locking logic ----
+      function updateStepAvailability() {
+        const region = document.getElementById("region");
+        const media = document.getElementById("media");
+        const initiative = document.getElementById("initiative");
+        const title = document.getElementById("title");
+        const modelYear = document.getElementById("model_year");
+        const modelName = document.getElementById("model_name");
+
+        // Step 1: Region → enables Media
+        media.disabled = !region.value;
+
+        // Step 2: Media → enables Initiative
+        initiative.disabled = !media.value;
+
+        // Step 3: Initiative → enables Title
+        title.disabled = !initiative.value;
+
+        // Step 4: Title → enables Model Year
+        modelYear.disabled = !title.value;
+
+        // Step 5: Model Year → enables Model Name
+        modelName.disabled = !modelYear.value;
+
+        // PATCH 6: Show / hide Model Selection (Single vs Multiple)
+        // Only appears once a Title is selected
+        document.getElementById("modelModeGroup")
+          .classList.toggle("hidden", !title.value);
+      }
+
+      // -------- MODEL MODE TOGGLING --------
+
+      document.querySelectorAll("input[name='modelMode']").forEach(radio => {
+        radio.addEventListener("change", () => {
+          const isMulti = radio.value === "multiple" && radio.checked;
+
+          document.getElementById("multiModelBlock").classList.toggle("hidden", !isMulti);
+          document.getElementById("model_year").closest(".field-group").classList.toggle("hidden", isMulti);
+          document.getElementById("model_name").closest(".field-group").classList.toggle("hidden", isMulti);
+
+          const rows = document.getElementById("multiModelRows");
+          rows.innerHTML = "";
+
+          if (isMulti) {
+            rows.appendChild(createMultiModelRow());
+          }
+
+          document.getElementById("modelError").textContent = "";
+          updateTaxonomy();
+        });
       });
+
+      document.getElementById("addModelBtn").addEventListener("click", () => {
+        document.getElementById("multiModelRows")
+          .appendChild(createMultiModelRow());
+      });
+
+      // --------- INITIALIZATION (no DOMContentLoaded needed; script is at end of body) ---------
+
+      // 1) Populate Day dropdown
+      const daySel = document.getElementById("offer_day");
+      for (let d = 1; d <= 31; d++) {
+        const opt = document.createElement("option");
+        opt.value = String(d);
+        opt.textContent = String(d);
+        daySel.appendChild(opt);
+      }
+
+      // 2) Attach listeners for step locking + taxonomy
+      ["region", "media", "initiative", "title", "model_year", "model_name"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("change", () => {
+
+          // ONLY do title population when Initiative itself changes
+          if (id === "initiative") {
+            // Clear Title before repopulating
+            const titleSel = document.getElementById("title");
+            titleSel.value = "";
+            populateTitleOptions();
+          }
+
+          updateStepAvailability();
+          updateTaxonomy();
+        });
+      });
+
+      // 3) Attach listeners for other taxonomy fields
+      fieldOrder.forEach(id => {
+        if (id === "model_combo" || id === "market_combo" || id === "offerCode" || id === "offer_end_code") return;
+        const el = document.getElementById(id);
+        if (el && !["region", "media", "initiative", "title", "model_year", "model_name"].includes(id)) {
+          el.addEventListener("change", updateTaxonomy);
+        }
+      });
+
+      // Market + Marketing Tag should both trigger taxonomy updates
+      ["market", "marketing_tag"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("change", updateTaxonomy);
+      });
+
+      // 4) Offer end date listeners
+      ["offer_month", "offer_day", "offer_year"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("change", computeOfferEndCode);
+      });
+
+      // 5) Offer template + fields
+      document.getElementById("offerTemplate").addEventListener("change", () => {
+        const template = document.getElementById("offerTemplate").value;
+        ["field1Input", "field2Input", "field3Input", "field4Input", "field5Input"].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = "";
+        });
+        updateFieldUi();
+        buildOfferCode();
+
+        // NEW: If template is NA, disable Offer End Date and force NA output
+        if (template === "NA") {
+          setOfferEndDateState(true, true); // disabled + force "NA"
+        } else {
+          setOfferEndDateState(false); // re-enable and compute normally
+        }
+      });
+
+      ["field1Input", "field2Input", "field3Input", "field4Input", "field5Input"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener("input", buildOfferCode);
+      });
+
+      // 6) Initial bootstrapping
+      populateTitleOptions();   // sets default title options (NA only when no init selected)
       updateFieldUi();
       buildOfferCode();
-    
-      // NEW: If template is NA, disable Offer End Date and force NA output
-      if (template === "NA") {
-        setOfferEndDateState(true, true); // disabled + force "NA"
+      // Ensure Offer End Date state matches current template on load
+      const initialTemplate = document.getElementById("offerTemplate").value;
+      if (initialTemplate === "NA") {
+        setOfferEndDateState(true, true);
       } else {
-        setOfferEndDateState(false); // re-enable and compute normally
+        setOfferEndDateState(false);
       }
-    });
-
-    ["field1Input","field2Input","field3Input","field4Input","field5Input"].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.addEventListener("input", buildOfferCode);
-    });
-
-    // 6) Initial bootstrapping
-    populateTitleOptions();   // sets default title options (NA only when no init selected)
-    updateFieldUi();
-    buildOfferCode();
-    // Ensure Offer End Date state matches current template on load
-    const initialTemplate = document.getElementById("offerTemplate").value;
-    if (initialTemplate === "NA") {
-      setOfferEndDateState(true, true);
-    } else {
-      setOfferEndDateState(false);
-    }
-    computeOfferEndCode();
-    updateStepAvailability();
-    updateTaxonomy();
-  </script>
+      computeOfferEndCode();
+      updateStepAvailability();
+      updateTaxonomy();
+    </script>
 </body>
+
 </html>
